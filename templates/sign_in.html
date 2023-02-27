@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Войти {% endblock %}
+{% block content %}
+<body>
+    <div class="registration">
+        <div class="left_part">
+            <div class="left_content">
+                <h2 id="sign_in_h2" class="title_left">Вход</h2>
+                <p class="grey_text" id="registration_description">Введите ваш  email и пароль для входа.</p>
+                <div class="registration_fields">
+                    <form id="sign_in" class="form">
+                        <div class="field">
+                            <label for="email"><b>Email</b></label>
+                            <input type="text" placeholder="mail@gmail.com" name="email" required>
+                        </div>
+                        <div class="field">
+                            <label for="email"><b>Пароль</b></label>
+                            <input type="text" placeholder="*********" name="password" required>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" id="read_white_paper" name="read_white_paper" checked>
+                    <label id="label_read_white_paper" for="read_white_paper">Запомнить меня</label>
+                </div >
+                <button onclick="document.location={% url 'dashboard' %}" class="register_button">Войти</button>
+                <p id="already_exist">Еще не зарегистрировались? <a href="{% url 'signup' %}">Создать аккаунт</a></p>
+
+            </div>
+            <div class="left_footer">
+                <p class="grey_text">© 2023 PRM4ALL. All Rights Reserved.</p>
+            </div>
+        </div>
+        <div class="right_part">
+            <div class="right_content">
+                <img id="start_logo" src="{% static 'main/img/prm4 logo.png' %}" alt="PRM4ALL">
+                <button class="title_button">Partner Relationship Management</button>
+            </div>
+            <div class="right_footer">
+                <a class="footer_link" href="#">Web 3.0</a>
+                <a class="footer_link" href="#">WhitePaper</a>
+                <a class="footer_link" href="#">Site</a>
+                <a class="footer_link" href="#">Presentation</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
