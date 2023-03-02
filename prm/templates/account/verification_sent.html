@@ -4,9 +4,12 @@
 
 {% block head_title %}{% translate "Verify Your E-mail Address" %}{% endblock %}
 
+{% block page_title %}{% translate "Verify Your E-mail Address" %}{% endblock page_title %}
+
+{% block page_subtitle %}
+    Мы отправили вам электронное письмо для проверки. Перейдите по предоставленной ссылке, чтобы завершить процесс регистрации. Пожалуйста, свяжитесь с нами, если вы не получили его в течение нескольких минут.
+{% endblock page_subtitle %}
+
 {% block inner %}
-    <h1>{% translate "Verify Your E-mail Address" %}</h1>
-
-    <p>{% blocktranslate %}We have sent an e-mail to you for verification. Follow the link provided to finalize the signup process. Please contact us if you do not receive it within a few minutes.{% endblocktranslate %}</p>
-
+    <a class="btn btn-primary" href="{% url 'account_login' %}">Войти</a>
 {% endblock %}

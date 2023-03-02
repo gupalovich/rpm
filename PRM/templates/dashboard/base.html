@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+<img id="burger" src="{% static 'img/icons/menu_burger.svg' %}" alt="">
+<div class="dashboard_body">
+    <div id="sidenav" class="sidenav">
+        <div class="side_logo"></div>
+        <div class="menu">
+            {% with request.resolver_match.url_name as current_url %}
+            <a href="{% url 'dashboard:index' username=user.username %}" class="menu_item{% if current_url == 'index' %} active{% endif %}">
+
+                <img class="menu_icon" src="{% static 'img/icons/dashboard_icon_active.svg'%}" alt="">
+                <p class="menu_name">Dashboard</p>
+
+                {% if current_url == 'index' %}<div class="active_line"></div>{% endif %}
+            </a>
+            <a href="{% url 'dashboard:token' username=user.username %}" class="menu_item{% if current_url == 'token' %} active{% endif %}">
+
+                <img class="menu_icon" src="{% static 'img/icons/token_icon.svg '%}" alt="token">
+                <p class="menu_name">Token</p>
+
+                {% if current_url == 'token' %}<div class="active_line"></div>{% endif %}
+            </a>
+            <a href="{% url 'dashboard:team' username=user.username %}" class="menu_item{% if current_url == 'team' %} active{% endif %}">
+
+                <img class="menu_icon" src="{% static 'img/icons/team_icon.svg '%}" alt="team">
+                <p class="menu_name">Team</p>
+
+                {% if current_url == 'team' %}<div class="active_line"></div>{% endif %}
+            </a>
+            <a href="{% url 'dashboard:profile' username=user.username %}" class="menu_item{% if current_url == 'profile' %} active{% endif %}">
+
+                <img class="menu_icon" src="{% static 'img/icons/profile_icon.svg '%}" alt="profile">
+                <p class="menu_name">Profile</p>
+
+                {% if current_url == 'profile' %}<div class="active_line"></div>{% endif %}
+            </a>
+            <a href="{% url 'account_logout' %}" class="menu_item">
+                <img class="menu_icon" src="{% static 'img/icons/sign_out_icon.svg '%}" alt="signout">
+                <p class="menu_name">Sign Out</p>
+            </a>
+            {% endwith %}
+        </div>
+    </div>
+
+    <div id="main" class="main">
+        <p class="page_path">Pages / Dashboard</p>
+        <div class="tile header">
+
+            <div class="page_name_div">
+                <h2 class="page_name">Dashboard</h2>
+            </div>
+            <div class="bio_part">
+                <button class="invite_link">Ссылка для приглашения</button>
+                <button class="metamask_button">
+                    <img src="{% static 'img/icons/metamask.svg '%}" alt="">
+                </button>
+                <img class="avatar_icon" src="{% static 'img/avatar.png' %}" alt="">
+            </div>
+        </div>
+        {% block inner_top %}
+            <div class="tiles">
+                <div id="my_tokens" class="tile little_tile">
+                    <img class="tile_icon" src="{% static 'img/icons/my_tokens_icon.svg '%}" alt="">
+                    <div class="tile_text">
+                        <p class="tile_name">Мои токены</p>
+                        <p class="tile_counter"> 454 543</p>
+                    </div>
+                </div>
+                <div id="token_sum" class="tile little_tile">
+                    <img class="tile_icon" src="{% static 'img/icons/sum_icon.svg '%}" alt="">
+                    <div class="tile_text">
+                        <p class="tile_name">Сумма токенов</p>
+                        <p class="tile_counter">$642.39</p>
+                    </div>
+                </div>
+                <div id="token_amount" class="tile little_tile">
+                    <img class="tile_icon" src="" alt="">
+                    <div class="tile_text">
+                        <p class="tile_name">Кол-во токенов в продаже</p>
+                        <p class="tile_counter"> 400 000 000</p>
+                    </div>
+                </div>
+                <div id="rate" class="tile little_tile">
+                    <img class="tile_icon" src="{% static 'img/icons/rate_icon.svg '%}" alt="">
+                    <div class="tile_text">
+                        <p class="tile_name">Курс токена</p>
+                        <p class="tile_counter">$0.001</p>
+                    </div>
+                </div>
+            </div>
+        {% endblock inner_top %}
+
+        {% block inner_bot %}{% endblock inner_bot %}
+
+        <div class="footer">
+            <p class="footer_text">© 2023 PRM4ALL. All Rights Reserved.</p>
+            <a href="#" class="footer_link">Web 3.0</a>
+            <a href="#" class="footer_link">WhitePaper</a>
+            <a href="#" class="footer_link">SmartContract</a>
+        </div>
+
+    </div>
+</div >
+{% endblock content %}
+
+{% block inline_javascript %}
+    <script src="{% static 'js/menu.js' %}"></script>
+{% endblock inline_javascript %}

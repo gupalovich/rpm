@@ -4,8 +4,8 @@
 
 {% block head_title %}{% translate "Account Inactive" %}{% endblock %}
 
-{% block inner %}
-<h1>{% translate "Account Inactive" %}</h1>
+{% block page_title %}{% translate "Account Inactive" %}{% endblock page_title %}
 
-<p>{% translate "This account is inactive." %}</p>
-{% endblock %}
+{% block page_subtitle %}{% translate "This account is inactive." %}{% endblock page_subtitle %}
+
+{% block inner %}<a class="btn btn-primary" href="{% url 'account_login' %}">Войти</a>{% endblock %}

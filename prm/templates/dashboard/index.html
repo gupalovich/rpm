@@ -1,179 +1,100 @@
-{% extends 'base.html' %}
+{% extends "dashboard/base.html" %}
+
 {% load static %}
-{% block title %}Dashboard{% endblock %}
-{% block content %}
-    <img id="burger" src="{% static 'img/menu_burger.svg' %}" alt="">
-    <div class="dashboard_body">
-        <div id="sidenav" class="sidenav">
-            <div class="side_logo"></div>
-            <div class="menu">
-                <a  href="{% url 'dashboard:index' %}" class="menu_item active">
-                    <img class="menu_icon" src="{% static 'img/dashboard_icon_active.svg'%}" alt="">
-                    <p class="menu_name">Dashboard</p>
-                    <div class="active_line"></div>
-                </a>
-                <a  href="{% url 'dashboard:token' %}" class="menu_item">
-                    <img class="menu_icon" src="{% static 'img/token_icon.svg '%}" alt="">
-                    <p class="menu_name">Token</p>
-                </a>
-                <a  href="{% url 'dashboard:team' %}" class="menu_item">
-                    <img class="menu_icon" src="{% static 'img/team_icon.svg '%}" alt="">
-                    <p class="menu_name">Team</p>
-                </a>
-                <a  href="{% url 'dashboard:profile' %}" class="menu_item">
-                    <img class="menu_icon" src="{% static 'img/profile_icon.svg '%}" alt="">
-                    <p class="menu_name">Profile</p>
-                </a>
-                <a  href="{% url 'account_login' %}" class="menu_item">
-                    <img class="menu_icon" src="{% static 'img/sign_out_icon.svg '%}" alt="">
-                    <p class="menu_name">Sign Out</p>
-                </a>
+
+{% block inner_top %}
+    {{ block.super }}
+{% endblock inner_top %}
+
+{% block inner_bot %}
+<div class="big_tiles">
+    <div id="defi" class="tile big_tile">
+        <div class="defi_info">
+            <h1 class="defi_name">DeFi Token PRM4ALL</h1>
+            <p class="description">Получай процент с товарооборота компании!</p>
+            <button class="defi_btn">Купить</button>
+        </div>
+    </div>
+    <div id="round" class="tile big_tile">
+        <h3 class="big_name">Раунды продаж</h3>
+        <div class="round_content">
+            <div class="table">
+                <p class="description">Round</p>
+                <p class="description">Price</p>
+                <p class="description">Total cost</p>
+
+                <div class="round_number">
+                    <img src="{% static 'img/icons/check_box_active.svg '%}" alt="">
+                    <p class="round_percent">1 Раунд 10%</p>
+                </div>
+                <p class="price">$ 0.001</p>
+                <p class="total_cost">$ 100 000</p>
+
+                <div class="round_number">
+                    <img src="{% static 'img/icons/checkbox.svg '%}" alt="">
+                    <p class="round_percent">2 Раунд 10%</p>
+                </div>
+                <p class="price">$ 0.005</p>
+                <p class="total_cost">$ 500 000</p>
+
+                <div class="round_number">
+                    <img src="{% static 'img/icons/checkbox.svg '%}" alt="">
+                    <p class="round_percent">3 Раунд 5%</p>
+                </div>
+                <p class="price">$ 0.01</p>
+                <p class="total_cost">$ 500 000</p>
+
+                <div class="round_number">
+                    <img src="{% static 'img/icons/checkbox.svg '%}" alt="">
+                    <p class="round_percent">4 Раунд 5%</p>
+                </div>
+                <p class="price">$ 0.05</p>
+                <p class="total_cost">$ 2 500 000</p>
+
+                <div class="round_number">
+                    <img src="{% static 'img/icons/checkbox.svg '%}" alt="">
+                    <p class="round_percent">5 Раунд 3%</p>
+                </div>
+                <p class="price">$ 0.06</p>
+                <p class="total_cost">$ 1 800 000</p>
+                <div class="round_number">
+                    <img src="{% static 'img/icons/checkbox.svg '%}" alt="">
+                    <p class="round_percent">6 Раунд 3%</p>
+                </div>
+                <p class="price">$ 0.07</p>
+                <p class="total_cost">$ 2 100 000</p>
+                <div class="round_number">
+                    <img src="{% static 'img/icons/checkbox.svg '%}" alt="">
+                    <p class="round_percent">7 Раунд 3%</p>
+                </div>
+                <p class="price">$ 0.08</p>
+                <p class="total_cost">$ 2 400 000</p>
+                <div class="round_number">
+                    <img src="{% static 'img/icons/checkbox.svg '%}" alt="">
+                    <p class="round_percent">8 Раунд 1%</p>
+                </div>
+                <p class="price">$ 0.1</p>
+                <p class="total_cost">$ 1 000 000</p>
+            </div>
+            <img class="diagram" src="{% static 'img/icons/diagram.svg '%}" alt="">
+        </div >
+    </div>
+    <div id="prm" class="tile big_tile">
+        <div class="prm_text">
+            <h3 class="big_name">Partner<br>Relationship<br>Management</h3>
+            <p class="description">Стань частью будущего!</p>
+            <div class="button_row">
+                <button class="presentation">Смотреть презентацию</button>
+                <button class="pdf">Скачать PDF</button>
             </div>
         </div>
-
-        <div id="main" class="main">
-            <p class="page_path">Pages / Dashboard</p>
-            <div class="tile header">
-
-                <div class="page_name_div">
-                    <h2 class="page_name">Dashboard</h2>
-                </div>
-                <div class="bio_part">
-                    <button class="invite_link">Ссылка для приглашения</button>
-                    <button class="metamask_button">
-                        <img src="{% static 'img/metamask.svg '%}" alt="">
-                    </button>
-                    <img class="avatar_icon" src="{% static 'img/avatar.png' %}" alt="">
-                </div>
-            </div>
-            <div class="tiles">
-                <div id="my_tokens" class="tile little_tile">
-                    <img class="tile_icon" src="{% static 'img/my_tokens_icon.svg '%}" alt="">
-                    <div class="tile_text">
-                        <p class="tile_name">Мои токены</p>
-                        <p class="tile_counter"> 454 543</p>
-                    </div>
-                </div>
-                <div id="token_sum" class="tile little_tile">
-                    <img class="tile_icon" src="{% static 'img/sum_icon.svg '%}" alt="">
-                    <div class="tile_text">
-                        <p class="tile_name">Сумма токенов</p>
-                        <p class="tile_counter">$642.39</p>
-                    </div>
-                </div>
-                <div id="token_amount" class="tile little_tile">
-                    <img class="tile_icon" src="" alt="">
-                    <div class="tile_text">
-                        <p class="tile_name">Кол-во токенов в продаже</p>
-                        <p class="tile_counter"> 400 000 000</p>
-                    </div>
-                </div>
-                <div id="rate" class="tile little_tile">
-                    <img class="tile_icon" src="{% static 'img/rate_icon.svg '%}" alt="">
-                    <div class="tile_text">
-                        <p class="tile_name">Курс токена</p>
-                        <p class="tile_counter">$0.001</p>
-                    </div>
-                </div>
-            </div>
-            <div class="big_tiles">
-                <div id="defi" class="tile big_tile">
-                    <div class="defi_info">
-                        <h1 class="defi_name">DeFi Token PRM4ALL</h1>
-                        <p class="description">Получай процент с товарооборота компании!</p>
-                        <button class="defi_btn">Купить</button>
-                    </div>
-                </div>
-                <div id="round" class="tile big_tile">
-                    <h3 class="big_name">Раунды продаж</h3>
-                    <div class="round_content">
-                        <div class="table">
-                            <p class="description">Round</p>
-                            <p class="description">Price</p>
-                            <p class="description">Total cost</p>
-
-                            <div class="round_number">
-                                <img src="{% static 'img/check_box_active.svg '%}" alt="">
-                                <p class="round_percent">1 Раунд 10%</p>
-                            </div>
-                            <p class="price">$ 0.001</p>
-                            <p class="total_cost">$ 100 000</p>
-
-                            <div class="round_number">
-                                <img src="{% static 'img/checkbox.svg '%}" alt="">
-                                <p class="round_percent">2 Раунд 10%</p>
-                            </div>
-                            <p class="price">$ 0.005</p>
-                            <p class="total_cost">$ 500 000</p>
-
-                            <div class="round_number">
-                                <img src="{% static 'img/checkbox.svg '%}" alt="">
-                                <p class="round_percent">3 Раунд 5%</p>
-                            </div>
-                            <p class="price">$ 0.01</p>
-                            <p class="total_cost">$ 500 000</p>
-
-                            <div class="round_number">
-                                <img src="{% static 'img/checkbox.svg '%}" alt="">
-                                <p class="round_percent">4 Раунд 5%</p>
-                            </div>
-                            <p class="price">$ 0.05</p>
-                            <p class="total_cost">$ 2 500 000</p>
-
-                            <div class="round_number">
-                                <img src="{% static 'img/checkbox.svg '%}" alt="">
-                                <p class="round_percent">5 Раунд 3%</p>
-                            </div>
-                            <p class="price">$ 0.06</p>
-                            <p class="total_cost">$ 1 800 000</p>
-                            <div class="round_number">
-                                <img src="{% static 'img/checkbox.svg '%}" alt="">
-                                <p class="round_percent">6 Раунд 3%</p>
-                            </div>
-                            <p class="price">$ 0.07</p>
-                            <p class="total_cost">$ 2 100 000</p>
-                            <div class="round_number">
-                                <img src="{% static 'img/checkbox.svg '%}" alt="">
-                                <p class="round_percent">7 Раунд 3%</p>
-                            </div>
-                            <p class="price">$ 0.08</p>
-                            <p class="total_cost">$ 2 400 000</p>
-                            <div class="round_number">
-                                <img src="{% static 'img/checkbox.svg '%}" alt="">
-                                <p class="round_percent">8 Раунд 1%</p>
-                            </div>
-                            <p class="price">$ 0.1</p>
-                            <p class="total_cost">$ 1 000 000</p>
-                        </div>
-                        <img class="diagram" src="{% static 'img/diagram.svg '%}" alt="">
-                    </div >
-                </div>
-                <div id="prm" class="tile big_tile">
-                    <div class="prm_text">
-                        <h3 class="big_name">Partner<br>Relationship<br>Management</h3>
-                        <p class="description">Стань частью будущего!</p>
-                        <div class="button_row">
-                            <button class="presentation">Смотреть презентацию</button>
-                            <button class="pdf">Скачать PDF</button>
-                        </div>
-                    </div>
-                </div>
-                <div id="video" class="tile big_tile">
-                    <div class="video_text">
-                        <h3 class="big_name">Видео о проекте</h3>
-                        <p class="description">Революционное приложение для предпринимателей!</p>
-                    </div>
-                    <iframe id="prm_video" src="https://www.youtube-nocookie.com/embed/M8Cqf67RZ44" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                </div>
-            </div>
-            <div class="footer">
-                <p class="footer_text">© 2023 PRM4ALL. All Rights Reserved.</p>
-                <a href="#" class="footer_link">Web 3.0</a>
-                <a href="#" class="footer_link">WhitePaper</a>
-                <a href="#" class="footer_link">SmartContract</a>
-            </div>
+    </div>
+    <div id="video" class="tile big_tile">
+        <div class="video_text">
+            <h3 class="big_name">Видео о проекте</h3>
+            <p class="description">Революционное приложение для предпринимателей!</p>
         </div>
-    </div >
-    <script src="{% static 'scripts/menu.js' %}"></script>
-
-{% endblock %}
+        <iframe id="prm_video" src="https://www.youtube-nocookie.com/embed/M8Cqf67RZ44" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    </div>
+</div>
+{% endblock inner_bot %}

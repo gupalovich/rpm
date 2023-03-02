@@ -4,8 +4,8 @@
 
 {% block head_title %}{% translate "Sign Up Closed" %}{% endblock %}
 
-{% block inner %}
-<h1>{% translate "Sign Up Closed" %}</h1>
+{% block page_title %}{% translate "Sign Up Closed" %}{% endblock page_title %}
 
-<p>{% translate "We are sorry, but the sign up is currently closed." %}</p>
-{% endblock %}
+{% block page_subtitle %}{% translate "We are sorry, but the sign up is currently closed." %}{% endblock page_subtitle %}
+
+{% block inner %}<a class="btn btn-primary" href="{% url 'account_login' %}">Войти</a>{% endblock %}

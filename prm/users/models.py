@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 class User(AbstractUser):
     phone_number = models.CharField(
         _("Номер телефона"),
-        max_length=20,
+        max_length=30,
         blank=True,
         validators=[
             RegexValidator(
