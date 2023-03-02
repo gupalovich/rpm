@@ -1,0 +1,43 @@
+@media (max-width: 1200px) {
+    .registration {
+        grid-template-columns: 100%;
+
+        .right_part {
+            border-radius: 0;
+            margin: 0;
+
+            .right_content {
+                margin-top: 300px;
+                margin-bottom: 40px;
+            }
+        }
+
+    }
+}
+
+@media (max-width: 510px) {
+    .form {
+        grid-template-columns: 1fr;
+    }
+
+    .register_button {
+        width: 100%;
+    }
+
+    .left_part {
+        padding: 14px;
+    }
+
+    .title_button {
+        font-size: 0.9em;
+        padding: 10px 20px;
+    }
+
+    .title_left {
+        font-size: 1.5em;
+    }
+
+    .left_content {
+        margin-top: 14px
+    }
+}

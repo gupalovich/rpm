@@ -1,0 +1,55 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font: inherit;
+}
+
+html,
+body {
+    color: #19033B;
+    font-family: 'DM Sans', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+}
+
+b {
+    font-weight: 500;
+}
+
+a {
+    text-decoration: none;
+    font-weight: 700;
+    color: #19033B;
+}
+
+button {
+    background-color: #11047A;
+    border-radius: 70px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+}
+
+button {
+    color: white;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+li,
+a,
+button,
+.btn,
+::placeholder {
+    transition: all .3s ease-in-out;
+}

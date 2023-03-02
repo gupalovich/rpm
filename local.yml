@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 
 volumes:
   prm_local_postgres_data: {}
@@ -35,6 +35,22 @@ services:
       - prm_local_postgres_data_backups:/backups
     env_file:
       - ./.envs/.local/.postgres
+
+  docs:
+    image: prm_local_docs
+    container_name: prm_local_docs
+    build:
+      context: .
+      dockerfile: ./compose/local/docs/Dockerfile
+    env_file:
+      - ./.envs/.local/.django
+    volumes:
+      - ./docs:/docs:z
+      - ./config:/app/config:z
+      - ./prm:/app/prm:z
+    ports:
+      - "9000:9000"
+    command: /start-docs
 
   mailhog:
     image: mailhog/mailhog:v1.0.0
