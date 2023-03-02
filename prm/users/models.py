@@ -1,26 +1,26 @@
 from django.contrib.auth.models import AbstractUser
-from django.db.models import CharField
+from django.core.validators import RegexValidator
+from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
 class User(AbstractUser):
-    """
-    Default custom user model for My Awesome Project.
-    If adding fields that need to be filled at user signup,
-    check forms.SignupForm and forms.SocialSignupForms accordingly.
-    """
+    phone_number = models.CharField(
+        _("Номер телефона"),
+        max_length=20,
+        blank=True,
+        validators=[
+            RegexValidator(
+                regex=r"^\+?\d{1,3}[\d\s-]{5,}$",
+                message='Phone number must be in the format "+999 999-9999".',
+            )
+        ],
+    )
+    date_of_birth = models.DateField(blank=True, null=True)
+    city = models.CharField(max_length=50, blank=True)
+    avatar = models.ImageField(upload_to="avatars/", default="avatars/default.png")
+    metamask_wallet = models.CharField(max_length=155, blank=True)
 
-    #: First and last name do not cover name patterns around the globe
-    name = CharField(_("Name of User"), blank=True, max_length=255)
-    first_name = None  # type: ignore
-    last_name = None  # type: ignore
-
-    def get_absolute_url(self):
-        """Get url for user's detail view.
-
-        Returns:
-            str: URL for user detail.
-
-        """
-        return reverse("users:detail", kwargs={"username": self.username})
+    # def get_absolute_url(self):
+    #     return reverse("dashboard:index", kwargs={"username": self.username})
