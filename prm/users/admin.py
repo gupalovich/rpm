@@ -22,21 +22,11 @@ class UserAdmin(auth_admin.UserAdmin):
             _("Permissions"),
             {
                 "fields": (
-                    "type",
                     "is_active",
                     "is_staff",
                     "is_superuser",
                     "groups",
                     "user_permissions",
-                ),
-            },
-        ),
-        (
-            _("Настройки"),
-            {
-                "fields": (
-                    "email_notifications",
-                    "language",
                 ),
             },
         ),
