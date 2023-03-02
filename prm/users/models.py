@@ -22,5 +22,5 @@ class User(AbstractUser):
     avatar = models.ImageField(upload_to="avatars/", default="avatars/default.png")
     metamask_wallet = models.CharField(max_length=155, blank=True)
 
-    # def get_absolute_url(self):
-    #     return reverse("dashboard:index", kwargs={"username": self.username})
+    def get_absolute_url(self):
+        return reverse("dashboard:index", kwargs={"username": self.username})
