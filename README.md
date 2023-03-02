@@ -65,8 +65,6 @@ PRM4ALL description
 
     Для локальной разработки в докер доступен mailhog, вне докера django-email-backend
 
-    Для проверки локально
-    
     Mailhog работает на порту:
     http://localhost:8025/
 

@@ -18,27 +18,27 @@
             </a>
             <a href="{% url 'dashboard:token' username=user.username %}" class="menu_item{% if current_url == 'token' %} active{% endif %}">
 
-                <img class="menu_icon" src="{% static 'img/icons/token_icon.svg '%}" alt="token">
+                <img class="menu_icon" src="{% static 'img/icons/token_icon.svg'%}" alt="token">
                 <p class="menu_name">Token</p>
 
                 {% if current_url == 'token' %}<div class="active_line"></div>{% endif %}
             </a>
             <a href="{% url 'dashboard:team' username=user.username %}" class="menu_item{% if current_url == 'team' %} active{% endif %}">
 
-                <img class="menu_icon" src="{% static 'img/icons/team_icon.svg '%}" alt="team">
+                <img class="menu_icon" src="{% static 'img/icons/team_icon.svg'%}" alt="team">
                 <p class="menu_name">Team</p>
 
                 {% if current_url == 'team' %}<div class="active_line"></div>{% endif %}
             </a>
             <a href="{% url 'dashboard:profile' username=user.username %}" class="menu_item{% if current_url == 'profile' %} active{% endif %}">
 
-                <img class="menu_icon" src="{% static 'img/icons/profile_icon.svg '%}" alt="profile">
+                <img class="menu_icon" src="{% static 'img/icons/profile_icon.svg'%}" alt="profile">
                 <p class="menu_name">Profile</p>
 
                 {% if current_url == 'profile' %}<div class="active_line"></div>{% endif %}
             </a>
             <a href="{% url 'account_logout' %}" class="menu_item">
-                <img class="menu_icon" src="{% static 'img/icons/sign_out_icon.svg '%}" alt="signout">
+                <img class="menu_icon" src="{% static 'img/icons/sign_out_icon.svg'%}" alt="signout">
                 <p class="menu_name">Sign Out</p>
             </a>
             {% endwith %}
@@ -55,7 +55,7 @@
             <div class="bio_part">
                 <button class="invite_link">Ссылка для приглашения</button>
                 <button class="metamask_button">
-                    <img src="{% static 'img/icons/metamask.svg '%}" alt="">
+                    <img src="{% static 'img/icons/metamask.svg'%}" alt="">
                 </button>
                 <img class="avatar_icon" src="{% static 'img/avatar.png' %}" alt="">
             </div>
@@ -63,14 +63,14 @@
         {% block inner_top %}
             <div class="tiles">
                 <div id="my_tokens" class="tile little_tile">
-                    <img class="tile_icon" src="{% static 'img/icons/my_tokens_icon.svg '%}" alt="">
+                    <img class="tile_icon" src="{% static 'img/icons/my_tokens_icon.svg'%}" alt="">
                     <div class="tile_text">
                         <p class="tile_name">Мои токены</p>
                         <p class="tile_counter"> 454 543</p>
                     </div>
                 </div>
                 <div id="token_sum" class="tile little_tile">
-                    <img class="tile_icon" src="{% static 'img/icons/sum_icon.svg '%}" alt="">
+                    <img class="tile_icon" src="{% static 'img/icons/sum_icon.svg'%}" alt="">
                     <div class="tile_text">
                         <p class="tile_name">Сумма токенов</p>
                         <p class="tile_counter">$642.39</p>
@@ -84,7 +84,7 @@
                     </div>
                 </div>
                 <div id="rate" class="tile little_tile">
-                    <img class="tile_icon" src="{% static 'img/icons/rate_icon.svg '%}" alt="">
+                    <img class="tile_icon" src="{% static 'img/icons/rate_icon.svg'%}" alt="">
                     <div class="tile_text">
                         <p class="tile_name">Курс токена</p>
                         <p class="tile_counter">$0.001</p>
