@@ -2,88 +2,84 @@
 
 PRM4ALL description
 
-## Settings
+## Начало работы
+---
+### Локально
 
-Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings.html).
+1. Обновить example.env на .env
+2. `set READ_DOT_ENV_FILE=TRUE`
+3. В .env обновить DATABASE_URL и создать свою postgres бд
+4. Закоментить hiredis в requirements/local.txt
+5. `pip install -r requirements/local.txt`
+6. `python manage.py migrate`
+7. `python manage.py createsuperuser`
+8. `python manage.py runserver`
 
-## Basic Commands
+### Докер
 
-### Setting Up Your Users
+- Локальная разработка
+    - `docker-compose -f local.yml up --build`
 
--   To create a **normal user account**, just go to Sign Up and fill out the form. Once you submit it, you'll see a "Verify Your E-mail Address" page. Go to your console to see a simulated email verification message. Copy the link into your browser. Now the user's email should be verified and ready to go.
+- Продакшен
+    - `docker-compose -f production.yml up --build`
 
--   To create a **superuser account**, use this command:
+- Создать суперюзера
+    - `docker-compose -f local.yml run --rm django python manage.py createsuperuser`
 
-        $ python manage.py createsuperuser
+## Фронтенд
+---
 
-For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
+    Стек gulp + sass. Только вне докера.
+    Gulp минифицирует *.scss файлы, а BrowserSync проксирует порт 8000
 
-### Type checks
+    # Установка:
+    npm install
+    gulp
 
-Running type checks with mypy:
+
+## Тестирование
+---
+
+### Mypy
 
     $ mypy prm
 
 ### Test coverage
 
-To run the tests, check your test coverage, and generate an HTML coverage report:
-
     $ coverage run -m pytest
     $ coverage html
     $ open htmlcov/index.html
 
-#### Running tests with pytest
+### Pytest
 
     $ pytest
 
-### Live reloading and Sass CSS compilation
 
-Moved to [Live reloading and SASS compilation](https://cookiecutter-django.readthedocs.io/en/latest/developing-locally.html#sass-compilation-live-reloading).
+## Celery
+---
+- Возможно тестирование вне докера / Проверка работы с докером
 
-### Celery
 
-This app comes with Celery.
+## Email Server
+---
 
-To run a celery worker:
+    Для локальной разработки в докер доступен mailhog, вне докера django-email-backend
 
-``` bash
-cd prm
-celery -A config.celery_app worker -l info
-```
+    Для проверки локально
+    
+    Mailhog работает на порту:
+    http://localhost:8025/
 
-Please note: For Celery's import magic to work, it is important *where* the celery commands are run. If you are in the same folder with *manage.py*, you should be right.
+## Документация
+---
 
-To run [periodic tasks](https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html), you'll need to start the celery beat scheduler service. You can start it as a standalone process:
+- Sphinx readthedocs
 
-``` bash
-cd prm
-celery -A config.celery_app beat
-```
+## Deployment
+---
 
-or you can embed the beat service inside a worker with the `-B` option (not recommended for production use):
-
-``` bash
-cd prm
-celery -A config.celery_app worker -B -l info
-```
-
-### Email Server
-
-In development, it is often nice to be able to see emails that are being sent from your application. For that reason local SMTP server [MailHog](https://github.com/mailhog/MailHog) with a web interface is available as docker container.
-
-Container mailhog will start automatically when you will run all docker containers.
-Please check [cookiecutter-django Docker documentation](http://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html) for more details how to start all containers.
-
-With MailHog running, to view messages that are sent by your application, open your browser and go to `http://127.0.0.1:8025`
+Инструкции по деплою.
 
 ### Sentry
 
-You must set the DSN url in production.
-
-## Deployment
-
-The following details how to deploy this application.
-
-### Docker
-
-See detailed [cookiecutter-django Docker documentation](http://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html).
+Нужно задать переменные окружения SENTRY_DSN и опционально DJANGO_SENTRY_LOG_LEVEL 
