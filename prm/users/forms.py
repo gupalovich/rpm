@@ -30,6 +30,8 @@ class UserAdminCreationForm(admin_forms.UserCreationForm):
 
 
 class UserSignupForm(SignupForm):
+    """Форма регистрации пользователя"""
+
     first_name = forms.CharField(
         max_length=30,
         label=_("Имя"),
@@ -99,19 +101,11 @@ class UserSignupForm(SignupForm):
 
     def save(self, request):
         user = super().save(request)
-        print(self.cleaned_data)
-        # user.first_name = self.cleaned_data.get("first_name")
-        # user.last_name = self.cleaned_data.get("last_name")
-        # user.phone_number = self.cleaned_data.get("phone_number")
-        # user.referral = self.cleaned_data.get("referral")
-        # user.save()
+        user.phone_number = self.cleaned_data.get("phone_number")
 
+        referral = self.cleaned_data.get("referral")
+        if referral:
+            pass  # referral logic
+
+        user.save()
         return user
-
-
-class UserSocialSignupForm(SocialSignupForm):
-    """
-    Renders the form when user has signed up using social accounts.
-    Default fields will be added automatically.
-    See UserSignupForm otherwise.
-    """

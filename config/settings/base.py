@@ -67,7 +67,7 @@ THIRD_PARTY_APPS = [
     "crispy_forms",
     "allauth",
     "allauth.account",
-    # "allauth.socialaccount",  # if you need oauth auth
+    "allauth.socialaccount",
     "django_celery_beat",
 ]
 
@@ -288,7 +288,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True  # change confirmation to js-ajax
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_VERIFICATION = "none"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_LOGOUT_REDIRECT_URL = "account_login"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
