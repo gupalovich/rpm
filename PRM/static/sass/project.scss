@@ -106,6 +106,15 @@
 .form {
     display: grid;
     gap: 24px 22px;
+
+    .alert-block ul li {
+        list-style-type: none;
+        margin-bottom: 5px;
+    }
+
+    .alert-error {
+        color: red;
+    }
 }
 
 .form-lg {
@@ -115,6 +124,19 @@
 .form-content-sm {
     max-width: 410px;
 }
+
+.control-group.error {
+    color: red;
+
+    .controls .textInput {
+        border-color: red;
+    }
+
+    .controls .help-block {
+        margin-top: 5px;
+    }
+}
+
 
 .control-group {
     .control-label {

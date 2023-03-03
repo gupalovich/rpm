@@ -208,6 +208,13 @@ button,
   display: grid;
   gap: 24px 22px;
 }
+.form .alert-block ul li {
+  list-style-type: none;
+  margin-bottom: 5px;
+}
+.form .alert-error {
+  color: red;
+}
 
 .form-lg {
   grid-template-columns: 1fr 1fr;
@@ -215,6 +222,16 @@ button,
 
 .form-content-sm {
   max-width: 410px;
+}
+
+.control-group.error {
+  color: red;
+}
+.control-group.error .controls .textInput {
+  border-color: red;
+}
+.control-group.error .controls .help-block {
+  margin-top: 5px;
 }
 
 .control-group .control-label {
