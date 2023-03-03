@@ -12,6 +12,6 @@ main.onclick = close_menu
 if (burger && sidenav){
     burger.addEventListener("click", function(e){
         sidenav.classList.toggle('_active');
-        
+
     })
 }
