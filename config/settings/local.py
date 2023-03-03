@@ -26,9 +26,11 @@ CACHES = {
 # EMAIL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
-# EMAIL_BACKEND = env(
-#     "DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend"
-# )
+# С докером будет работать mailhog, без докера EmailBackend
+if not env("USE_DOCKER"):
+    EMAIL_BACKEND = env(
+        "DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend"
+    )
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-host
 EMAIL_HOST = env("EMAIL_HOST", default="mailhog")
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-port
