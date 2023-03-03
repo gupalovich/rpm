@@ -1,9 +1,17 @@
-{% extends "base.html" %}
+{% extends "account/base.html" %}
 
-{% block title %}Page not found{% endblock %}
+{% load i18n %}
 
-{% block content %}
-<h1>Page not found</h1>
+{% block head_title %}{% translate "Page not found" %}{% endblock %}
 
-<p>{% if exception %}{{ exception }}{% else %}This is not the page you were looking for.{% endif %}</p>
-{% endblock content %}
+{% block page_title %}{% translate "Page not found" %} 404{% endblock page_title %}
+
+{% block page_subtitle %}
+    {% if exception %}
+        {{ exception }}
+    {% else %}
+        Это не та страница, которую вы искали.
+    {% endif %}
+{% endblock page_subtitle %}
+
+{% block inner %}{% endblock %}

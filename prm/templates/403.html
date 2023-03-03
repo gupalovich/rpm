@@ -1,9 +1,17 @@
-{% extends "base.html" %}
+{% extends "account/base.html" %}
 
-{% block title %}Forbidden (403){% endblock %}
+{% load i18n %}
 
-{% block content %}
-<h1>Forbidden (403)</h1>
+{% block head_title %}{% translate "Access Forbidden" %}{% endblock %}
 
-<p>{% if exception %}{{ exception }}{% else %}You're not allowed to access this page.{% endif %}</p>
-{% endblock content %}
+{% block page_title %}{% translate "Forbidden 403" %}{% endblock page_title %}
+
+{% block page_subtitle %}
+    {% if exception %}
+        {{ exception }}
+    {% else %}
+        У вас нет доступа к этой странице.
+    {% endif %}
+{% endblock page_subtitle %}
+
+{% block inner %}{% endblock %}

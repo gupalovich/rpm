@@ -1,11 +1,21 @@
-{% extends "base.html" %}
+{% extends "account/base.html" %}
 
-{% block title %}Server Error{% endblock %}
+{% load i18n %}
 
-{% block content %}
-<h1>Ooops!!! 500</h1>
+{% block head_title %}{% translate "Server Error" %}{% endblock %}
 
-<h3>Looks like something went wrong!</h3>
+{% block page_title %}{% translate "Server Error 500" %}{% endblock page_title %}
 
-<p>We track these errors automatically, but if the problem persists feel free to contact us. In the meantime, try refreshing.</p>
-{% endblock content %}
+{% block page_subtitle %}
+    {% if exception %}
+        {{ exception }}
+    {% else %}
+        Это не та страница, которую вы искали.
+    {% endif %}
+{% endblock page_subtitle %}
+
+{% block inner %}
+<p>Похоже, что-то пошло не так!</p>
+
+<p>Мы автоматически отслеживаем эти ошибки, но если проблема не устранена, не стесняйтесь обращаться к нам. А пока попробуйте обновиться.</p>
+{% endblock %}
