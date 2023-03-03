@@ -1,8 +1,9 @@
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import RegexValidator
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+
+from .validators import validate_phone_number
 
 
 class User(AbstractUser):
@@ -10,12 +11,7 @@ class User(AbstractUser):
         _("Номер телефона"),
         max_length=30,
         blank=True,
-        validators=[
-            RegexValidator(
-                regex=r"^\+?\d{1,3}[\d\s-]{5,}$",
-                message='Phone number must be in the format "+999 999-9999".',
-            )
-        ],
+        validators=[validate_phone_number],
     )
     date_of_birth = models.DateField(blank=True, null=True)
     city = models.CharField(max_length=50, blank=True)
