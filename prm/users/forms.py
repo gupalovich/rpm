@@ -1,5 +1,4 @@
 from allauth.account.forms import SignupForm
-from allauth.socialaccount.forms import SignupForm as SocialSignupForm
 from django import forms
 from django.contrib.auth import forms as admin_forms
 from django.contrib.auth import get_user_model
@@ -101,11 +100,11 @@ class UserSignupForm(SignupForm):
 
     def save(self, request):
         user = super().save(request)
-        user.phone_number = self.cleaned_data.get("phone_number")
+        if user:
+            user.phone_number = self.cleaned_data.get("phone_number", "")
 
-        referral = self.cleaned_data.get("referral")
-        if referral:
-            pass  # referral logic
-
-        user.save()
+            referral = self.cleaned_data.get("referral")
+            if referral:
+                pass  # referral logic
+            user.save()
         return user
