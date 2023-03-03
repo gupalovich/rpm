@@ -1,13 +1,12 @@
+# from django.contrib.messages.views import SuccessMessageMixin
+# from django.http import JsonResponse
+# from .forms import AvatarUpdateForm, CustomUserUpdateForm
+# from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.messages.views import SuccessMessageMixin
-from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
-from django.views.generic import DetailView, RedirectView, UpdateView, View
-
-from .forms import AvatarUpdateForm, CustomUserUpdateForm
+from django.views.generic import DetailView, RedirectView, View
 
 User = get_user_model()
 
