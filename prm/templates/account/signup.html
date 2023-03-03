@@ -1,0 +1,32 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{% translate "Signup" %}{% endblock %}
+
+{% block page_title %}Регистрация{% endblock page_title %}
+
+{% block page_subtitle %}Добро пожаловать в Presale PRM4ALL!{% endblock page_subtitle %}
+
+{% block form_size %}{% endblock form_size %}
+
+{% block inner %}
+<div class="registration_fields">
+  <form class="form form-lg signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+    {% csrf_token %}
+    {{ form|crispy }}
+    {% if redirect_field_value %}
+    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+    {% endif %}
+    <div class="form-submit">
+      <div class="checkbox">
+        <input type="checkbox" id="read_white_paper" name="read_white_paper" checked required>
+        <label id="label_read_white_paper" for="read_white_paper">Я прочитал WhitePaper и принимаю все условия и политики компании.</label>
+      </div >
+      <button class="btn btn-primary" type="submit">{% translate "Sign Up" %}</button>
+    </div>
+  </form>
+</div>
+<p id="already_exist">Уже есть аккаунт? <a href="{% url 'account_login' %}">Войти</a></p>
+{% endblock %}

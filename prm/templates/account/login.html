@@ -1,0 +1,33 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{% translate "Sign In" %}{% endblock %}
+
+{% block page_title %}{% translate "Sign In" %}{% endblock page_title %}
+
+{% block page_subtitle %}Введите ваш  email и пароль для входа.{% endblock page_subtitle %}
+
+{% block inner %}
+<div class="registration_fields">
+    <form class="form login" method="POST" action="{% url 'account_login' %}">
+      {% csrf_token %}
+      {{ form|crispy }}
+      {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+      {% endif %}
+      <a class="button forgot_password" href="{% url 'account_reset_password' %}">
+        {% translate "Forgot Password?" %}
+      </a>
+      <button class="btn btn-primary" type="submit">{% translate "Sign In" %}</button>
+    </form>
+</div>
+
+{% if ACCOUNT_ALLOW_REGISTRATION %}
+<p id="already_exist">
+  Еще не зарегистрировались? <a href="{% url 'account_signup' %}">Создать аккаунт</a>
+</p>
+{% endif %}
+
+{% endblock %}

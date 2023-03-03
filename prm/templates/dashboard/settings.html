@@ -1,0 +1,64 @@
+{% extends "dashboard/base.html" %}
+
+{% load static %}
+
+
+{% block content %}
+    {{ block.super }}
+    <h3>Update Avatar</h3>
+    <img id="avatar-preview" src="{{ request.user.avatar.url }}" alt="Avatar">
+    <form
+        id="avatar-form"
+        method="POST"
+        enctype="multipart/form-data"
+        action="{% url 'dashboard:settings_avatar_update' %}">
+        {% csrf_token %}
+        <label for="avatar-input" class="avatar-icon">
+            <img id="avatar-select" src="https://cdn-icons-png.flaticon.com/128/4155/4155431.png"></img>
+        </label>
+        <input type="file" name="avatar" id="avatar-input" style="display: none;" onchange="handleAvatarSelect()">
+        <div id="error-block"></div>
+    </form>
+    <h3>Update </h3>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Update</button>
+    </form>
+{% endblock content %}
+
+
+{% block inline_javascript %}
+<script>
+    function handleAvatarSelect() {
+        const avatarInput = document.getElementById('avatar-input');
+        const avatarPreview = document.getElementById('avatar-preview');
+        const avatarForm = document.getElementById('avatar-form');
+        const avatarFormData = new FormData(avatarForm);
+        const errorBlock = document.getElementById('error-block');
+
+        // Make an AJAX request to update the user's avatar
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', avatarForm.action, true);
+        xhr.setRequestHeader('X-CSRFToken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // Update the preview of the avatar image
+                const response = JSON.parse(xhr.responseText);
+                avatarPreview.src = response.avatar_url;
+                errorBlock.innerHTML = ''
+            } else if (xhr.readyState === 4 && xhr.status === 400) {
+                // Handle json errors
+                const response = JSON.parse(xhr.responseText);
+                errorBlock.innerHTML = response.error.join('<br>');
+                throw response.error;
+            };
+        };
+        xhr.send(avatarFormData);
+    }
+    // Handle custom 'avatar upload button' clicks
+    document.getElementById('avatar-input').addEventListener('click', function() {
+        document.getElementById('avatar-select').click();
+    });
+</script>
+{% endblock inline_javascript %}

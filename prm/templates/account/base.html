@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}{% block head_title %}{% endblock head_title %}{% endblock title %}
+
+{% block content %}
+
+<div class="registration">
+  <div class="left_part">
+      <div class="left_content {% block form_size %}form-content-sm{% endblock form_size %}">
+        <h1 class="title_left">
+            {% block page_title %}{% endblock page_title %}
+        </h1>
+        <p class="grey_text" id="registration_description">
+            {% block page_subtitle %}{% endblock page_subtitle %}
+        </p>
+        {% block inner %}{% endblock %}
+      </div>
+      <div class="left_footer">
+          <p class="grey_text">© {% now "Y" %} PRM4ALL. All Rights Reserved.</p>
+      </div>
+  </div>
+  <div class="right_part">
+      <div class="right_content">
+          <img id="start_logo" src="{% static 'img/prm4 logo.png' %}" alt="PRM4ALL">
+          <button class="title_button">Partner Relationship Management</button>
+      </div>
+      <div class="right_footer">
+          <a class="footer_link" href="#">Web 3.0</a>
+          <a class="footer_link" href="#">WhitePaper</a>
+          <a class="footer_link" href="#">Site</a>
+          <a class="footer_link" href="#">Presentation</a>
+      </div>
+  </div>
+</div>
+
+{% endblock %}

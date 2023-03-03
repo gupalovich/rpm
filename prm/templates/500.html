@@ -1,0 +1,21 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% translate "Server Error" %}{% endblock %}
+
+{% block page_title %}{% translate "Server Error 500" %}{% endblock page_title %}
+
+{% block page_subtitle %}
+    {% if exception %}
+        {{ exception }}
+    {% else %}
+        Это не та страница, которую вы искали.
+    {% endif %}
+{% endblock page_subtitle %}
+
+{% block inner %}
+<p>Похоже, что-то пошло не так!</p>
+
+<p>Мы автоматически отслеживаем эти ошибки, но если проблема не устранена, не стесняйтесь обращаться к нам. А пока попробуйте обновиться.</p>
+{% endblock %}
