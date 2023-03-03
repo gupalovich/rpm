@@ -5,17 +5,7 @@ PRM4ALL description
 ## TODO
 ---
 
-1. Auth
-- ~~Обновление email template~~
-- ~~Корректное отображение ошибок форм~~
-- ~~Валидация полей форм~~
-- Тестирование форм и урлов
-- Тестирование редиректов
-
-2. Pages
-    - ~~Обновление страницы ошибок под общий стиль~~
-
-3. Dashboard
+1. Dashboard
 
 
 
@@ -97,4 +87,4 @@ PRM4ALL description
 
 ### Sentry
 
-Нужно задать переменные окружения SENTRY_DSN и опционально DJANGO_SENTRY_LOG_LEVEL 
+Нужно задать переменные окружения SENTRY_DSN и опционально DJANGO_SENTRY_LOG_LEVEL

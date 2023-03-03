@@ -80,7 +80,7 @@ class UserSignupForm(SignupForm):
     def save(self, request):
         user = super().save(request)
         if user:
-            user.phone_number = self.cleaned_data.get("phone_number", "")
+            user.phone_number = self.cleaned_data.get("phone_number")
 
             referral = self.cleaned_data.get("referral")
             if referral:
