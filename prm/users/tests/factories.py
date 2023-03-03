@@ -12,6 +12,9 @@ class UserFactory(DjangoModelFactory):
     first_name = Faker("name")
     last_name = Faker("name")
     phone_number = Faker("phone_number")
+    date_of_birth = Faker("date_of_birth")
+    city = Faker("city")
+    metamask_wallet = "0xEFE417C9e02f8B36f7969af9e4c40a25Bed74ecF"
 
     @post_generation
     def password(self, create: bool, extracted: Sequence[Any], **kwargs):
