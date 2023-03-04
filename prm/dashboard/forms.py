@@ -38,8 +38,7 @@ class CustomUserUpdateForm(forms.ModelForm):
             "date_of_birth",
             "city",
             "metamask_wallet",
-            "password",
-            "password1",
+            # don't add password/password1 here
         ]
 
     password = forms.CharField(
