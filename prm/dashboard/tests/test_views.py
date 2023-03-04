@@ -5,8 +5,41 @@ from django.urls import reverse
 from prm.users.tests.factories import UserFactory
 
 
-class DashboardViewTests(TestCase):
-    def setUp(self):
+class HomeRedirectViewTests(TestCase):
+    def setUp(self) -> None:
+        self.user = UserFactory()
+
+    def test_get(self):
+        self.client.force_login(self.user)
+        response = self.client.get("/")
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, self.user.get_absolute_url())
+
+    def test_get_anon(self):
+        response = self.client.get("/")
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("account_login"))
+
+
+class DashboardRedirectViewTests(TestCase):
+    def setUp(self) -> None:
+        self.user = UserFactory()
+        self.url = reverse("dashboard:redirect")
+
+    def test_get(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, self.user.get_absolute_url())
+
+    def test_get_anon(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, f"{reverse('account_login')}?next={self.url}")
+
+
+class DashboardIndexViewTests(TestCase):
+    def setUp(self) -> None:
         self.user = UserFactory()
         self.url = reverse("dashboard:index", kwargs={"username": self.user.username})
 
@@ -19,22 +52,58 @@ class DashboardViewTests(TestCase):
     def test_get_anon(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, f"{reverse('account_login')}?next={self.url}")
 
 
-# class DashboardSettingsViewTests(TestCase):
-#     def setUp(self):
-#         self.user = UserFactory()
-#         self.url = reverse("dashboard:settings")
+class DashboardTokenViewTests(TestCase):
+    def setUp(self) -> None:
+        self.user = UserFactory()
+        self.url = reverse("dashboard:token", kwargs={"username": self.user.username})
 
-#     def test_get(self):
-#         self.client.force_login(self.user)
-#         response = self.client.get(self.url)
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTemplateUsed(response, "dashboard/settings.html")
+    def test_get(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "dashboard/token.html")
 
-#     def test_get_anon(self):
-#         response = self.client.get(self.url)
-#         self.assertEqual(response.status_code, 302)
+    def test_get_anon(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, f"{reverse('account_login')}?next={self.url}")
+
+
+class DashboardTeamViewTests(TestCase):
+    def setUp(self) -> None:
+        self.user = UserFactory()
+        self.url = reverse("dashboard:team", kwargs={"username": self.user.username})
+
+    def test_get(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "dashboard/team.html")
+
+    def test_get_anon(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, f"{reverse('account_login')}?next={self.url}")
+
+
+class DashboardProfileViewTests(TestCase):
+    def setUp(self) -> None:
+        self.user = UserFactory()
+        self.url = reverse("dashboard:profile", kwargs={"username": self.user.username})
+
+    def test_get(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "dashboard/profile.html")
+
+    def test_get_anon(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, f"{reverse('account_login')}?next={self.url}")
 
 
 # class AvatarUpdateViewTests(TestCase):
