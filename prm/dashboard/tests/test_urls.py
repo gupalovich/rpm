@@ -9,6 +9,11 @@ def test_dashboard_redirect():
     assert resolve("/dashboard/~redirect/").view_name == "dashboard:redirect"
 
 
+def test_dashboard_avatar_update():
+    assert reverse("dashboard:avatar_update") == "/dashboard/~avatar-update/"
+    assert resolve("/dashboard/~avatar-update/").view_name == "dashboard:avatar_update"
+
+
 def test_dashboard_index(user: User):
     rev = reverse("dashboard:index", kwargs={"username": user.username})
     res = resolve(f"/dashboard/{user.username}/").view_name
@@ -35,10 +40,3 @@ def test_dashboard_profile(user: User):
     res = resolve(f"/dashboard/{user.username}/profile/").view_name
     assert rev == f"/dashboard/{user.username}/profile/"
     assert res == "dashboard:profile"
-
-
-# def test_dashboard_avatar_update(user: User):
-#     rev = reverse("dashboard:avatar_update", kwargs={"username": user.username})
-#     res = resolve(f"/dashboard/{user.username}/avatar-update/").view_name
-#     assert rev == f"/dashboard/{user.username}/avatar-update/"
-#     assert res == "dashboard:avatar_update"

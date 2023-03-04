@@ -1,12 +1,13 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, RedirectView, UpdateView, View
 
-from .forms import CustomUserUpdateForm
+from .forms import AvatarUpdateForm, CustomUserUpdateForm
 
 User = get_user_model()
 
@@ -67,17 +68,17 @@ class DashboardProfileView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return self.request.user
 
 
-# class AvatarUpdateView(View):
-#     def post(self, request):
-#         form = AvatarUpdateForm(request.POST, request.FILES)
-#         if form.is_valid() and request.FILES:
-#             user = self.request.user
-#             user.avatar = form.cleaned_data.get("avatar")
-#             user.save()
-#             return JsonResponse({"avatar_url": user.avatar.url})
-#         # handle form errors
-#         errors = form.errors.as_data()
-#         error_messages = [
-#             error.message for error_list in errors.values() for error in error_list
-#         ]
-#         return JsonResponse({"error": error_messages}, status=400)
+class AvatarUpdateView(View):
+    def post(self, request):
+        form = AvatarUpdateForm(request.POST, request.FILES)
+        if form.is_valid() and request.FILES:
+            user = self.request.user
+            user.avatar = form.cleaned_data.get("avatar")
+            user.save()
+            return JsonResponse({"avatar_url": user.avatar.url})
+        # handle form errors
+        errors = form.errors.as_data()
+        error_messages = [
+            error.message for error_list in errors.values() for error in error_list
+        ]
+        return JsonResponse({"error": error_messages}, status=400)
