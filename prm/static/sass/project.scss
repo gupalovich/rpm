@@ -203,20 +203,36 @@
 .btn {
     width: 100%;
     text-align: center;
+    color: var(--white);
 }
 
 .btn-primary {
     padding: 20px;
     font-size: 0.9em;
     font-weight: 700;
-    color: var(--white);
     background-color: var(--accent);
 
     margin-top: 1.7vw;
     border-radius: 0.8vw;
 
-    &:hover {
+    &:hover,
+    &:active,
+    &:focus {
         background-color: var(--accent-hover);
+    }
+}
+
+.btn-slim-wide {
+    border: 0;
+    max-width: min-content;
+    min-width: 45px;
+    padding: 10px 60px;
+    background-color: var(--accent-hover);
+
+    &:hover,
+    &:active,
+    &:focus {
+        background-color: var(--accent-vibrant);
     }
 }
 
@@ -963,6 +979,7 @@
     column-gap: 6%;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
+    align-items: end;
 
     input {
         color: var(--text-light);
