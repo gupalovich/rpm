@@ -81,6 +81,7 @@ button:hover {
 li,
 a,
 button,
+input,
 .btn,
 ::placeholder {
   -webkit-transition: all 0.3s ease-in-out;
@@ -1115,6 +1116,12 @@ button,
           column-gap: 6%;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr;
+}
+.settings_table input {
+  color: var(--text-light);
+}
+.settings_table input:active, .settings_table input:focus {
+  color: var(--text-dark);
 }
 
 @media (max-width: 1200px) {

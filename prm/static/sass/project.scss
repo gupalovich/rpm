@@ -963,6 +963,15 @@
     column-gap: 6%;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
+
+    input {
+        color: var(--text-light);
+
+        &:active,
+        &:focus {
+            color: var(--text-dark);
+        }
+    }
 }
 
 
