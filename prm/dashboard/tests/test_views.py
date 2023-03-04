@@ -25,6 +25,7 @@ class DashboardRedirectViewTests(TestCase):
     def setUp(self) -> None:
         self.user = UserFactory()
         self.url = reverse("dashboard:redirect")
+        self.url_home = reverse("dashboard:home-redirect")
 
     def test_get(self):
         self.client.force_login(self.user)
@@ -36,6 +37,19 @@ class DashboardRedirectViewTests(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, f"{reverse('account_login')}?next={self.url}")
+
+    def test_get_home(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url_home)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, self.user.get_absolute_url())
+
+    def test_get_home_anon(self):
+        response = self.client.get(self.url_home)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(
+            response, f"{reverse('account_login')}?next={self.url_home}"
+        )
 
 
 class DashboardIndexViewTests(TestCase):

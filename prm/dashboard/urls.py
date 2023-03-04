@@ -12,6 +12,7 @@ from .views import (
 app_name = DashboardConfig.verbose_name
 
 urlpatterns = [
+    path("", view=DashboardRedirectView.as_view(), name="home-redirect"),
     path("~redirect/", view=DashboardRedirectView.as_view(), name="redirect"),
     path("<str:username>/", DashboardIndexView.as_view(), name="index"),
     path("<str:username>/token/", DashboardTokenView.as_view(), name="token"),

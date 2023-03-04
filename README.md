@@ -6,8 +6,8 @@ PRM4ALL description
 ---
 
 1. Dashboard
-    - Перевод view из template в detail/view + тестирование
-    - Редирект view для /dashboard/ + тестирование
+    - ~~Перевод view из template в detail/view + тестирование~~
+    - ~~Редирект view для /dashboard/ + тестирование~~
     - Menu на active изменение цвета иконки
     - Доработка кнопки ссылка на приглашение по дизайну
     - Profile шаблонизация

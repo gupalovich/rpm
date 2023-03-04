@@ -22,8 +22,6 @@ class HomeRedirectView(View):
 
 
 class DashboardRedirectView(LoginRequiredMixin, RedirectView):
-    """Редирект на /dashboard/<username>/"""
-
     permanent = False
 
     def get_redirect_url(self, *args, **kwargs):
