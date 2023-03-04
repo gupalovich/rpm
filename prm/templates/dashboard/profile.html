@@ -1,18 +1,22 @@
 {% extends "dashboard/base.html" %}
 
 {% load static %}
+{% load i18n %}
+{% load crispy_forms_tags %}
 
 {% block inner_top %}
 <div class="profile_tiles">
     <div class="profile_tile tile">
         <div class="profile_info">
             <div class="avatar">
-                <img class="avatar_pic" src="{% static 'img/avatar_big.png' %}" alt="">
-                <img class="avatar_change" src="{% static 'img/icons/change_img.svg' %}" alt="">
+                <img class="avatar_pic" src="{{ request.user.avatar.url }}" alt="Avatar">
+                <img class="avatar_change" src="{% static 'img/icons/change_img.svg' %}" alt="Change avatar">
             </div>
             <div class="profile_text">
-                <p class="name">Anna Rich</p>
-                <p class="registration_date description">Дата регистрации: 21.01.2023</p>
+                <p class="name">{{ user.first_name }} {{ user.last_name }}</p>
+                <p class="registration_date description">
+                    Дата регистрации: {{ user.date_joined|date:"d.m.Y" }}
+                </p>
             </div>
             <div class="profile_nums">
                 <div id="profile_token_amount" class="profile_amount">
@@ -37,43 +41,17 @@
     <div class="settings_text">
         <h3 class="big_name">Редактировать профиль</h3>
     </div >
-    <div class="settings_table">
-        <div class="field">
-            <label for="email"><b>Телефон</b></label>
-            <input type="text" placeholder="8 (999) 999 99 99" name="phone" required>
+    {% comment %} {% if messages %}
+      {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+          {{ message }}
         </div>
-        <div class="field">
-            <label for="email"><b>Телефон</b></label>
-            <input type="text" placeholder="8 (999) 999 99 99" name="phone" required>
-        </div>
-        <div class="field">
-            <label for="email"><b>Телефон</b></label>
-            <input type="text" placeholder="8 (999) 999 99 99" name="phone" required>
-        </div>
-        <div class="field">
-            <label for="email"><b>Телефон</b></label>
-            <input type="text" placeholder="8 (999) 999 99 99" name="phone" required>
-        </div>
-        <div class="field">
-            <label for="email"><b>Телефон</b></label>
-            <input type="text" placeholder="8 (999) 999 99 99" name="phone" required>
-        </div>
-        <div class="field">
-            <label for="email"><b>Телефон</b></label>
-            <input type="text" placeholder="8 (999) 999 99 99" name="phone" required>
-        </div>
-        <div class="field">
-            <label for="email"><b>Телефон</b></label>
-            <input type="text" placeholder="8 (999) 999 99 99" name="phone" required>
-        </div>
-        <div class="field">
-            <label for="email"><b>Телефон</b></label>
-            <input type="text" placeholder="8 (999) 999 99 99" name="phone" required>
-        </div>
-        <div class="save_btn">
-            <button class="btn btn-primary save">Сохранить</button>
-        </div>
-
-    </div>
+      {% endfor %}
+    {% endif %} {% endcomment %}
+    <form class="form settings_table" method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button class="btn btn-primary" type="submit">{% translate "Save" %}</button>
+    </form>
 </div>
 {% endblock inner_bot %}

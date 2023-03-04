@@ -239,7 +239,9 @@ button,
 .control-group.error {
   color: var(--alert);
 }
-.control-group.error .controls .textInput {
+.control-group.error .controls .textInput,
+.control-group.error .controls .dateinput,
+.control-group.error .controls .emailinput {
   border-color: var(--alert);
 }
 .control-group.error .controls .help-block {
@@ -257,7 +259,9 @@ button,
 .control-group .control-label .asteriskField {
   color: var(--accent-vibrant);
 }
-.control-group .textInput {
+.control-group .textInput,
+.control-group .dateinput,
+.control-group .emailinput {
   background: none;
   border: solid 1px var(--border-light);
   border-radius: 0.8vw;
@@ -266,7 +270,9 @@ button,
   padding-top: 18px;
   padding-bottom: 18px;
 }
-.control-group .textInput::-webkit-input-placeholder {
+.control-group .textInput::-webkit-input-placeholder,
+.control-group .dateinput::-webkit-input-placeholder,
+.control-group .emailinput::-webkit-input-placeholder {
   color: var(--text-light);
   font-size: 0.9em;
 }
@@ -582,11 +588,13 @@ button,
           align-items: center;
   -ms-flex-item-align: end;
       align-self: flex-end;
+  gap: 15px;
 }
 
 .invite_link {
   background-color: var(--accent-hover);
   border-radius: 70px;
+  margin: 0;
   padding: 10px 14px;
   font-size: 14px;
   font-family: "DM Sans", sans-serif;
@@ -595,9 +603,11 @@ button,
 
 .metamask_button {
   background-color: var(--white);
+  border: none;
 }
 
 .avatar_icon {
+  max-width: 40px;
   border-radius: 100%;
 }
 
@@ -1011,6 +1021,12 @@ button,
           align-items: center;
   margin-top: 12px;
 }
+.profile_text p {
+  margin-bottom: 10px;
+}
+.profile_text p:nth-last-child(1) {
+  margin-bottom: 0;
+}
 
 .name {
   font-weight: 700;
@@ -1091,32 +1107,12 @@ button,
 .settings_table {
   margin-top: 18px;
   display: grid;
-  grid-auto-flow: column;
   row-gap: 18px;
   -webkit-column-gap: 6%;
      -moz-column-gap: 6%;
           column-gap: 6%;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr;
-}
-
-.save_btn {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-pack: end;
-      -ms-flex-pack: end;
-          justify-content: flex-end;
-}
-
-.save {
-  width: 40%;
-  height: 40%;
-  padding: 0;
 }
 
 @media (max-width: 1200px) {
