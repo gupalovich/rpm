@@ -21,20 +21,43 @@ class HomeRedirectView(View):
         return redirect(reverse("account_login"), permanent=False)
 
 
-class DashboardView(LoginRequiredMixin, DetailView):
-    model = User
-    slug_field = "username"
-    slug_url_kwarg = "username"
-    template_name = "dashboard/index.html"
+class DashboardRedirectView(LoginRequiredMixin, RedirectView):
+    """Редирект на /dashboard/<username>/"""
 
-
-class DashboardRedirectView(RedirectView):
     permanent = False
 
     def get_redirect_url(self, *args, **kwargs):
         return reverse(
             "dashboard:index", kwargs={"username": self.request.user.username}
         )
+
+
+class DashboardIndexView(LoginRequiredMixin, DetailView):
+    model = User
+    slug_field = "username"
+    slug_url_kwarg = "username"
+    template_name = "dashboard/index.html"
+
+
+class DashboardTokenView(LoginRequiredMixin, DetailView):
+    model = User
+    slug_field = "username"
+    slug_url_kwarg = "username"
+    template_name = "dashboard/token.html"
+
+
+class DashboardTeamView(LoginRequiredMixin, DetailView):
+    model = User
+    slug_field = "username"
+    slug_url_kwarg = "username"
+    template_name = "dashboard/team.html"
+
+
+class DashboardProfileView(LoginRequiredMixin, DetailView):
+    model = User
+    slug_field = "username"
+    slug_url_kwarg = "username"
+    template_name = "dashboard/profile.html"
 
 
 # class DashboardSettingsView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
