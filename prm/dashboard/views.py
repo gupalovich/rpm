@@ -68,7 +68,7 @@ class DashboardProfileView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return self.request.user
 
 
-class AvatarUpdateView(View):
+class AvatarUpdateView(LoginRequiredMixin, View):
     def post(self, request):
         form = AvatarUpdateForm(request.POST, request.FILES)
         if form.is_valid() and request.FILES:

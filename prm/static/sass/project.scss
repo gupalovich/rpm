@@ -99,7 +99,7 @@
     padding: 22px 95px;
     margin-left: 10px;
     margin-right: 10px;
-    border: solid 2.2px rgba($color: var(--white), $alpha: 0.2);
+    border: 2.2px solid rgba(255, 255, 255, 0.2);
 }
 
 // Forms
@@ -130,14 +130,17 @@
 .control-group.error {
     color: var(--alert);
 
-    .controls .textInput,
-    .controls .dateinput,
-    .controls .emailinput {
-        border-color: var(--alert);
-    }
+    .controls {
 
-    .controls .help-block {
-        margin-top: 5px;
+        .textInput,
+        .dateinput,
+        .emailinput {
+            border-color: var(--alert);
+        }
+
+        .help-block {
+            margin-top: 5px;
+        }
     }
 }
 

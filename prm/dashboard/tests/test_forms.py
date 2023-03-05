@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
+from django.urls import reverse
 
 from prm.users.tests.factories import UserFactory
 
@@ -56,7 +57,8 @@ class AvatarUpdateFormTests(TestCase):
 
 class CustomUserUpdateFormTests(TestCase):
     def setUp(self):
-        self.user = UserFactory()
+        self.user_pass = "testpass123"
+        self.user = UserFactory(password=self.user_pass)
         self.form_data = {
             "first_name": "John",
             "last_name": "Doe",
@@ -68,6 +70,7 @@ class CustomUserUpdateFormTests(TestCase):
             "password": "newpass123",
             "password1": "newpass123",
         }
+        self.url = reverse("dashboard:profile", kwargs={"username": self.user.username})
 
     def test_valid_data(self):
         form = CustomUserUpdateForm(
@@ -104,3 +107,11 @@ class CustomUserUpdateFormTests(TestCase):
         )
         self.assertFalse(form.is_valid())
         self.assertIn("password", form.errors)
+
+    def test_empty_password(self):
+        self.client.force_login(self.user)
+        response = self.client.post(self.url, {"password": "", "password1": ""})
+        self.assertEqual(response.status_code, 302)
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.check_password(""))
+        self.assertTrue(self.user.check_password(self.user_pass))

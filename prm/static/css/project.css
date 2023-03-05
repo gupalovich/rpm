@@ -214,7 +214,7 @@ input,
   padding: 22px 95px;
   margin-left: 10px;
   margin-right: 10px;
-  border: solid 2.2px rgba(var(--white), 0.2);
+  border: 2.2px solid rgba(255, 255, 255, 0.2);
 }
 
 .alert-block ul li {

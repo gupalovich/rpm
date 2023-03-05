@@ -6,11 +6,14 @@ PRM4ALL description
 ---
 
 1. Dashboard
+    - ~~Test password empty~~
     - Menu на active изменение цвета иконки
-    - Profile адаптив формы
-    - Profile изменить кнопку из btn-primary -> btn-slim
-    - Team проверить элементы блоков myteam и начисления
     - Token форма купить токен без привязки к бд
+    - Profile адаптив формы
+    - Profile неверное отображение ошибок в grid
+    - Profile изменить кнопку из btn-primary -> btn-slim
+    - Custom checkbox
+    - Team проверить элементы блоков myteam и начисления
     - Найти место для блока messages
     - CustomUserUpdateForm добавить больше валидации + тестирование
 

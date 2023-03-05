@@ -162,4 +162,5 @@ class AvatarUpdateViewTests(TestCase):
     def test_post_avatar_form_anon(self):
         data = {"avatar": ""}
         response = self.client.post(self.url, data)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, f"{reverse('account_login')}?next={self.url}")
