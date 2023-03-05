@@ -6,18 +6,14 @@ PRM4ALL description
 ---
 
 1. Dashboard
-    - ~~Test password empty~~
-    - ~~Помошник набора телефона в форме~~
-    - ~~Menu на active изменение цвета иконки~~
-    - ~~Добавить btn-slim к шаблонным кнопкам~~
-    - Token форма купить токен без привязки к бд
     - Profile адаптив формы
     - Profile неверное отображение ошибок в grid
-    - ~~Profile изменить кнопку из btn-primary -> btn-slim-wide~~
     - Custom checkbox
     - Team проверить элементы блоков myteam и начисления
     - Найти место для блока messages
     - CustomUserUpdateForm добавить больше валидации + тестирование
+
+2. Документация
 
 
 ## Начало работы

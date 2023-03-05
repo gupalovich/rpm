@@ -2,12 +2,12 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, RedirectView, UpdateView, View
 
-from .forms import AvatarUpdateForm, CustomUserUpdateForm
+from .forms import AvatarUpdateForm, BuyTokenForm, CustomUserUpdateForm
 
 User = get_user_model()
 
@@ -38,11 +38,28 @@ class DashboardIndexView(LoginRequiredMixin, DetailView):
     template_name = "dashboard/index.html"
 
 
-class DashboardTokenView(LoginRequiredMixin, DetailView):
-    model = User
-    slug_field = "username"
-    slug_url_kwarg = "username"
+class DashboardTokenView(LoginRequiredMixin, View):
     template_name = "dashboard/token.html"
+
+    def get(self, request, *args, **kwargs):
+        user = self.request.user
+        buy_token_form = BuyTokenForm()
+        context = {"user": user, "buy_token_form": buy_token_form}
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        form = BuyTokenForm(request.POST)
+        if form.is_valid():
+            # token_amount = form.cleaned_data['token_amount']
+            # token_price_usdt = form.cleaned_data['token_price_usdt']
+            return redirect(
+                reverse(
+                    "dashboard:token", kwargs={"username": self.request.user.username}
+                )
+            )
+        user = self.request.user
+        context = {"user": user, "buy_token_form": form}
+        return render(request, self.template_name, context)
 
 
 class DashboardTeamView(LoginRequiredMixin, DetailView):

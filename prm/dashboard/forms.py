@@ -11,6 +11,19 @@ from .validators import (
 User = get_user_model()
 
 
+class BuyTokenForm(forms.Form):
+    token_amount = forms.IntegerField(
+        label="",
+        widget=forms.NumberInput(attrs={"placeholder": _("Введите кол-во токенов")}),
+    )
+    token_price_usdt = forms.DecimalField(
+        label="",
+        widget=forms.NumberInput(attrs={"placeholder": _("Стоимость USDT")}),
+        max_digits=12,
+        decimal_places=4,
+    )
+
+
 class AvatarUpdateForm(forms.Form):
     avatar = forms.ImageField(
         required=False,

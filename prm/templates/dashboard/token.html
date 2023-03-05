@@ -1,6 +1,8 @@
 {% extends "dashboard/base.html" %}
 
 {% load static %}
+{% load i18n %}
+{% load crispy_forms_tags %}
 
 {% block inner_top %}
     {{ block.super }}
@@ -25,15 +27,11 @@
             </div>
 
         </div >
-        <div class="field_row">
-            <div class="field">
-                <input type="text" class="form-control" placeholder="Введите кол-во токенов" name="phone" required>
-            </div>
-            <div class="field">
-                <input type="text" class="form-control" placeholder="Стоимость USDT" name="phone" required>
-            </div>
-        </div >
-        <button class="btn btn-slim defi_btn">Купить</button>
+        <form class="form-slim buy-token-form" method="POST">
+            {% csrf_token %}
+            {{ buy_token_form|crispy }}
+            <button class="btn btn-slim" type="submit">{% translate "Купить" %}</button>
+        </form>
 
     </div>
     <div id="round" class="tile big_tile">

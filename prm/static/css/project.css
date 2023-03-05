@@ -7,6 +7,7 @@
   --bg-light: #F4F7FE;
   --text-dark: #2B3674;
   --text-light: #A3AED0;
+  --placeholder: #8F9BBA;
   --alert: #ff0000;
   --white: #fff;
 }
@@ -231,6 +232,18 @@ input,
   gap: 24px 22px;
 }
 
+.form-slim {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 40px;
+}
+
+.buy-token-form {
+  max-width: 500px;
+  margin-top: 40px;
+}
+
 .form-lg {
   grid-template-columns: 1fr 1fr;
 }
@@ -242,13 +255,18 @@ input,
 .control-group.error {
   color: var(--alert);
 }
-.control-group.error .controls .textInput,
-.control-group.error .controls .dateinput,
-.control-group.error .controls .emailinput {
+.control-group.error .controls input {
   border-color: var(--alert);
 }
 .control-group.error .controls .help-block {
   margin-top: 5px;
+}
+
+.form-slim .control-group input {
+  background: var(--bg-light);
+  border: none;
+  border-radius: 60px;
+  padding: 10px 25px;
 }
 
 .control-group .control-label {
@@ -262,20 +280,14 @@ input,
 .control-group .control-label .asteriskField {
   color: var(--accent-vibrant);
 }
-.control-group .textInput,
-.control-group .dateinput,
-.control-group .emailinput {
+.control-group input {
   background: none;
   border: solid 1px var(--border-light);
   border-radius: 0.8vw;
   width: 100%;
-  padding-left: 24px;
-  padding-top: 18px;
-  padding-bottom: 18px;
+  padding: 18px 24px;
 }
-.control-group .textInput::-webkit-input-placeholder,
-.control-group .dateinput::-webkit-input-placeholder,
-.control-group .emailinput::-webkit-input-placeholder {
+.control-group input::-webkit-input-placeholder {
   color: var(--text-light);
   font-size: 0.9em;
 }
@@ -319,7 +331,6 @@ input,
   max-width: -webkit-max-content;
   max-width: -moz-max-content;
   max-width: max-content;
-  min-width: 45px;
   background-color: var(--accent-2);
 }
 .btn-slim:hover, .btn-slim:active, .btn-slim:focus,
@@ -330,7 +341,7 @@ input,
 }
 
 .btn-slim {
-  padding: 6px 31px;
+  padding: 8px 31px;
 }
 
 .btn-slim-wide {
@@ -939,14 +950,6 @@ input,
   -webkit-box-align: baseline;
       -ms-flex-align: baseline;
           align-items: baseline;
-}
-
-.field_row {
-  margin-top: 38px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  gap: 7%;
 }
 
 @media (max-width: 1230px) {
