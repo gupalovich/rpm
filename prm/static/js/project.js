@@ -4,7 +4,7 @@ function formatPhone(input) {
     let phone = input.value.replace(/\D/g, '');
     // Check if the phone number is long enough to format
     if (phone.length >= 3) {
-        // Format the phone number
+        // Format the phone number for this format - 8 (999) 999-99-99
         phone = '8 (' + phone.substr(1, 3) + ') ' + phone.substr(4, 3) + '-' + phone.substr(7, 2) + '-' + phone.substr(9, 2);
         // Set the formatted phone number as the input value
         input.value = phone;

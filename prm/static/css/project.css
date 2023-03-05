@@ -517,6 +517,10 @@ input,
       -ms-flex: 1 1 auto;
           flex: 1 1 auto;
 }
+.menu .menu_item:nth-child(3) .menu_icon {
+  position: relative;
+  top: -2px;
+}
 
 .menu_item {
   display: -webkit-box;
@@ -531,6 +535,15 @@ input,
   font-size: 1em;
 }
 
+.menu_icon {
+  max-width: 23px;
+  width: 100%;
+  height: auto;
+}
+.menu_icon path {
+  fill: var(--text-light);
+}
+
 .menu_name {
   -webkit-box-flex: 1;
       -ms-flex-positive: 1;
@@ -542,8 +555,15 @@ input,
   color: var(--text-dark);
   font-weight: 700;
 }
+.active .active_line {
+  visibility: visible;
+}
+.active .menu_icon path {
+  fill: var(--accent-vibrant);
+}
 
 .active_line {
+  visibility: hidden;
   height: 100%;
   width: 4px;
   background-color: var(--accent-vibrant);

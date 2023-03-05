@@ -430,6 +430,12 @@
     flex-direction: column;
     gap: 20px;
     flex: 1 1 auto;
+
+    .menu_item:nth-child(3) .menu_icon {
+        position: relative; // fix team icon visual
+        top: -2px
+    }
+
 }
 
 .menu_item {
@@ -441,6 +447,16 @@
     font-size: 1em;
 }
 
+.menu_icon {
+    max-width: 23px;
+    width: 100%;
+    height: auto;
+
+    path {
+        fill: var(--text-light);
+    }
+}
+
 .menu_name {
     flex-grow: 1;
 }
@@ -448,23 +464,24 @@
 .active {
     font-size: 1em;
     color: var(--text-dark);
-    ;
     font-weight: 700;
-    // border-right: solid 4px var(--accent-vibrant);
 
+    .active_line {
+        visibility: visible;
+    }
 
-    // border: 3px;
-    // border-radius: 0%;
-    // border-color: var(--accent-vibrant);
+    .menu_icon path {
+        fill: var(--accent-vibrant);
+    }
 }
 
 .active_line {
+    visibility: hidden;
     height: 100%;
     width: 4px;
     background-color: var(--accent-vibrant);
     border-radius: 70px;
     align-self: flex-end;
-    // float: right;
 }
 
 .page_path {

@@ -8,7 +8,7 @@ PRM4ALL description
 1. Dashboard
     - ~~Test password empty~~
     - ~~Помошник набора телефона в форме~~
-    - Menu на active изменение цвета иконки
+    - ~~Menu на active изменение цвета иконки~~
     - Token форма купить токен без привязки к бд
     - Добавить btn-slim к шаблонным кнопкам
     - Profile адаптив формы
