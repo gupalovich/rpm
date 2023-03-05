@@ -9,8 +9,8 @@ PRM4ALL description
     - ~~Test password empty~~
     - ~~Помошник набора телефона в форме~~
     - ~~Menu на active изменение цвета иконки~~
+    - ~~Добавить btn-slim к шаблонным кнопкам~~
     - Token форма купить токен без привязки к бд
-    - Добавить btn-slim к шаблонным кнопкам
     - Profile адаптив формы
     - Profile неверное отображение ошибок в grid
     - ~~Profile изменить кнопку из btn-primary -> btn-slim-wide~~

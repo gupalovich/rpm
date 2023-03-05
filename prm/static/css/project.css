@@ -1,7 +1,7 @@
 @import url(https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap&subset=cyrillic-ext);
 :root {
   --accent: #2E016C;
-  --accent-hover: #11047A;
+  --accent-2: #11047A;
   --accent-vibrant: #4318FF;
   --border-light: #E0E5F2;
   --bg-light: #F4F7FE;
@@ -310,20 +310,31 @@ input,
   border-radius: 0.8vw;
 }
 .btn-primary:hover, .btn-primary:active, .btn-primary:focus {
-  background-color: var(--accent-hover);
+  background-color: var(--accent-2);
+}
+
+.btn-slim,
+.btn-slim-wide {
+  border: 0;
+  max-width: -webkit-max-content;
+  max-width: -moz-max-content;
+  max-width: max-content;
+  min-width: 45px;
+  background-color: var(--accent-2);
+}
+.btn-slim:hover, .btn-slim:active, .btn-slim:focus,
+.btn-slim-wide:hover,
+.btn-slim-wide:active,
+.btn-slim-wide:focus {
+  background-color: var(--accent-vibrant);
+}
+
+.btn-slim {
+  padding: 6px 31px;
 }
 
 .btn-slim-wide {
-  border: 0;
-  max-width: -webkit-min-content;
-  max-width: -moz-min-content;
-  max-width: min-content;
-  min-width: 45px;
-  padding: 10px 60px;
-  background-color: var(--accent-hover);
-}
-.btn-slim-wide:hover, .btn-slim-wide:active, .btn-slim-wide:focus {
-  background-color: var(--accent-vibrant);
+  padding: 10px 65px;
 }
 
 #already_exist {
@@ -615,7 +626,7 @@ input,
 }
 
 .invite_link {
-  background-color: var(--accent-hover);
+  background-color: var(--accent-2);
   border-radius: 70px;
   margin: 0;
   padding: 10px 14px;
@@ -733,7 +744,6 @@ input,
 }
 
 .defi_btn {
-  padding: 10px 29px;
   margin-top: 23px;
 }
 

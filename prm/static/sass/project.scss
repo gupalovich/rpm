@@ -207,22 +207,31 @@
     &:hover,
     &:active,
     &:focus {
-        background-color: var(--accent-hover);
+        background-color: var(--accent-2);
     }
 }
 
+.btn-slim,
 .btn-slim-wide {
     border: 0;
-    max-width: min-content;
+    max-width: max-content;
     min-width: 45px;
-    padding: 10px 60px;
-    background-color: var(--accent-hover);
+    background-color: var(--accent-2);
 
     &:hover,
     &:active,
     &:focus {
         background-color: var(--accent-vibrant);
     }
+
+}
+
+.btn-slim {
+    padding: 6px 31px;
+}
+
+.btn-slim-wide {
+    padding: 10px 65px;
 }
 
 #already_exist {
@@ -386,6 +395,7 @@
 
 }
 
+
 .dashboard_body {
     height: 100%;
     background-color: var(--bg-light);
@@ -521,7 +531,7 @@
 }
 
 .invite_link {
-    background-color: var(--accent-hover);
+    background-color: var(--accent-2);
     border-radius: 70px;
     margin: 0;
     padding: 10px 14px;
@@ -631,7 +641,6 @@
 }
 
 .defi_btn {
-    padding: 10px 29px;
     margin-top: 23px;
 }
 
@@ -690,7 +699,6 @@
 #prm {
     background-image: url("../img/prm_laptop.png");
     background-position: 100%;
-
 }
 
 .button_row {
