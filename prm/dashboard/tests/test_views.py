@@ -73,6 +73,14 @@ class DashboardTokenViewTests(TestCase):
     def setUp(self) -> None:
         self.user = UserFactory()
         self.url = reverse("dashboard:token", kwargs={"username": self.user.username})
+        self.form_data = {
+            "token_amount": "10",
+            "token_price_usdt": "1.23",
+        }
+        self.form_data_invalid = {
+            "token_amount": "-1",
+            "token_price_usdt": "invalid",
+        }
 
     def test_get(self):
         self.client.force_login(self.user)
@@ -82,6 +90,27 @@ class DashboardTokenViewTests(TestCase):
 
     def test_get_anon(self):
         response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, f"{reverse('account_login')}?next={self.url}")
+
+    def test_post_valid_form(self):
+        self.client.force_login(self.user)
+        response = self.client.post(self.url, self.form_data)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(
+            response,
+            reverse("dashboard:token", kwargs={"username": self.user.username}),
+        )
+
+    def test_post_invalid_form(self):
+        self.client.force_login(self.user)
+        response = self.client.post(self.url, self.form_data_invalid)
+        self.assertEqual(response.status_code, 200)
+        form = response.context["buy_token_form"]
+        self.assertTrue(form.errors)
+
+    def test_post_anon(self):
+        response = self.client.post(self.url, self.form_data)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, f"{reverse('account_login')}?next={self.url}")
 

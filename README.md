@@ -6,12 +6,12 @@ PRM4ALL description
 ---
 
 1. Dashboard
+    - CustomUserUpdateForm добавить больше валидации + тестирование
+    - Найти место для блока messages
     - Profile адаптив формы
     - Profile неверное отображение ошибок в grid
     - Custom checkbox
     - Team проверить элементы блоков myteam и начисления
-    - Найти место для блока messages
-    - CustomUserUpdateForm добавить больше валидации + тестирование
 
 2. Документация
 

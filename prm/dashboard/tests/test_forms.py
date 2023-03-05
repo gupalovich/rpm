@@ -6,7 +6,38 @@ from django.urls import reverse
 
 from prm.users.tests.factories import UserFactory
 
-from ..forms import AvatarUpdateForm, CustomUserUpdateForm
+from ..forms import AvatarUpdateForm, BuyTokenForm, CustomUserUpdateForm
+
+
+class BuyTokenFormTests(TestCase):
+    def test_form_valid(self):
+        form_data = {"token_amount": 10, "token_price_usdt": 1.2345}
+        form = BuyTokenForm(data=form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_form_invalid(self):
+        form_data = {"token_amount": "abc", "token_price_usdt": "1.23.45"}
+        form = BuyTokenForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(len(form.errors), 2)
+
+    def test_token_amount_required(self):
+        form_data = {"token_price_usdt": 1.2345}
+        form = BuyTokenForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertTrue("token_amount" in form.errors)
+
+    def test_token_price_usdt_required(self):
+        form_data = {"token_amount": 10}
+        form = BuyTokenForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertTrue("token_price_usdt" in form.errors)
+
+    def test_token_amount_non_negative(self):
+        form_data = {"token_amount": -10, "token_price_usdt": 1.2345}
+        form = BuyTokenForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertTrue("token_amount" in form.errors)
 
 
 class AvatarUpdateFormTests(TestCase):

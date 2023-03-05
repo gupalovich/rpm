@@ -23,6 +23,18 @@ class BuyTokenForm(forms.Form):
         decimal_places=4,
     )
 
+    def clean_token_amount(self):
+        token_amount = self.cleaned_data.get("token_amount", None)
+        if token_amount <= 0:
+            raise forms.ValidationError(_("Неверное количество."))
+        return token_amount
+
+    def clean_token_price_usdt(self):
+        token_price_usdt = self.cleaned_data.get("token_price_usdt", None)
+        if token_price_usdt <= 0:
+            raise forms.ValidationError(_("Неверное количество."))
+        return token_price_usdt
+
 
 class AvatarUpdateForm(forms.Form):
     avatar = forms.ImageField(
