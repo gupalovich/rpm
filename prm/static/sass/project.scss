@@ -144,7 +144,10 @@
 
     .controls {
 
-        input {
+        .textInput,
+        .dateinput,
+        .numberinput,
+        .emailinput {
             border-color: var(--alert);
         }
 
@@ -155,7 +158,11 @@
 }
 
 .form-slim .control-group {
-    input {
+
+    .textInput,
+    .dateinput,
+    .numberinput,
+    .emailinput {
         background: var(--bg-light);
         border: none;
         border-radius: 60px;
@@ -176,12 +183,21 @@
         }
     }
 
-    input {
+    .textInput,
+    .dateinput,
+    .numberinput,
+    .emailinput {
+        color: var(--text-light);
         background: none;
         border: solid 1px var(--border-light);
         border-radius: 0.8vw;
         width: 100%;
         padding: 18px 24px;
+
+        &:active,
+        &:focus {
+            color: var(--text-dark);
+        }
 
         &::-webkit-input-placeholder {
             color: var(--text-light);
@@ -1000,15 +1016,6 @@
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
     align-items: end;
-
-    input {
-        color: var(--text-light);
-
-        &:active,
-        &:focus {
-            color: var(--text-dark);
-        }
-    }
 }
 
 

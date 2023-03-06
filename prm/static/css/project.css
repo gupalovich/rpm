@@ -255,14 +255,20 @@ input,
 .control-group.error {
   color: var(--alert);
 }
-.control-group.error .controls input {
+.control-group.error .controls .textInput,
+.control-group.error .controls .dateinput,
+.control-group.error .controls .numberinput,
+.control-group.error .controls .emailinput {
   border-color: var(--alert);
 }
 .control-group.error .controls .help-block {
   margin-top: 5px;
 }
 
-.form-slim .control-group input {
+.form-slim .control-group .textInput,
+.form-slim .control-group .dateinput,
+.form-slim .control-group .numberinput,
+.form-slim .control-group .emailinput {
   background: var(--bg-light);
   border: none;
   border-radius: 60px;
@@ -280,14 +286,30 @@ input,
 .control-group .control-label .asteriskField {
   color: var(--accent-vibrant);
 }
-.control-group input {
+.control-group .textInput,
+.control-group .dateinput,
+.control-group .numberinput,
+.control-group .emailinput {
+  color: var(--text-light);
   background: none;
   border: solid 1px var(--border-light);
   border-radius: 0.8vw;
   width: 100%;
   padding: 18px 24px;
 }
-.control-group input::-webkit-input-placeholder {
+.control-group .textInput:active, .control-group .textInput:focus,
+.control-group .dateinput:active,
+.control-group .dateinput:focus,
+.control-group .numberinput:active,
+.control-group .numberinput:focus,
+.control-group .emailinput:active,
+.control-group .emailinput:focus {
+  color: var(--text-dark);
+}
+.control-group .textInput::-webkit-input-placeholder,
+.control-group .dateinput::-webkit-input-placeholder,
+.control-group .numberinput::-webkit-input-placeholder,
+.control-group .emailinput::-webkit-input-placeholder {
   color: var(--text-light);
   font-size: 0.9em;
 }
@@ -1152,12 +1174,6 @@ input,
   -webkit-box-align: end;
       -ms-flex-align: end;
           align-items: end;
-}
-.settings_table input {
-  color: var(--text-light);
-}
-.settings_table input:active, .settings_table input:focus {
-  color: var(--text-dark);
 }
 
 @media (max-width: 1200px) {
