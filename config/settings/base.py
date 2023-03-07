@@ -67,7 +67,7 @@ THIRD_PARTY_APPS = [
     "crispy_forms",
     "allauth",
     "allauth.account",
-    "allauth.socialaccount",
+    # "allauth.socialaccount",
     "django_celery_beat",
 ]
 
@@ -296,9 +296,9 @@ ACCOUNT_ADAPTER = "prm.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/forms.html
 ACCOUNT_FORMS = {"signup": "prm.users.forms.UserSignupForm"}
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-SOCIALACCOUNT_ADAPTER = "prm.users.adapters.SocialAccountAdapter"
+# SOCIALACCOUNT_ADAPTER = "prm.users.adapters.SocialAccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/forms.html
-SOCIALACCOUNT_FORMS = {"signup": "prm.users.forms.UserSocialSignupForm"}
+# SOCIALACCOUNT_FORMS = {"signup": "prm.users.forms.UserSocialSignupForm"}
 
 
 # Your stuff...
