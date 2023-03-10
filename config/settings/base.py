@@ -73,6 +73,7 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "prm.users",
+    "prm.tokens",
     "prm.dashboard",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
