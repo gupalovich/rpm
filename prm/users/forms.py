@@ -1,5 +1,6 @@
 from allauth.account.forms import SignupForm
 from django import forms
+from django.contrib import messages
 from django.contrib.auth import forms as admin_forms
 from django.contrib.auth import get_user_model
 from django.forms.widgets import TextInput
@@ -48,7 +49,12 @@ class UserSignupForm(SignupForm):
         validators=[validate_phone_number],
         widget=TextInput(attrs={"type": "tel", "placeholder": _("8 (999) 999-99-99")}),
     )
-    referral = forms.CharField(max_length=30, required=False, label=_("Вас пригласил"))
+    referral = forms.CharField(
+        max_length=150,
+        required=False,
+        label=_("Вас пригласил"),
+        widget=forms.TextInput(attrs={"readonly": "readonly"}),
+    )
 
     field_order = [
         "first_name",
@@ -62,7 +68,12 @@ class UserSignupForm(SignupForm):
     ]
 
     def __init__(self, *args, **kwargs):
+        request = kwargs.pop("request", None)
+
         super().__init__(*args, **kwargs)
+
+        if request:
+            self.initial["referral"] = request.GET.get("referral")
 
         self.fields["email"].label = "Email"
         self.fields["email"].required = True
@@ -84,7 +95,10 @@ class UserSignupForm(SignupForm):
 
             referral = self.cleaned_data.get("referral")
             if referral:
-                pass  # referral logic
+                try:
+                    user.parent = User.objects.get(username=referral)
+                except User.DoesNotExist:
+                    messages.error(request, _("Реферал не существует"))
 
             user.save()
         return user

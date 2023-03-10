@@ -5,12 +5,14 @@ from django.urls import include, path
 from django.views import defaults as default_views
 
 from prm.dashboard.views import HomeRedirectView
+from prm.users.views import UserSignupView
 
 urlpatterns = [
     path("", HomeRedirectView.as_view(), name="home"),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
+    path("accounts/signup/", UserSignupView.as_view(), name="account_signup"),
     path("accounts/", include("allauth.urls")),
     # Apps
     path("dashboard/", include("prm.dashboard.urls", namespace="dashboard")),
