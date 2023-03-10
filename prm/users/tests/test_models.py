@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from .factories import UserFactory, get_user_model
@@ -8,7 +9,6 @@ User = get_user_model()
 class UserTests(TestCase):
     def setUp(self) -> None:
         self.user_data = {
-            "parent": UserFactory(),
             "username": "test_user",
             "first_name": "Jane",
             "last_name": "Doe",
@@ -38,7 +38,7 @@ class UserTests(TestCase):
             User.objects.get(id=user.id)
 
     def test_fields(self):
-        user = UserFactory(**self.user_data)
+        user = UserFactory(parent=UserFactory(), **self.user_data)
         # parent
         self.assertTrue(user.parent.username)
         # fields
@@ -56,6 +56,37 @@ class UserTests(TestCase):
         self.assertTrue(user.settings.birthday)
         self.assertTrue(user.settings.city)
 
+    def test_parent_set_null(self):
+        parent = UserFactory()
+        user = UserFactory(parent=parent, **self.user_data)
+        self.assertEqual(user.parent, parent)
+        parent.delete()
+        user.refresh_from_db()
+        self.assertEqual(user.parent, None)
+
+    def test_parent_children_relation(self):
+        parent = UserFactory(**self.user_data)
+        users = [UserFactory(parent=parent), UserFactory(parent=parent), UserFactory()]
+        # Test relations
+        self.assertFalse(parent.parent)
+        self.assertEqual(parent.children.count(), 2)
+        # user1
+        self.assertEqual(users[0].parent, parent)
+        self.assertEqual(users[0].children.count(), 0)
+        # user2
+        self.assertEqual(users[1].parent, parent)
+        self.assertEqual(users[1].children.count(), 0)
+        # user3
+        self.assertFalse(users[2].parent)
+        self.assertEqual(users[2].children.count(), 0)
+
     def test_get_absolute_url(self):
         user = UserFactory()
         self.assertEqual(user.get_absolute_url(), f"/dashboard/{user.username}/")
+
+    def test_clean_parent_not_equal_self(self):
+        user = UserFactory()
+        # Ensure the clean method raises a validation error
+        with self.assertRaises(ValidationError):
+            user.parent = user
+            user.clean()

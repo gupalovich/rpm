@@ -38,7 +38,7 @@ class User(AbstractUser):
             raise ValidationError({"parent": _("Parent and Child cannot be the same.")})
 
 
-class Settings(models.Model):
+class UserSettings(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="settings")
     birthday = models.DateField(_("Дата рождения"), blank=True, null=True)
     city = models.CharField(_("Город"), max_length=100, blank=True)
