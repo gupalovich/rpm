@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse
@@ -93,7 +95,7 @@ class ProfileUserUpdateFormTests(TestCase):
             "last_name": "Doe",
             "email": "testuser@example.com",
             # "phone_number": "8 (999) 999-99-99",
-            # "birthday": "1990-01-01",
+            "birthday": "1990-01-01",
             "city": "Test City",
             "metamask_wallet": "0x1234567890",
             "password": "newpass123",
@@ -111,11 +113,11 @@ class ProfileUserUpdateFormTests(TestCase):
         self.assertEqual(user.first_name, self.form_data["first_name"])
         self.assertEqual(user.last_name, self.form_data["last_name"])
         # self.assertEqual(user.phone_number, self.form_data["phone_number"])
-        # self.assertEqual(
-        #     user.birthday,
-        #     datetime.strptime(self.form_data["birthday"], "%Y-%m-%d").date(),
-        # )
-        # self.assertEqual(user.city, self.form_data["city"])
+        self.assertEqual(
+            user.settings.birthday,
+            datetime.strptime(self.form_data["birthday"], "%Y-%m-%d").date(),
+        )
+        self.assertEqual(user.settings.city, self.form_data["city"])
         self.assertEqual(user.metamask_wallet, self.form_data["metamask_wallet"])
         self.assertTrue(user.check_password(self.form_data["password"]))
 

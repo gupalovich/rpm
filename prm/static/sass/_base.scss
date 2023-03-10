@@ -54,3 +54,7 @@ input,
 ::placeholder {
     transition: all .3s ease-in-out;
 }
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+}

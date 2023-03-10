@@ -60,12 +60,18 @@ class ProfileUserUpdateForm(forms.ModelForm):
             "first_name",
             "last_name",
             "email",
-            # "birthday",
-            # "city",
+            "birthday",
+            "city",
             "metamask_wallet",
             # don't add password/password1 here
         ]
 
+    city = forms.CharField(label=_("Город"), required=False)
+    birthday = forms.DateField(
+        label=_("Дата рождения"),
+        required=False,
+        widget=forms.TextInput(attrs={"type": "date"}),
+    )
     password = forms.CharField(
         label=_("Password"),
         strip=False,
@@ -98,14 +104,26 @@ class ProfileUserUpdateForm(forms.ModelForm):
             raise forms.ValidationError(_("Passwords do not match"))
         return password1
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["city"].initial = self.instance.settings.city
+        self.fields["birthday"].initial = self.instance.settings.birthday
+
     def save(self, commit=True):
         """
         Save the updated user information and the new password (if entered).
         """
         user = super().save(commit=False)
         password = self.cleaned_data.get("password")
+        user.settings.city = self.cleaned_data["city"]
+        user.settings.birthday = self.cleaned_data["birthday"]
+
         if password:
             user.set_password(password)
+
         if commit:
+            user.settings.save()
             user.save()
+
         return user

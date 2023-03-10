@@ -89,6 +89,10 @@ input,
   transition: all 0.3s ease-in-out;
 }
 
+input[type=date]::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
 .title_left {
   font-size: 2.2em;
   font-weight: 700;
