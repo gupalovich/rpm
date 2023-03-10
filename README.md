@@ -6,7 +6,7 @@ PRM4ALL description
 ---
 
 1. User
-    - Добавить parent, token_balance, metamask_wallet, metamask_confirmed,
+    - ~~Добавить parent, token_balance, metamask_wallet, metamask_confirmed~~
         - Тестирование новых полей
     - Добавление реферальной системы
         - Формирование реферальной ссылки и соответствующего view редиректа

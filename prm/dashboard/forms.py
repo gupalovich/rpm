@@ -60,8 +60,8 @@ class CustomUserUpdateForm(forms.ModelForm):
             "first_name",
             "last_name",
             "email",
-            "birthday",
-            "city",
+            # "birthday",
+            # "city",
             "metamask_wallet",
             # don't add password/password1 here
         ]

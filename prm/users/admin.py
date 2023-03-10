@@ -15,7 +15,7 @@ class UserAdmin(auth_admin.UserAdmin):
     fieldsets = (
         (None, {"fields": ("username", "password")}),
         (
-            _("Personal info"),
+            _("Персональная информация"),
             {
                 "fields": (
                     "parent",
@@ -23,8 +23,6 @@ class UserAdmin(auth_admin.UserAdmin):
                     "last_name",
                     "email",
                     "phone_number",
-                    "birthday",
-                    "city",
                     "avatar",
                 )
             },
