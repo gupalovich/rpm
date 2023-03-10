@@ -1,17 +1,23 @@
 from django.contrib import admin
 from django.contrib.auth import admin as auth_admin
-from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 
-from prm.users.forms import UserAdminChangeForm, UserAdminCreationForm
+from .forms import UserAdminChangeForm, UserAdminCreationForm
+from .models import User, UserSettings
 
-User = get_user_model()
+
+class UserSettingsInline(admin.StackedInline):
+    model = UserSettings
+    can_delete = False
+    verbose_name = "Дополнительная информация"
+    fk_name = "user"
 
 
 @admin.register(User)
 class UserAdmin(auth_admin.UserAdmin):
     form = UserAdminChangeForm
     add_form = UserAdminCreationForm
+    inlines = (UserSettingsInline,)
     fieldsets = (
         (None, {"fields": ("username", "password")}),
         (
