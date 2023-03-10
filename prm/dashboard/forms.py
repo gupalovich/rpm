@@ -53,7 +53,7 @@ class AvatarUpdateForm(forms.Form):
         return avatar
 
 
-class CustomUserUpdateForm(forms.ModelForm):
+class ProfileUserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = [

@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, RedirectView, UpdateView, View
 
-from .forms import AvatarUpdateForm, BuyTokenForm, CustomUserUpdateForm
+from .forms import AvatarUpdateForm, BuyTokenForm, ProfileUserUpdateForm
 
 User = get_user_model()
 
@@ -70,7 +70,7 @@ class DashboardTeamView(LoginRequiredMixin, DetailView):
 
 
 class DashboardProfileView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-    form_class = CustomUserUpdateForm
+    form_class = ProfileUserUpdateForm
     slug_field = "username"
     slug_url_kwarg = "username"
     template_name = "dashboard/profile.html"

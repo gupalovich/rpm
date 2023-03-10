@@ -19,7 +19,7 @@ PRM4ALL description
         - Тестирование моделей
 
 2. Dashboard
-    - CustomUserUpdateForm добавить больше валидации + тестирование
+    - ProfileUserUpdateForm добавить больше валидации + тестирование
     - Найти место для блока messages
     - Profile адаптив формы
     - Profile неверное отображение ошибок в grid

@@ -8,6 +8,7 @@ User = get_user_model()
 class UserTests(TestCase):
     def setUp(self) -> None:
         self.user_data = {
+            "parent": UserFactory(),
             "username": "test_user",
             "first_name": "Jane",
             "last_name": "Doe",
@@ -38,14 +39,22 @@ class UserTests(TestCase):
 
     def test_fields(self):
         user = UserFactory(**self.user_data)
+        # parent
+        self.assertTrue(user.parent.username)
+        # fields
         self.assertTrue(user.username)
         self.assertTrue(user.email)
         self.assertTrue(user.first_name)
         self.assertTrue(user.last_name)
         self.assertTrue(user.phone_number)
-        self.assertTrue(user.birthday)
-        self.assertTrue(user.metamask_wallet)
         self.assertEqual(user.avatar, "avatars/default.png")
+        # wallet
+        self.assertTrue(user.token_balance)
+        self.assertTrue(user.metamask_wallet)
+        self.assertIsInstance(user.metamask_confirmed, bool)
+        # settings
+        self.assertTrue(user.settings.birthday)
+        self.assertTrue(user.settings.city)
 
     def test_get_absolute_url(self):
         user = UserFactory()

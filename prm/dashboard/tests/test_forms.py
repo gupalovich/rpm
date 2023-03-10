@@ -1,12 +1,10 @@
-from datetime import datetime
-
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse
 
 from prm.users.tests.factories import UserFactory
 
-from ..forms import AvatarUpdateForm, BuyTokenForm, CustomUserUpdateForm
+from ..forms import AvatarUpdateForm, BuyTokenForm, ProfileUserUpdateForm
 
 
 class BuyTokenFormTests(TestCase):
@@ -86,7 +84,7 @@ class AvatarUpdateFormTests(TestCase):
         self.assertIn("avatar", form.errors)
 
 
-class CustomUserUpdateFormTests(TestCase):
+class ProfileUserUpdateFormTests(TestCase):
     def setUp(self):
         self.user_pass = "testpass123"
         self.user = UserFactory(password=self.user_pass)
@@ -95,7 +93,7 @@ class CustomUserUpdateFormTests(TestCase):
             "last_name": "Doe",
             "email": "testuser@example.com",
             # "phone_number": "8 (999) 999-99-99",
-            "birthday": "1990-01-01",
+            # "birthday": "1990-01-01",
             "city": "Test City",
             "metamask_wallet": "0x1234567890",
             "password": "newpass123",
@@ -104,7 +102,7 @@ class CustomUserUpdateFormTests(TestCase):
         self.url = reverse("dashboard:profile", kwargs={"username": self.user.username})
 
     def test_valid_data(self):
-        form = CustomUserUpdateForm(
+        form = ProfileUserUpdateForm(
             data=self.form_data,
             instance=self.user,
         )
@@ -113,17 +111,17 @@ class CustomUserUpdateFormTests(TestCase):
         self.assertEqual(user.first_name, self.form_data["first_name"])
         self.assertEqual(user.last_name, self.form_data["last_name"])
         # self.assertEqual(user.phone_number, self.form_data["phone_number"])
-        self.assertEqual(
-            user.birthday,
-            datetime.strptime(self.form_data["birthday"], "%Y-%m-%d").date(),
-        )
-        self.assertEqual(user.city, self.form_data["city"])
+        # self.assertEqual(
+        #     user.birthday,
+        #     datetime.strptime(self.form_data["birthday"], "%Y-%m-%d").date(),
+        # )
+        # self.assertEqual(user.city, self.form_data["city"])
         self.assertEqual(user.metamask_wallet, self.form_data["metamask_wallet"])
         self.assertTrue(user.check_password(self.form_data["password"]))
 
     def test_password_mismatch(self):
         self.form_data.update({"password": "newpass123", "password1": "mismatch"})
-        form = CustomUserUpdateForm(
+        form = ProfileUserUpdateForm(
             data=self.form_data,
             instance=self.user,
         )
@@ -132,7 +130,7 @@ class CustomUserUpdateFormTests(TestCase):
 
     def test_weak_password(self):
         self.form_data.update({"password": "password", "password1": "password"})
-        form = CustomUserUpdateForm(
+        form = ProfileUserUpdateForm(
             data=self.form_data,
             instance=self.user,
         )

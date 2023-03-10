@@ -2,19 +2,26 @@ from collections.abc import Sequence
 from typing import Any
 
 from django.contrib.auth import get_user_model
-from factory import Faker, post_generation
+from factory import Faker, LazyFunction, fuzzy, post_generation
 from factory.django import DjangoModelFactory
+from faker import Faker as _Faker
+
+fake = _Faker()
 
 
 class UserFactory(DjangoModelFactory):
+    class Meta:
+        model = get_user_model()
+        django_get_or_create = ["username"]
+
     username = Faker("user_name")
     email = Faker("email")
     first_name = Faker("name")
     last_name = Faker("name")
     phone_number = Faker("phone_number")
-    birthday = Faker("birthday")
-    city = Faker("city")
+    token_balance = LazyFunction(lambda: fake.random_int(min=0, max=100000))
     metamask_wallet = "0xEFE417C9e02f8B36f7969af9e4c40a25Bed74ecF"
+    metamask_confirmed = fuzzy.FuzzyChoice([True, False])
 
     @post_generation
     def password(self, create: bool, extracted: Sequence[Any], **kwargs):
@@ -32,6 +39,8 @@ class UserFactory(DjangoModelFactory):
         )
         self.set_password(password)
 
-    class Meta:
-        model = get_user_model()
-        django_get_or_create = ["username"]
+    @post_generation
+    def settings(self, create: bool, extracted: Sequence[Any], **kwargs):
+        self.settings.city = Faker("city")
+        self.settings.birthday = fake.date_of_birth(minimum_age=18, maximum_age=70)
+        self.settings.save()
