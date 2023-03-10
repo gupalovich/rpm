@@ -43,7 +43,7 @@ class UserTests(TestCase):
         self.assertTrue(user.first_name)
         self.assertTrue(user.last_name)
         self.assertTrue(user.phone_number)
-        self.assertTrue(user.date_of_birth)
+        self.assertTrue(user.birthday)
         self.assertTrue(user.metamask_wallet)
         self.assertEqual(user.avatar, "avatars/default.png")
 

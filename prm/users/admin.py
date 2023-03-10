@@ -18,14 +18,24 @@ class UserAdmin(auth_admin.UserAdmin):
             _("Personal info"),
             {
                 "fields": (
+                    "parent",
                     "first_name",
                     "last_name",
                     "email",
                     "phone_number",
-                    "date_of_birth",
+                    "birthday",
                     "city",
-                    "metamask_wallet",
                     "avatar",
+                )
+            },
+        ),
+        (
+            _("Кошелек"),
+            {
+                "fields": (
+                    "token_balance",
+                    "metamask_wallet",
+                    "metamask_confirmed",
                 )
             },
         ),

@@ -95,7 +95,7 @@ class CustomUserUpdateFormTests(TestCase):
             "last_name": "Doe",
             "email": "testuser@example.com",
             # "phone_number": "8 (999) 999-99-99",
-            "date_of_birth": "1990-01-01",
+            "birthday": "1990-01-01",
             "city": "Test City",
             "metamask_wallet": "0x1234567890",
             "password": "newpass123",
@@ -114,8 +114,8 @@ class CustomUserUpdateFormTests(TestCase):
         self.assertEqual(user.last_name, self.form_data["last_name"])
         # self.assertEqual(user.phone_number, self.form_data["phone_number"])
         self.assertEqual(
-            user.date_of_birth,
-            datetime.strptime(self.form_data["date_of_birth"], "%Y-%m-%d").date(),
+            user.birthday,
+            datetime.strptime(self.form_data["birthday"], "%Y-%m-%d").date(),
         )
         self.assertEqual(user.city, self.form_data["city"])
         self.assertEqual(user.metamask_wallet, self.form_data["metamask_wallet"])
