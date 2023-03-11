@@ -1,6 +1,6 @@
 import random
 import re
-from decimal import Decimal
+from decimal import ROUND_HALF_UP, Decimal
 
 from django.core.exceptions import ValidationError
 from django.test import TestCase
@@ -163,10 +163,10 @@ class TokenTransactionTests(TestCase):
         transaction = TokenTransactionFactory(
             token_round=self.token_round, amount=self.token_amount
         )
-        self.assertEqual(
-            transaction.token_round.unit_price * transaction.amount,
-            transaction.total_cost,
-        )
+        result = Decimal(str(transaction.token_round.unit_price)) * Decimal(
+            str(transaction.amount)
+        ).quantize(Decimal(".01"), rounding=ROUND_HALF_UP)
+        self.assertEqual(result, transaction.total_cost)
 
     def test_calc_reward(self):
         """TODO: more cases"""

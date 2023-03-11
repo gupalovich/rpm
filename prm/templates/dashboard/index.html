@@ -28,9 +28,11 @@
                 {% for token_round in token_rounds %}
                     <div class="round_number">
                         <img src="{% static 'img/icons/checkbox'%}{% if token_round.is_active %}_active{% endif %}.svg" alt="checkbox">
-                        <p class="round_percent">{{ forloop.counter }} Раунд {{ token_round.percent_share }}%</p>
+                        <p class="round_percent">
+                            {{ token_round.name }} {{ token_round.percent_share }}%
+                        </p>
                     </div>
-                    <p class="price">{{ token_round.currency }} {{ token_round.unit_price }}</p>
+                    <p class="price">{{ token_round.currency }} {{ token_round.unit_price|unlocalize }}</p>
                     <p class="total_cost">{{ token_round.currency }} {{ token_round.total_cost|intcomma }}</p>
                 {% endfor %}
 

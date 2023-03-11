@@ -33,26 +33,41 @@ class DashboardRedirectView(LoginRequiredMixin, RedirectView):
         )
 
 
-class DashboardIndexView(LoginRequiredMixin, DetailView):
-    model = User
-    slug_field = "username"
-    slug_url_kwarg = "username"
+class DashboardIndexView(LoginRequiredMixin, View):
     template_name = "dashboard/index.html"
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["token"] = Token.objects.first()
-        context["token_rounds"] = TokenRound.objects.all()
-        return context
+        user = self.request.user
+        token = Token.objects.first()
+        token_rounds = TokenRound.objects.all()
+        return {
+            "user": user,
+            "token": token,
+            "token_rounds": token_rounds,
+        }
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        return render(request, self.template_name, context)
 
 
 class DashboardTokenView(LoginRequiredMixin, View):
     template_name = "dashboard/token.html"
 
-    def get(self, request, *args, **kwargs):
+    def get_context_data(self, **kwargs):
+        """TODO: user_transactions to context and template"""
         user = self.request.user
-        buy_token_form = BuyTokenForm()
-        context = {"user": user, "buy_token_form": buy_token_form}
+        token = Token.objects.first()
+        token_rounds = TokenRound.objects.all()
+        return {
+            "user": user,
+            "token": token,
+            "token_rounds": token_rounds,
+        }
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        context["buy_token_form"] = BuyTokenForm()
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -65,8 +80,8 @@ class DashboardTokenView(LoginRequiredMixin, View):
                     "dashboard:token", kwargs={"username": self.request.user.username}
                 )
             )
-        user = self.request.user
-        context = {"user": user, "buy_token_form": form}
+        context = self.get_context_data()
+        context["buy_token_form"] = form
         return render(request, self.template_name, context)
 
 

@@ -91,12 +91,21 @@ class DashboardTokenViewTests(TestCase):
             "token_amount": "-1",
             "token_price_usdt": "invalid",
         }
+        self.token_round = TokenRoundFactory()
+        self.token_rounds = TokenRoundFactory.create_batch(7)
+        self.token = TokenFactory(active_round=self.token_round)
 
     def test_get(self):
         self.client.force_login(self.user)
         response = self.client.get(self.url)
+        # Test response
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "dashboard/token.html")
+        # Test context
+        self.assertEqual(response.context["token"], self.token)
+        self.assertQuerysetEqual(
+            response.context["token_rounds"], TokenRound.objects.all()
+        )
 
     def test_get_anon(self):
         response = self.client.get(self.url)

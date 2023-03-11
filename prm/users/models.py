@@ -37,6 +37,9 @@ class User(AbstractUser):
         if self.parent == self:
             raise ValidationError({"parent": _("Parent and Child cannot be the same.")})
 
+    def token_balance_sum(self):
+        """TODO"""
+
 
 class UserSettings(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="settings")

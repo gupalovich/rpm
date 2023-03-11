@@ -1,6 +1,8 @@
 {% extends "dashboard/base.html" %}
 
 {% load static %}
+{% load humanize %}
+{% load l10n %}
 {% load i18n %}
 {% load crispy_forms_tags %}
 
@@ -19,11 +21,20 @@
                 <p class="description">Осталось токенов</p>
 
                 <div class="round_number">
-                    <img src="{% static 'img/icons/check_box_active.svg'%}" alt="">
-                    <p class="round_percent">1 Раунд 10%</p>
+                    <img src="{% static 'img/icons/checkbox_active.svg'%}" alt="checkbox_active">
+                    <p class="round_percent">
+                        {{ token.active_round.name }}
+                        {{ token.active_round.percent_share }}%
+                    </p>
                 </div>
-                <p class="price">$ 0.001</p>
-                <p class="total_cost">$ 100 000</p>
+                <p class="price">
+                    {{ token.active_round.currency }}
+                    {{ token.active_round.unit_price }}
+                </p>
+                <p class="total_cost">
+                    {{ token.active_round.currency }}
+                    {{ token.active_round.total_cost|intcomma }}
+                </p>
             </div>
 
         </div >
@@ -42,58 +53,17 @@
                 <p class="description">Price</p>
                 <p class="description">Total cost</p>
 
-                <div class="round_number">
-                    <img src="{% static 'img/icons/check_box_active.svg'%}" alt="">
-                    <p class="round_percent">1 Раунд 10%</p>
-                </div>
-                <p class="price">$ 0.001</p>
-                <p class="total_cost">$ 100 000</p>
+                {% for token_round in token_rounds %}
+                    <div class="round_number">
+                        <img src="{% static 'img/icons/checkbox'%}{% if token_round.is_active %}_active{% endif %}.svg" alt="checkbox">
+                        <p class="round_percent">
+                            {{ token_round.name }} {{ token_round.percent_share }}%
+                        </p>
+                    </div>
+                    <p class="price">{{ token_round.currency }} {{ token_round.unit_price|unlocalize }}</p>
+                    <p class="total_cost">{{ token_round.currency }} {{ token_round.total_cost|intcomma }}</p>
+                {% endfor %}
 
-                <div class="round_number">
-                    <img src="{% static 'img/icons/checkbox.svg'%}" alt="">
-                    <p class="round_percent">2 Раунд 10%</p>
-                </div>
-                <p class="price">$ 0.005</p>
-                <p class="total_cost">$ 500 000</p>
-
-                <div class="round_number">
-                    <img src="{% static 'img/icons/checkbox.svg'%}" alt="">
-                    <p class="round_percent">3 Раунд 5%</p>
-                </div>
-                <p class="price">$ 0.01</p>
-                <p class="total_cost">$ 500 000</p>
-
-                <div class="round_number">
-                    <img src="{% static 'img/icons/checkbox.svg'%}" alt="">
-                    <p class="round_percent">4 Раунд 5%</p>
-                </div>
-                <p class="price">$ 0.05</p>
-                <p class="total_cost">$ 2 500 000</p>
-
-                <div class="round_number">
-                    <img src="{% static 'img/icons/checkbox.svg'%}" alt="">
-                    <p class="round_percent">5 Раунд 3%</p>
-                </div>
-                <p class="price">$ 0.06</p>
-                <p class="total_cost">$ 1 800 000</p>
-                <div class="round_number">
-                    <img src="{% static 'img/icons/checkbox.svg'%}" alt="">
-                    <p class="round_percent">6 Раунд 3%</p>
-                </div>
-                <p class="price">$ 0.07</p>
-                <p class="total_cost">$ 2 100 000</p>
-                <div class="round_number">
-                    <img src="{% static 'img/icons/checkbox.svg'%}" alt="">
-                    <p class="round_percent">7 Раунд 3%</p>
-                </div>
-                <p class="price">$ 0.08</p>
-                <p class="total_cost">$ 2 400 000</p>
-                <div class="round_number">
-                    <img src="{% static 'img/icons/checkbox.svg'%}" alt="">
-                    <p class="round_percent">8 Раунд 1%</p>
-                </div>
-                <p class="price">$ 0.1</p>
-                <p class="total_cost">$ 1 000 000</p>
             </div>
             <img class="diagram" src="{% static 'img/icons/diagram.svg'%}" alt="">
         </div >
