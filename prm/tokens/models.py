@@ -18,14 +18,12 @@ class Token(models.Model):
         "TokenRound",
         on_delete=models.PROTECT,
         related_name="+",
-        verbose_name=_("Активный раунд"),
+        verbose_name="Активный раунд",
     )
     # Fields
-    name = models.CharField(
-        _("Название"), unique=True, db_index=True, max_length=50, default="Token"
-    )
-    total_amount = models.PositiveBigIntegerField(_("Всего токенов"))
-    total_amount_sold = models.PositiveBigIntegerField(_("Продано токенов"), default=0)
+    name = models.CharField("Название", max_length=50, default="Token")
+    total_amount = models.PositiveBigIntegerField("Всего токенов")
+    total_amount_sold = models.PositiveBigIntegerField("Продано токенов", default=0)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
