@@ -2,6 +2,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse
 
+from prm.tokens.tests.factories import TokenFactory, TokenRound, TokenRoundFactory
 from prm.users.tests.factories import UserFactory
 
 
@@ -56,12 +57,21 @@ class DashboardIndexViewTests(TestCase):
     def setUp(self) -> None:
         self.user = UserFactory()
         self.url = reverse("dashboard:index", kwargs={"username": self.user.username})
+        self.token_round = TokenRoundFactory()
+        self.token_rounds = TokenRoundFactory.create_batch(7)
+        self.token = TokenFactory(active_round=self.token_round)
 
     def test_get(self):
         self.client.force_login(self.user)
         response = self.client.get(self.url)
+        # Test response
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "dashboard/index.html")
+        # Test context
+        self.assertEqual(response.context["token"], self.token)
+        self.assertQuerysetEqual(
+            response.context["token_rounds"], TokenRound.objects.all()
+        )
 
     def test_get_anon(self):
         response = self.client.get(self.url)

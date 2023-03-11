@@ -7,6 +7,8 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, RedirectView, UpdateView, View
 
+from prm.tokens.models import Token, TokenRound
+
 from .forms import AvatarUpdateForm, BuyTokenForm, ProfileUserUpdateForm
 
 User = get_user_model()
@@ -36,6 +38,12 @@ class DashboardIndexView(LoginRequiredMixin, DetailView):
     slug_field = "username"
     slug_url_kwarg = "username"
     template_name = "dashboard/index.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["token"] = Token.objects.first()
+        context["token_rounds"] = TokenRound.objects.all()
+        return context
 
 
 class DashboardTokenView(LoginRequiredMixin, View):

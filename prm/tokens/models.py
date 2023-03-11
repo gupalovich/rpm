@@ -72,8 +72,7 @@ class TokenRound(models.Model):
     @property
     def total_cost(self) -> Decimal:
         """Цена раунда на основе оставшихся токенов"""
-        total = Decimal(str(self.unit_price)) * Decimal(str(self.total_amount_left))
-        return total.quantize(Decimal(".01"), rounding=ROUND_HALF_UP)
+        return round(self.unit_price * self.total_amount_left)
 
     @property
     def total_amount_left(self):

@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
 {% load static %}
+{% load l10n %}
+{% load humanize %}
 
 {% block content %}
 <img id="burger" src="{% static 'img/icons/menu_burger.svg' %}" alt="">
@@ -112,7 +114,7 @@
                     <img class="tile_icon" src="{% static 'img/icons/my_tokens_icon.svg'%}" alt="">
                     <div class="tile_text">
                         <p class="tile_name">Мои токены</p>
-                        <p class="tile_counter"> 454 543</p>
+                        <p class="tile_counter">{{ user.token_balance|intcomma }}</p>
                     </div>
                 </div>
                 <div id="token_sum" class="tile little_tile">
@@ -126,14 +128,20 @@
                     <img class="tile_icon" src="" alt="">
                     <div class="tile_text">
                         <p class="tile_name">Кол-во токенов в продаже</p>
-                        <p class="tile_counter"> 400 000 000</p>
+                        <p class="tile_counter">{{ token.available_amount|intcomma }}</p>
                     </div>
                 </div>
                 <div id="rate" class="tile little_tile">
                     <img class="tile_icon" src="{% static 'img/icons/rate_icon.svg'%}" alt="">
                     <div class="tile_text">
                         <p class="tile_name">Курс токена</p>
-                        <p class="tile_counter">$0.001</p>
+                        <p class="tile_counter">
+                            <span>1 PRM =</span>
+                            <span>
+                                {{ token.active_round.currency }}
+                                {{ token.active_round.unit_price|unlocalize }}
+                            </span>
+                        </p>
                     </div>
                 </div>
             </div>
