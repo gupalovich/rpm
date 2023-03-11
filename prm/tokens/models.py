@@ -30,7 +30,8 @@ class Token(models.Model):
         return f"{self.name} - {self.active_round.unit_price}"
 
     @property
-    def total_amount_left(self):
+    def total_amount_left(self) -> int:
+        """TODO: if negative result validation"""
         return self.total_amount - self.total_amount_sold
 
 

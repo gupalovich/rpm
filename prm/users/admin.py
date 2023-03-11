@@ -17,7 +17,7 @@ class UserSettingsInline(admin.StackedInline):
 class UserAdmin(auth_admin.UserAdmin):
     form = UserAdminChangeForm
     add_form = UserAdminCreationForm
-    inlines = (UserSettingsInline,)
+    # inlines = (UserSettingsInline,)
     fieldsets = (
         (None, {"fields": ("username", "password")}),
         (

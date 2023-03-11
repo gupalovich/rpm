@@ -16,7 +16,7 @@ class TokenRoundFactory(DjangoModelFactory):
     class Meta:
         model = TokenRound
 
-    name = LazyAttribute(lambda: f"{fake.random_int(min=1, max=8)} Раунд")
+    name = LazyAttribute(lambda _: f"{fake.random_int(min=1, max=8)} Раунд")
     percent_share = FuzzyChoice(choices=[10, 5, 3, 1])
     unit_price = FuzzyChoice(
         choices=[
