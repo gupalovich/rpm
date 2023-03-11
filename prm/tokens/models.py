@@ -23,16 +23,16 @@ class Token(models.Model):
     # Fields
     name = models.CharField("Название", max_length=50, default="Token")
     total_amount = models.PositiveBigIntegerField("Всего токенов")
-    total_amount_sold = models.PositiveBigIntegerField("Продано токенов", default=0)
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField("Последнее обновление", auto_now=True)
 
     def __str__(self):
         return f"{self.name} - {self.active_round.unit_price}"
 
     @property
-    def total_amount_left(self) -> int:
-        """TODO: if negative result validation"""
-        return self.total_amount - self.total_amount_sold
+    def available_amount(self) -> int:
+        return round(self.total_amount * 0.4)
+
+    available_amount.fget.short_description = "Токенов в продаже"
 
 
 class TokenRound(models.Model):
@@ -58,18 +58,16 @@ class TokenRound(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.name} - {self.unit_price} - {self.total_cost}"
+        return f"{self.name} - {self.unit_price}"
 
     def clean(self):
         if self.unit_price <= 0:
             raise ValidationError({"unit_price": "Цена не может быть меньше 0."})
 
     def save(self, *args, **kwargs) -> None:
+        if not self.total_amount:
+            self.total_amount = self.calc_total_amount()
         return super().save(*args, **kwargs)
-
-    @property
-    def full_name(self) -> str:
-        return f"{self.name} {self.percent_share}"
 
     @property
     def total_cost(self) -> Decimal:
@@ -85,7 +83,9 @@ class TokenRound(models.Model):
     def calc_total_amount(self) -> int:
         """Подсчитать число токенов в раунде на основе Token.total_amount"""
         token = Token.objects.first()
-        return round(token.total_amount * (self.percent_share / 100))
+        if token:
+            return round(token.total_amount * (self.percent_share / 100))
+        return 0
 
     def calc_total_amount_sold(self) -> int:
         """На основе транзакций раунда, подсчитать кол-во проданных токенов"""
@@ -132,7 +132,11 @@ class TokenTransaction(models.Model):
 
     @property
     def total_cost(self) -> Decimal:
-        """Цена транзакции в USD"""
+        """
+        TODO: рефактор в поле, т.к. если token_round изменен цена будет пересчитана неправильно
+                Подумать хорошенько
+        Цена транзакции в USD
+        """
         total = Decimal(str(self.token_round.unit_price)) * Decimal(str(self.amount))
         return total.quantize(Decimal(".01"), rounding=ROUND_HALF_UP)
 

@@ -43,18 +43,17 @@ class TokenTests(TestCase):
         self.assertTrue(token.active_round.unit_price)
         self.assertTrue(token.name)
         self.assertIsInstance(token.total_amount, int)
-        self.assertIsInstance(token.total_amount_sold, int)
-        self.assertIsInstance(token.total_amount_left, int)
+        self.assertIsInstance(token.available_amount, int)
         self.assertTrue(token.updated_at)
 
     def test_str(self):
         token = TokenFactory()
         self.assertEqual(str(token), f"{token.name} - {token.active_round.unit_price}")
 
-    def test_total_amount_left(self):
-        token = TokenFactory(total_amount=400000, total_amount_sold=11111)
-        result = token.total_amount - token.total_amount_sold
-        self.assertEqual(result, token.total_amount_left)
+    def test_available_amount(self):
+        token = TokenFactory()
+        result = round(token.total_amount * 0.4)
+        self.assertEqual(token.available_amount, result)
 
 
 class TokenRoundTests(TestCase):
@@ -96,7 +95,7 @@ class TokenRoundTests(TestCase):
         token_round = TokenRoundFactory()
         self.assertEqual(
             str(token_round),
-            f"{token_round.name} - {token_round.unit_price} - {token_round.total_cost}",
+            f"{token_round.name} - {token_round.unit_price}",
         )
 
     def test_clean(self):

@@ -42,8 +42,7 @@ class TokenFactory(DjangoModelFactory):
     active_round = SubFactory(TokenRoundFactory)
     # Fields
     name = "PRM Token"
-    total_amount = LazyFunction(lambda: fake.random_int(min=1000000, max=400000000))
-    total_amount_sold = LazyFunction(lambda: fake.random_int(min=0, max=400000000))
+    total_amount = 1000000000
 
 
 class TokenTransactionFactory(DjangoModelFactory):
