@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import DetailView, RedirectView, UpdateView, View
+from django.views.generic import RedirectView, UpdateView, View
 
 from prm.tokens.models import Token, TokenRound
 
@@ -85,11 +85,22 @@ class DashboardTokenView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
 
-class DashboardTeamView(LoginRequiredMixin, DetailView):
-    model = User
-    slug_field = "username"
-    slug_url_kwarg = "username"
+class DashboardTeamView(LoginRequiredMixin, View):
     template_name = "dashboard/team.html"
+
+    def get_context_data(self, **kwargs):
+        """TODO: user_transactions to context and template"""
+        user = self.request.user
+        token = Token.objects.first()
+        return {
+            "user": user,
+            "children": user.children.all(),
+            "token": token,
+        }
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        return render(request, self.template_name, context)
 
 
 class DashboardProfileView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -97,7 +108,7 @@ class DashboardProfileView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     slug_field = "username"
     slug_url_kwarg = "username"
     template_name = "dashboard/profile.html"
-    success_message = _("Information successfully updated")
+    success_message = _("Информация успешно обновлена")
 
     def get_success_url(self):
         return reverse(

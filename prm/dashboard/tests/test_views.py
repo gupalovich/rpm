@@ -138,12 +138,17 @@ class DashboardTeamViewTests(TestCase):
     def setUp(self) -> None:
         self.user = UserFactory()
         self.url = reverse("dashboard:team", kwargs={"username": self.user.username})
+        self.token_round = TokenRoundFactory()
+        self.token = TokenFactory(active_round=self.token_round)
 
     def test_get(self):
         self.client.force_login(self.user)
         response = self.client.get(self.url)
+        # Test response
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "dashboard/team.html")
+        # Test context
+        self.assertEqual(response.context["token"], self.token)
 
     def test_get_anon(self):
         response = self.client.get(self.url)
@@ -159,8 +164,10 @@ class DashboardProfileViewTests(TestCase):
     def test_get(self):
         self.client.force_login(self.user)
         response = self.client.get(self.url)
+        # Test response
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "dashboard/profile.html")
+        # Test context
 
     def test_get_anon(self):
         response = self.client.get(self.url)

@@ -8,7 +8,9 @@
 <div class="full_tile tile">
     <div class="history_text">
         <h3 class="big_name">Моя команда</h3>
-
+        {% for child in children %}
+            <p>{{ child.username }}</p>
+        {% endfor %}
     </div >
 </div>
 <div class="full_tile tile">

@@ -20,11 +20,11 @@
             </div>
             <div class="profile_nums">
                 <div id="profile_token_amount" class="profile_amount">
-                    <p class="profile_counter">453 536</p>
+                    <p class="profile_counter">{{ user.token_balance }}</p>
                     <p class="description">Всего токенов</p>
                 </div>
                 <div class="profile_amount">
-                    <p class="profile_counter">53</p>
+                    <p class="profile_counter">{{ user.children.count }}</p>
                     <p class="description">Приглашенных</p>
                 </div>
             </div>

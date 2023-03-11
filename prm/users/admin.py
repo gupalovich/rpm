@@ -59,8 +59,12 @@ class UserAdmin(auth_admin.UserAdmin):
     )
     list_display = [
         "username",
+        "parent",
         "first_name",
         "last_name",
         "is_superuser",
+    ]
+    list_select_related = [
+        "parent",
     ]
     search_fields = ["username"]

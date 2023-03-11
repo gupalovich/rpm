@@ -70,12 +70,12 @@ class TokenRound(models.Model):
         return super().save(*args, **kwargs)
 
     @property
-    def total_cost(self) -> Decimal:
-        """Цена раунда на основе оставшихся токенов"""
-        return round(self.unit_price * self.total_amount_left)
+    def total_cost(self) -> float:
+        """Цена токенов за весь раунд"""
+        return round(self.unit_price * self.total_amount)
 
     @property
-    def total_amount_left(self):
+    def available_amount(self) -> int:
         """Количество оставшихся токенов в раунде"""
         return self.total_amount - self.total_amount_sold
 
@@ -90,11 +90,11 @@ class TokenRound(models.Model):
         """На основе транзакций раунда, подсчитать кол-во проданных токенов"""
         return self.transactions.aggregate(total=models.Sum("amount"))["total"]
 
-    def calc_progress(self) -> float:
+    def calc_progress(self) -> float | int:
         """Подсчитать прогресс текущего раунда в процентах"""
         if self.total_amount:
             return round((self.total_amount_sold / self.total_amount) * 100, 2)
-        return 0.0
+        return 0
 
 
 class TokenTransaction(models.Model):

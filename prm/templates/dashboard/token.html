@@ -61,7 +61,7 @@
                         </p>
                     </div>
                     <p class="price">{{ token_round.currency }} {{ token_round.unit_price|unlocalize }}</p>
-                    <p class="total_cost">{{ token_round.currency }} {{ token_round.total_cost|intcomma }}</p>
+                    <p class="total_cost">{{ token_round.available_amount|intcomma }}</p>
                 {% endfor %}
 
             </div>
