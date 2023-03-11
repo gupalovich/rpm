@@ -58,7 +58,7 @@ class TokenRound(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.unit_price} - {self.total_cost}"
+        return f"{self.name} - {self.unit_price} - {self.total_cost}"
 
     def clean(self):
         if self.unit_price <= 0:
@@ -127,7 +127,7 @@ class TokenTransaction(models.Model):
         return f"{self.buyer.username} - {self.amount} - {self.total_cost}"
 
     def save(self, *args, **kwargs):
-        self.reward = self.calc_reward(self.buyer.parent)
+        self.reward = self.calc_reward
         return super().save(*args, **kwargs)
 
     @property
@@ -136,7 +136,8 @@ class TokenTransaction(models.Model):
         total = Decimal(str(self.token_round.unit_price)) * Decimal(str(self.amount))
         return total.quantize(Decimal(".01"), rounding=ROUND_HALF_UP)
 
-    def calc_reward(self, parent: User, reward_percent: int = 5) -> int:
-        if parent:
-            return round(self.amount * (reward_percent / 100))
+    @property
+    def calc_reward(self) -> int:
+        if self.buyer.parent:
+            return round(self.amount * (5 / 100))
         return 0
