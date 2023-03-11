@@ -1,3 +1,5 @@
+from decimal import ROUND_HALF_UP, Decimal
+
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -43,16 +45,17 @@ class TokenRound(models.Model):
     class Currency(models.TextChoices):
         USD = "$", "USD"
 
-    name = models.CharField(_("Название"), max_length=50, default=_("# Раунд"))
+    name = models.CharField("Название", max_length=50, default="# Раунд")
+    percent_share = models.PositiveSmallIntegerField("Доля")
     currency = models.CharField(
-        _("Валюта"), max_length=5, choices=Currency.choices, default=Currency.USD
+        "Валюта", max_length=5, choices=Currency.choices, default=Currency.USD
     )
-    unit_price = models.DecimalField(_("Цена"), max_digits=6, decimal_places=3)
-    total_cost = models.PositiveIntegerField(_("Цена за все"))
-    total_amount_sold = models.PositiveIntegerField(_("Продано в раунде"), default=0)
-    percent_share = models.PositiveSmallIntegerField(_("Доля"))
-    is_active = models.BooleanField(_("Активен"), default=False)
-    is_complete = models.BooleanField(_("Завершен"), default=False)
+    unit_price = models.DecimalField("Цена", max_digits=6, decimal_places=3)
+    total_amount = models.PositiveBigIntegerField("Токенов в раунде", default=0)
+    total_amount_sold = models.PositiveIntegerField("Продано в раунде", default=0)
+    progress = models.FloatField("Прогресс раунда", default=0)
+    is_active = models.BooleanField("Активен", default=False)
+    is_complete = models.BooleanField("Завершен", default=False)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -60,15 +63,40 @@ class TokenRound(models.Model):
 
     def clean(self):
         if self.unit_price <= 0:
-            raise ValidationError({"unit_price": _("Price can't be less then 0.")})
+            raise ValidationError({"unit_price": "Цена не может быть меньше 0."})
+
+    def save(self, *args, **kwargs) -> None:
+        return super().save(*args, **kwargs)
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         return f"{self.name} {self.percent_share}"
 
     @property
-    def progress(self):
-        pass
+    def total_cost(self) -> Decimal:
+        """Цена раунда на основе оставшихся токенов"""
+        total = Decimal(str(self.unit_price)) * Decimal(str(self.total_amount_left))
+        return total.quantize(Decimal(".01"), rounding=ROUND_HALF_UP)
+
+    @property
+    def total_amount_left(self):
+        """Количество оставшихся токенов в раунде"""
+        return self.total_amount - self.total_amount_sold
+
+    def calc_total_amount(self) -> int:
+        """Подсчитать число токенов в раунде на основе Token.total_amount"""
+        token = Token.objects.first()
+        return round(token.total_amount * (self.percent_share / 100))
+
+    def calc_total_amount_sold(self) -> int:
+        """На основе транзакций раунда, подсчитать кол-во проданных токенов"""
+        return self.transactions.aggregate(total=models.Sum("amount"))["total"]
+
+    def calc_progress(self) -> float:
+        """Подсчитать прогресс текущего раунда в процентах"""
+        if self.total_amount:
+            return round((self.total_amount_sold / self.total_amount) * 100, 2)
+        return 0.0
 
 
 class TokenTransaction(models.Model):
@@ -91,24 +119,25 @@ class TokenTransaction(models.Model):
         verbose_name="Раунд",
     )
     # Fields
-    amount = models.PositiveIntegerField(_("Количество"))
-    reward = models.PositiveIntegerField(_("Награда"), blank=True, null=True)
-    reward_sent = models.BooleanField(_("Награда начислена"), default=False)
+    amount = models.PositiveIntegerField("Количество")
+    reward = models.PositiveIntegerField("Награда", blank=True, null=True)
+    reward_sent = models.BooleanField("Награда начислена", default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.buyer.username} - {self.amount} - {self.price_sum}"
+        return f"{self.buyer.username} - {self.amount} - {self.total_cost}"
 
     def save(self, *args, **kwargs):
         self.reward = self.calc_reward(self.buyer.parent)
         return super().save(*args, **kwargs)
 
     @property
-    def price_sum(self):
-        return round(self.token_round.unit_price * self.amount, 2)
+    def total_cost(self) -> Decimal:
+        """Цена транзакции в USD"""
+        total = Decimal(str(self.token_round.unit_price)) * Decimal(str(self.amount))
+        return total.quantize(Decimal(".01"), rounding=ROUND_HALF_UP)
 
-    def calc_reward(self, parent: User) -> int:
+    def calc_reward(self, parent: User, reward_percent: int = 5) -> int:
         if parent:
-            reward_percent = 5
             return round(self.amount * (reward_percent / 100))
         return 0

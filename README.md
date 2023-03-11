@@ -20,6 +20,13 @@ PRM4ALL description
         - ~~Тестирование~~
     - Добавление app tokens
         - ~~Token, TokenRound, TokenTransaction~~
+        - TokenRound методы
+            - full_name
+            - total_cost
+            - total_amount_left
+            - calc_total_amount
+            - calc_total_amount_sold
+            - calc_progress
         - Тестирование моделей
 
 2. Dashboard
