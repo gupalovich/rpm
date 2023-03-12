@@ -1,9 +1,9 @@
-from decimal import ROUND_HALF_UP, Decimal
-
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+from .services import calculate_rounded_total_price
 
 User = get_user_model()
 
@@ -64,8 +64,7 @@ class TokenRound(models.Model):
             raise ValidationError({"unit_price": "Цена не может быть меньше 0."})
 
     def save(self, *args, **kwargs) -> None:
-        if not self.total_amount:
-            self.set_total_amount()
+        self.set_total_amount()
         return super().save(*args, **kwargs)
 
     @property
@@ -87,11 +86,13 @@ class TokenRound(models.Model):
 
     def set_total_amount(self) -> None:
         """Подсчитать число токенов в раунде на основе Token.total_amount"""
+        if self.total_amount:
+            return
         token = Token.objects.first()
         if token:
             self.total_amount = round(token.total_amount * (self.percent_share / 100))
 
-    def set_total_amount_sold(self) -> int:
+    def set_total_amount_sold(self) -> None:
         """На основе транзакций раунда, подсчитать кол-во проданных токенов"""
         self.total_amount_sold = self.transactions.aggregate(
             total=models.Sum("amount")
@@ -119,7 +120,9 @@ class TokenTransaction(models.Model):
     )
     # Fields
     amount = models.PositiveIntegerField("Количество")
-    total_price = models.DecimalField("Цена токенов", max_digits=10, decimal_places=2)
+    total_price = models.DecimalField(
+        "Цена токенов", max_digits=10, decimal_places=2, default=0
+    )
     reward = models.PositiveIntegerField("Награда", blank=True, null=True)
     reward_sent = models.BooleanField("Награда начислена", default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -128,16 +131,19 @@ class TokenTransaction(models.Model):
         return f"{self.buyer.username} - {self.amount} - {self.total_price}"
 
     def save(self, *args, **kwargs):
-        self.reward = self.calc_reward()
-        if not self.total_price:
-            self.total_price = self.calc_total_price()
+        self.set_total_price()
+        self.set_reward()
         return super().save(*args, **kwargs)
 
-    def calc_total_price(self) -> Decimal:
-        total = Decimal(str(self.token_round.unit_price)) * Decimal(str(self.amount))
-        return total.quantize(Decimal(".01"), rounding=ROUND_HALF_UP)
+    def set_total_price(self) -> None:
+        if self.total_price:
+            return
+        self.total_price = calculate_rounded_total_price(
+            unit_price=self.token_round.unit_price, amount=self.amount
+        )
 
-    def calc_reward(self) -> int:
+    def set_reward(self) -> None:
         if self.buyer.parent:
-            return round(self.amount * (5 / 100))
-        return 0
+            self.reward = round(self.amount * (5 / 100))
+        else:
+            self.reward = 0

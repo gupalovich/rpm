@@ -52,4 +52,3 @@ class TokenTransactionFactory(DjangoModelFactory):
     token_round = SubFactory(TokenRoundFactory)
     # Fields
     amount = LazyFunction(lambda: fake.random_int(min=100, max=40000000))
-    reward = LazyFunction(lambda: fake.random_int(min=0, max=1000))

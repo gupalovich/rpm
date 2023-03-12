@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.db.models import Sum
 from django.test import TestCase
 
+from ..services import calculate_rounded_total_price
 from .factories import (
     Token,
     TokenFactory,
@@ -161,7 +162,6 @@ class TokenRoundTests(TestCase):
 
 class TokenTransactionTests(TestCase):
     def setUp(self) -> None:
-        """TODO: test methods"""
         self.batch_size = 5
         self.token_amount = random.randrange(100, 40000000)
         self.user = UserFactory(username="PARENT")
@@ -204,35 +204,53 @@ class TokenTransactionTests(TestCase):
             f"{transaction.buyer.username} - {transaction.amount} - {transaction.total_price}",
         )
 
-    def test_save(self):
+    def test_save_set_total_price(self):
+        transaction = TokenTransactionFactory(total_price=0)
+        transaction_1 = TokenTransactionFactory(total_price=1.11)
+        self.assertTrue(transaction.total_price > 0)
+        self.assertEqual(transaction_1.total_price, 1.11)
+
+    def test_save_set_reward(self):
         transaction = TokenTransactionFactory()
-        # Test default
+        transaction_1 = TokenTransactionFactory(buyer=self.user_1)
+        # Test transaction reward without parent
         self.assertFalse(transaction.reward)
-        # Test reward updated
-        transaction.buyer = self.user_1  # user with parent
-        transaction.save()
-        self.assertTrue(transaction.reward)
+        self.assertFalse(transaction.reward_sent)
+        # Test transaction reward with parent
+        self.assertTrue(transaction_1.reward)
+        self.assertFalse(transaction_1.reward_sent)
+
+    def test_set_total_price(self):
+        transaction = TokenTransactionFactory(
+            token_round=self.token_round, amount=self.token_amount
+        )
+        result = calculate_rounded_total_price(
+            unit_price=transaction.token_round.unit_price, amount=transaction.amount
+        )
+        # Set total price
+        transaction.set_total_price()
+        # Test total_price updated
+        self.assertEqual(result, transaction.total_price)
+
+    def test_set_reward(self):
+        transaction = TokenTransactionFactory(
+            buyer=self.user_1,
+            token_round=TokenRoundFactory(),
+            amount=self.token_amount,
+        )
+        result = round(transaction.amount * (5 / 100))
+        transaction.set_reward()
+        # Test that reward was set
+        self.assertEqual(transaction.reward, result)
         self.assertFalse(transaction.reward_sent)
 
-    # def test_total_cost(self):
-    #     transaction = TokenTransactionFactory(
-    #         token_round=self.token_round, amount=self.token_amount
-    #     )
-    #     result = Decimal(str(transaction.token_round.unit_price)) * Decimal(
-    #         str(transaction.amount)
-    #     ).quantize(Decimal(".01"), rounding=ROUND_HALF_UP)
-    #     self.assertEqual(result, transaction.calc_total_price())
-
-    # def test_calc_reward(self):
-    #     """TODO: more cases"""
-    #     transaction = TokenTransactionFactory(
-    #         buyer=self.user_1, token_round=TokenRoundFactory(), amount=self.token_amount
-    #     )
-    #     result = round(transaction.amount * (5 / 100))
-    #     self.assertEqual(transaction.calc_reward(), result)
-
-    # def test_calc_reward_zero(self):
-    #     transaction = TokenTransactionFactory(
-    #         buyer=self.user, token_round=TokenRoundFactory(), amount=self.token_amount
-    #     )
-    #     self.assertEqual(transaction.calc_reward(), 0)
+    def test_set_reward_no_parent(self):
+        transaction = TokenTransactionFactory(
+            buyer=self.user,
+            token_round=TokenRoundFactory(),
+            amount=self.token_amount,
+        )
+        transaction.set_reward()
+        # Test that reward wasn't set
+        self.assertEqual(transaction.reward, 0)
+        self.assertFalse(transaction.reward_sent)
