@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from .services import calculate_rounded_total_price
+from .utils import calculate_rounded_total_price
 
 User = get_user_model()
 

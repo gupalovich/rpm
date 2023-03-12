@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import RedirectView, UpdateView, View
 
 from prm.tokens.models import Token, TokenRound, TokenTransaction
-from prm.tokens.services import calculate_rounded_total_price
+from prm.tokens.utils import calculate_rounded_total_price
 
 from .forms import AvatarUpdateForm, BuyTokenForm, ProfileUserUpdateForm
 

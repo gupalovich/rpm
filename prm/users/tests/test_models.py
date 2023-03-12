@@ -90,3 +90,7 @@ class UserTests(TestCase):
         with self.assertRaises(ValidationError):
             user.parent = user
             user.clean()
+
+    def test_property_full_name(self):
+        user = UserFactory()
+        self.assertEqual(user.full_name, f"{user.first_name} {user.last_name}")

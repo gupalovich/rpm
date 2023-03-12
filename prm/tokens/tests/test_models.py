@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from django.db.models import Sum
 from django.test import TestCase
 
-from ..services import calculate_rounded_total_price
+from ..utils import calculate_rounded_total_price
 from .factories import (
     Token,
     TokenFactory,
@@ -158,6 +158,7 @@ class TokenRoundTests(TestCase):
             token_round.total_amount_sold,
             token_round.transactions.aggregate(total=Sum("amount"))["total"],
         )
+        self.assertIsInstance(token_round.total_amount_sold, int)
 
 
 class TokenTransactionTests(TestCase):
