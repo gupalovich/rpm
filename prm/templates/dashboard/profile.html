@@ -1,6 +1,7 @@
 {% extends "dashboard/base.html" %}
 
 {% load static %}
+{% load humanize %}
 {% load i18n %}
 {% load crispy_forms_tags %}
 
@@ -20,7 +21,7 @@
             </div>
             <div class="profile_nums">
                 <div id="profile_token_amount" class="profile_amount">
-                    <p class="profile_counter">{{ user.token_balance }}</p>
+                    <p class="profile_counter">{{ user.token_balance|intcomma }}</p>
                     <p class="description">Всего токенов</p>
                 </div>
                 <div class="profile_amount">

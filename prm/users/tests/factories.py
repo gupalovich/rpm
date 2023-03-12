@@ -16,8 +16,8 @@ class UserFactory(DjangoModelFactory):
 
     username = Faker("user_name")
     email = Faker("email")
-    first_name = Faker("name")
-    last_name = Faker("name")
+    first_name = LazyFunction(lambda: fake.first_name())
+    last_name = LazyFunction(lambda: fake.last_name())
     phone_number = Faker("phone_number")
     token_balance = LazyFunction(lambda: fake.random_int(min=0, max=100000))
     metamask_wallet = "0xEFE417C9e02f8B36f7969af9e4c40a25Bed74ecF"
@@ -41,6 +41,6 @@ class UserFactory(DjangoModelFactory):
 
     @post_generation
     def settings(self, create: bool, extracted: Sequence[Any], **kwargs):
-        self.settings.city = Faker("city")
+        self.settings.city = fake.city()
         self.settings.birthday = fake.date_of_birth(minimum_age=18, maximum_age=70)
         self.settings.save()

@@ -65,9 +65,6 @@ class DashboardTokenView(DashboardBaseView):
     template_name = "dashboard/token.html"
 
     def get(self, request, *args, **kwargs):
-        """
-        TODO: user_transactions to context and template
-        """
         context = self.get_context_data()
         context["buy_token_form"] = BuyTokenForm()
         return render(request, self.template_name, context)
@@ -93,8 +90,10 @@ class DashboardTeamView(DashboardBaseView):
     template_name = "dashboard/team.html"
 
     def get(self, request, *args, **kwargs):
+        user = self.request.user
         context = self.get_context_data()
-        context["user_children"] = self.request.user.children.all()
+        context["user_transactions"] = user.transactions.all()
+        context["user_children"] = user.children.select_related("settings")
         return render(request, self.template_name, context)
 
 

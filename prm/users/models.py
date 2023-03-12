@@ -8,6 +8,9 @@ from .validators import validate_phone_number
 
 
 class User(AbstractUser):
+    class Meta:
+        ordering = ["-date_joined"]
+
     parent = models.ForeignKey(
         "self",
         null=True,
@@ -36,6 +39,10 @@ class User(AbstractUser):
     def clean(self):
         if self.parent == self:
             raise ValidationError({"parent": _("Parent and Child cannot be the same.")})
+
+    @property
+    def full_name(self) -> str:
+        return f"{self.first_name} {self.last_name}"
 
 
 class UserSettings(models.Model):

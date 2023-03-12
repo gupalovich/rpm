@@ -1,5 +1,7 @@
 {% extends "dashboard/base.html" %}
 
+{% load humanize %}
+
 {% block inner_top %}
     {{ block.super }}
 {% endblock inner_top %}
@@ -8,15 +10,33 @@
 <div class="full_tile tile">
     <div class="history_text">
         <h3 class="big_name">Моя команда</h3>
-        {% for child in children %}
-            <p>{{ child.username }}</p>
+        {% for user in user_children %}
+            <p>
+                {{ user.full_name }}
+                {{ user.username }}
+                {{ user.phone_number }}
+                {{ user.token_balance|intcomma }}
+                {{ user.date_joined|date:"d.b.Y" }}
+                {{ user.settings.city }}
+            </p>
         {% endfor %}
     </div >
 </div>
 <div class="full_tile tile">
     <div class="history_text">
         <h3 class="big_name">История начислений</h3>
-
+        {% for transaction in user_transactions %}
+            <p>
+                {% if transaction.reward %}
+                    {{ transaction.reward|intcomma }} бонус 5%
+                    {{ transaction.buyer.parent.username }}
+                    {% else %}
+                    {{ transaction.amount|intcomma }} покупка
+                    {{ transaction.buyer.username }}
+                {% endif %}
+                {{ transaction.created_at|date:"d.b.Y" }}
+            </p>
+        {% endfor %}
     </div >
 </div>
 {% endblock inner_bot %}
