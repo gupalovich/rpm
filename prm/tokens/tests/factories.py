@@ -32,7 +32,6 @@ class TokenRoundFactory(DjangoModelFactory):
     )
     total_amount = 0
     total_amount_sold = 0
-    progress = 0
 
 
 class TokenFactory(DjangoModelFactory):

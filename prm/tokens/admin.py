@@ -27,4 +27,4 @@ class TokenRoundAdmin(admin.ModelAdmin):
 
 @admin.register(TokenTransaction)
 class TokenTransactionAdmin(admin.ModelAdmin):
-    list_display = ["buyer", "amount", "reward", "total_cost"]
+    list_display = ["buyer", "amount", "total_price", "reward", "reward_sent"]

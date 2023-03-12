@@ -52,7 +52,6 @@ class TokenRound(models.Model):
     unit_price = models.DecimalField("Цена", max_digits=6, decimal_places=3)
     total_amount = models.PositiveBigIntegerField("Токенов в раунде", default=0)
     total_amount_sold = models.PositiveIntegerField("Продано в раунде", default=0)
-    progress = models.FloatField("Прогресс раунда", default=0)
     is_active = models.BooleanField("Активен", default=False)
     is_complete = models.BooleanField("Завершен", default=False)
     updated_at = models.DateTimeField(auto_now=True)
@@ -70,9 +69,16 @@ class TokenRound(models.Model):
         return super().save(*args, **kwargs)
 
     @property
-    def total_cost(self) -> float:
+    def total_cost(self) -> int:
         """Цена токенов за весь раунд"""
         return round(self.unit_price * self.total_amount)
+
+    @property
+    def progress(self) -> float | int:
+        """Подсчитать прогресс текущего раунда в процентах"""
+        if self.total_amount:
+            return round((self.total_amount_sold / self.total_amount) * 100, 2)
+        return 0
 
     @property
     def available_amount(self) -> int:
@@ -89,12 +95,6 @@ class TokenRound(models.Model):
     def calc_total_amount_sold(self) -> int:
         """На основе транзакций раунда, подсчитать кол-во проданных токенов"""
         return self.transactions.aggregate(total=models.Sum("amount"))["total"]
-
-    def calc_progress(self) -> float | int:
-        """Подсчитать прогресс текущего раунда в процентах"""
-        if self.total_amount:
-            return round((self.total_amount_sold / self.total_amount) * 100, 2)
-        return 0
 
 
 class TokenTransaction(models.Model):
@@ -118,28 +118,24 @@ class TokenTransaction(models.Model):
     )
     # Fields
     amount = models.PositiveIntegerField("Количество")
+    total_price = models.DecimalField("Цена токенов", max_digits=10, decimal_places=2)
     reward = models.PositiveIntegerField("Награда", blank=True, null=True)
     reward_sent = models.BooleanField("Награда начислена", default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.buyer.username} - {self.amount} - {self.total_cost}"
+        return f"{self.buyer.username} - {self.amount} - {self.total_price}"
 
     def save(self, *args, **kwargs):
-        self.reward = self.calc_reward
+        self.reward = self.calc_reward()
+        if not self.total_price:
+            self.total_price = self.calc_total_price()
         return super().save(*args, **kwargs)
 
-    @property
-    def total_cost(self) -> Decimal:
-        """
-        TODO: рефактор в поле, т.к. если token_round изменен цена будет пересчитана неправильно
-                Подумать хорошенько
-        Цена транзакции в USD
-        """
+    def calc_total_price(self) -> Decimal:
         total = Decimal(str(self.token_round.unit_price)) * Decimal(str(self.amount))
         return total.quantize(Decimal(".01"), rounding=ROUND_HALF_UP)
 
-    @property
     def calc_reward(self) -> int:
         if self.buyer.parent:
             return round(self.amount * (5 / 100))
