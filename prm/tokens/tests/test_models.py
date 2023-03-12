@@ -3,6 +3,7 @@ import re
 from decimal import Decimal
 
 from django.core.exceptions import ValidationError
+from django.db.models import Sum
 from django.test import TestCase
 
 from .factories import (
@@ -58,7 +59,6 @@ class TokenTests(TestCase):
 
 class TokenRoundTests(TestCase):
     def setUp(self) -> None:
-        """TODO: test methods/properties"""
         self.batch_size = 5
 
     def test_create(self):
@@ -102,6 +102,61 @@ class TokenRoundTests(TestCase):
         token_round = TokenRoundFactory(unit_price=0)
         with self.assertRaises(ValidationError):
             token_round.clean()
+
+    def test_save(self):
+        token = TokenFactory()
+        token_round = TokenRoundFactory(total_amount=0)
+        # Test set_total_amount() on save works
+        self.assertEqual(
+            token_round.total_amount,
+            round(token.total_amount * (token_round.percent_share / 100)),
+        )
+
+    def test_property_total_cost(self):
+        token_round = TokenRoundFactory(total_amount=10000000)
+        self.assertEqual(
+            token_round.total_cost,
+            round(token_round.unit_price * token_round.total_amount),
+        )
+
+    def test_property_progress(self):
+        token_round = TokenRoundFactory(total_amount=10000000, total_amount_sold=10000)
+        token_round_1 = TokenRoundFactory(total_amount=0)
+        # Tests
+        self.assertEqual(
+            token_round.progress,
+            round((token_round.total_amount_sold / token_round.total_amount) * 100, 2),
+        )
+        self.assertEqual(token_round_1.progress, 0)
+
+    def test_property_available_amount(self):
+        token_round = TokenRoundFactory(total_amount=10000000, total_amount_sold=10000)
+        self.assertEqual(
+            token_round.available_amount,
+            token_round.total_amount - token_round.total_amount_sold,
+        )
+
+    def test_set_total_amount(self):
+        token_round = TokenRoundFactory(total_amount=0)
+        token = TokenFactory()
+        # Tests
+        self.assertEqual(token_round.total_amount, 0)
+        token_round.set_total_amount()
+        self.assertEqual(
+            token_round.total_amount,
+            round(token.total_amount * (token_round.percent_share / 100)),
+        )
+
+    def test_set_total_amount_sold(self):
+        token = TokenFactory()
+        token_round = token.active_round
+        TokenTransactionFactory.create_batch(5, token_round=token_round)
+        # Tests
+        token_round.set_total_amount_sold()
+        self.assertEqual(
+            token_round.total_amount_sold,
+            token_round.transactions.aggregate(total=Sum("amount"))["total"],
+        )
 
 
 class TokenTransactionTests(TestCase):

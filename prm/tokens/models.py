@@ -65,7 +65,7 @@ class TokenRound(models.Model):
 
     def save(self, *args, **kwargs) -> None:
         if not self.total_amount:
-            self.total_amount = self.calc_total_amount()
+            self.set_total_amount()
         return super().save(*args, **kwargs)
 
     @property
@@ -85,16 +85,17 @@ class TokenRound(models.Model):
         """Количество оставшихся токенов в раунде"""
         return self.total_amount - self.total_amount_sold
 
-    def calc_total_amount(self) -> int:
+    def set_total_amount(self) -> None:
         """Подсчитать число токенов в раунде на основе Token.total_amount"""
         token = Token.objects.first()
         if token:
-            return round(token.total_amount * (self.percent_share / 100))
-        return 0
+            self.total_amount = round(token.total_amount * (self.percent_share / 100))
 
-    def calc_total_amount_sold(self) -> int:
+    def set_total_amount_sold(self) -> int:
         """На основе транзакций раунда, подсчитать кол-во проданных токенов"""
-        return self.transactions.aggregate(total=models.Sum("amount"))["total"]
+        self.total_amount_sold = self.transactions.aggregate(
+            total=models.Sum("amount")
+        )["total"]
 
 
 class TokenTransaction(models.Model):
