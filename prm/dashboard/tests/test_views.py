@@ -6,23 +6,6 @@ from prm.tokens.tests.factories import TokenFactory, TokenRound, TokenRoundFacto
 from prm.users.tests.factories import UserFactory
 
 
-class HomeRedirectViewTests(TestCase):
-    def setUp(self) -> None:
-        self.user = UserFactory()
-        self.token = TokenFactory()
-
-    def test_get(self):
-        self.client.force_login(self.user)
-        response = self.client.get("/")
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, self.user.get_absolute_url())
-
-    def test_get_anon(self):
-        response = self.client.get("/")
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse("account_login"))
-
-
 class DashboardRedirectViewTests(TestCase):
     def setUp(self) -> None:
         self.user = UserFactory()
@@ -39,7 +22,18 @@ class DashboardRedirectViewTests(TestCase):
     def test_get_anon(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, f"{reverse('account_login')}?next={self.url}")
+        self.assertRedirects(response, reverse("account_login"))
+
+    def test_get_index(self):
+        self.client.force_login(self.user)
+        response = self.client.get("/")
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, self.user.get_absolute_url())
+
+    def test_get_index_anon(self):
+        response = self.client.get("/")
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("account_login"))
 
     def test_get_home(self):
         self.client.force_login(self.user)
@@ -50,9 +44,7 @@ class DashboardRedirectViewTests(TestCase):
     def test_get_home_anon(self):
         response = self.client.get(self.url_home)
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(
-            response, f"{reverse('account_login')}?next={self.url_home}"
-        )
+        self.assertRedirects(response, reverse("account_login"))
 
 
 class DashboardIndexViewTests(TestCase):

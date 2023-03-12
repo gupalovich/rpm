@@ -27,14 +27,15 @@
         <h3 class="big_name">История начислений</h3>
         {% for transaction in user_transactions %}
             <p>
-                {% if transaction.reward %}
-                    {{ transaction.reward|intcomma }} бонус 5%
-                    {{ transaction.buyer.parent.username }}
-                    {% else %}
-                    {{ transaction.amount|intcomma }} покупка
-                    {{ transaction.buyer.username }}
-                {% endif %}
-                {{ transaction.created_at|date:"d.b.Y" }}
+            {% if transaction.reward and transaction.buyer.username != user.username %}
+                {{ transaction.reward|intcomma }}
+                бонус 5%
+            {% else %}
+                {{ transaction.amount|intcomma }}
+                покупка
+            {% endif %}
+            {{ transaction.buyer.username }}
+            {{ transaction.created_at|date:"d.b.Y" }}
             </p>
         {% endfor %}
     </div >
