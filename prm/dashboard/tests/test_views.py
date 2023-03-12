@@ -9,6 +9,7 @@ from prm.users.tests.factories import UserFactory
 class HomeRedirectViewTests(TestCase):
     def setUp(self) -> None:
         self.user = UserFactory()
+        self.token = TokenFactory()
 
     def test_get(self):
         self.client.force_login(self.user)
@@ -25,6 +26,7 @@ class HomeRedirectViewTests(TestCase):
 class DashboardRedirectViewTests(TestCase):
     def setUp(self) -> None:
         self.user = UserFactory()
+        self.token = TokenFactory()
         self.url = reverse("dashboard:redirect")
         self.url_home = reverse("dashboard:home-redirect")
 

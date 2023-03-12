@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import RedirectView, UpdateView, View
 
 from prm.tokens.models import Token, TokenRound
+from prm.tokens.services import calculate_rounded_total_price
 
 from .forms import AvatarUpdateForm, BuyTokenForm, ProfileUserUpdateForm
 
@@ -33,15 +34,20 @@ class DashboardRedirectView(LoginRequiredMixin, RedirectView):
         )
 
 
-class DashboardIndexView(LoginRequiredMixin, View):
-    template_name = "dashboard/index.html"
+class DashboardBaseView(LoginRequiredMixin, View):
+    template_name = ""
 
-    def get_context_data(self, **kwargs):
-        user = self.request.user
+    def get_context_data(self):
         token = Token.objects.first()
         token_rounds = TokenRound.objects.all()
+        user = self.request.user
+        user_balance = calculate_rounded_total_price(
+            unit_price=user.token_balance,
+            amount=token.active_round.unit_price,
+        )
         return {
             "user": user,
+            "user_balance": user_balance,
             "token": token,
             "token_rounds": token_rounds,
         }
@@ -51,30 +57,28 @@ class DashboardIndexView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
 
-class DashboardTokenView(LoginRequiredMixin, View):
+class DashboardIndexView(DashboardBaseView):
+    template_name = "dashboard/index.html"
+
+
+class DashboardTokenView(DashboardBaseView):
     template_name = "dashboard/token.html"
 
-    def get_context_data(self, **kwargs):
-        """TODO: user_transactions to context and template"""
-        user = self.request.user
-        token = Token.objects.first()
-        token_rounds = TokenRound.objects.all()
-        return {
-            "user": user,
-            "token": token,
-            "token_rounds": token_rounds,
-        }
-
     def get(self, request, *args, **kwargs):
+        """
+        TODO: user_transactions to context and template
+        """
         context = self.get_context_data()
         context["buy_token_form"] = BuyTokenForm()
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
+        """
+        TODO: form handling
+        """
         form = BuyTokenForm(request.POST)
         if form.is_valid():
             # token_amount = form.cleaned_data['token_amount']
-            # token_price_usdt = form.cleaned_data['token_price_usdt']
             return redirect(
                 reverse(
                     "dashboard:token", kwargs={"username": self.request.user.username}
@@ -85,21 +89,12 @@ class DashboardTokenView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
 
-class DashboardTeamView(LoginRequiredMixin, View):
+class DashboardTeamView(DashboardBaseView):
     template_name = "dashboard/team.html"
-
-    def get_context_data(self, **kwargs):
-        """TODO: user_transactions to context and template"""
-        user = self.request.user
-        token = Token.objects.first()
-        return {
-            "user": user,
-            "children": user.children.all(),
-            "token": token,
-        }
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
+        context["user_children"] = self.request.user.children.all()
         return render(request, self.template_name, context)
 
 
