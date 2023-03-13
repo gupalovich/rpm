@@ -1,5 +1,8 @@
+from django.contrib.humanize.templatetags.humanize import intcomma
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+
+from prm.tokens.utils import get_token
 
 
 def validate_image_size(image, max_size: int = 100000):
@@ -22,4 +25,13 @@ def validate_image_max_pixel_size(image, max_width: int = 1000, max_height: int 
         raise ValidationError(
             _(f"The maximum pixel size is {max_width} x {max_height}."),
             code="invalid_pixel_size",
+        )
+
+
+def validate_available_tokens(amount: int) -> None:
+    token = get_token()
+    available_tokens = token.active_round.available_amount
+    if amount > available_tokens:
+        raise ValidationError(
+            _(f"Превышено доступное число {intcomma(available_tokens)}.")
         )

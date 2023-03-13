@@ -88,6 +88,7 @@ class DashboardTokenViewTests(TestCase):
         self.token_round = TokenRoundFactory()
         self.token_rounds = TokenRoundFactory.create_batch(7)
         self.token = TokenFactory(active_round=self.token_round)
+        self.token.active_round.save()  # set total_amount on active_round
 
     def test_get(self):
         self.client.force_login(self.user)

@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model, password_validation
 from django.utils.translation import gettext_lazy as _
 
 from .validators import (
+    validate_available_tokens,
     validate_image_max_pixel_size,
     validate_image_min_pixel_size,
     validate_image_size,
@@ -15,6 +16,9 @@ class BuyTokenForm(forms.Form):
     token_amount = forms.IntegerField(
         label="",
         widget=forms.TextInput(attrs={"placeholder": _("Введите кол-во токенов")}),
+        validators=[
+            validate_available_tokens,
+        ],
     )
     token_price_usd = forms.CharField(
         label="",

@@ -6,3 +6,9 @@ def calculate_rounded_total_price(
 ) -> Decimal:
     total = Decimal(str(unit_price)) * Decimal(str(amount))
     return total.quantize(Decimal(".01"), rounding=rounding)
+
+
+def get_token():
+    from .models import Token
+
+    return Token.objects.first()
