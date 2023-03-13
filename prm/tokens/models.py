@@ -52,8 +52,6 @@ class TokenRound(models.Model):
     unit_price = models.DecimalField("Цена", max_digits=6, decimal_places=3)
     total_amount = models.PositiveBigIntegerField("Токенов в раунде", default=0)
     total_amount_sold = models.PositiveIntegerField("Продано в раунде", default=0)
-    is_active = models.BooleanField("Активен", default=False)
-    is_complete = models.BooleanField("Завершен", default=False)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -105,6 +103,11 @@ class TokenTransaction(models.Model):
         verbose_name_plural = _("Token Transactions")
         ordering = ["-created_at"]
 
+    class Status(models.TextChoices):
+        PENDING = _("Pending"), _("Pending")
+        FAILED = _("Failed"), _("Failed")
+        SUCCESS = _("Success"), _("Success")
+
     # Relations
     buyer = models.ForeignKey(
         User,
@@ -122,6 +125,9 @@ class TokenTransaction(models.Model):
     amount = models.PositiveIntegerField("Количество")
     total_price = models.DecimalField(
         "Цена токенов", max_digits=10, decimal_places=2, default=0
+    )
+    status = models.CharField(
+        "Статус", max_length=20, choices=Status.choices, default=Status.PENDING
     )
     reward = models.PositiveIntegerField("Награда", blank=True, null=True)
     reward_sent = models.BooleanField("Награда начислена", default=False)

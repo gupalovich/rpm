@@ -88,8 +88,6 @@ class TokenRoundTests(TestCase):
         self.assertIsInstance(token_round.unit_price, Decimal)
         self.assertEqual(token_round.total_amount, 0)
         self.assertEqual(token_round.total_amount_sold, 0)
-        self.assertIsInstance(token_round.is_active, bool)
-        self.assertIsInstance(token_round.is_complete, bool)
         self.assertTrue(token_round.updated_at)
 
     def test_str(self):
@@ -194,6 +192,8 @@ class TokenTransactionTests(TestCase):
         self.assertEqual(transaction.buyer, self.user)
         self.assertEqual(transaction.token_round, self.token_round)
         self.assertTrue(transaction.amount)
+        self.assertTrue(transaction.total_price)
+        self.assertEqual(transaction.status, TokenTransaction.Status.PENDING)
         self.assertFalse(transaction.reward)
         self.assertIsInstance(transaction.reward_sent, bool)
         self.assertTrue(transaction.created_at)
