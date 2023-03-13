@@ -5,6 +5,10 @@
 {% load i18n %}
 {% load crispy_forms_tags %}
 
+{% block head_title %} - Profile{% endblock head_title %}
+{% block crumbs_title %}Profile{% endblock crumbs_title %}
+{% block page_title %}Profile{% endblock page_title %}
+
 {% block inner_top %}
 <div class="profile_tiles">
     <div class="profile_tile tile">
@@ -16,23 +20,26 @@
             <div class="profile_text">
                 <p class="name">{{ user.first_name }} {{ user.last_name }}</p>
                 <p class="registration_date description">
-                    Дата регистрации: {{ user.date_joined|date:"d.m.Y" }}
+                    {% translate "Дата регистрации" %}: {{ user.date_joined|date:"d.m.Y" }}
                 </p>
             </div>
             <div class="profile_nums">
                 <div id="profile_token_amount" class="profile_amount">
                     <p class="profile_counter">{{ user.token_balance|intcomma }}</p>
-                    <p class="description">Всего токенов</p>
+                    <p class="description">{% translate "Всего токенов" %}</p>
                 </div>
                 <div class="profile_amount">
                     <p class="profile_counter">{{ user.children.count }}</p>
-                    <p class="description">Приглашенных</p>
+                    <p class="description">{% translate "Приглашенных" %}</p>
                 </div>
             </div>
         </div>
     </div>
     <div class="investor_tile tile">
-        <h3 class="invite_text">Пригласи инвестора в проект<br> и получи 5% в токенах!</h3>
+        <h3 class="invite_text">
+            {% translate "Пригласи инвестора в проект<br> и получи 5% в токенах!" %}
+        </h3>
+
     </div>
 </div>
 {% endblock inner_top %}
@@ -40,7 +47,7 @@
 {% block inner_bot %}
 <div id="settings" class="full_tile tile">
     <div class="settings_text">
-        <h3 class="big_name">Редактировать профиль</h3>
+        <h3 class="big_name">{% translate "Редактировать профиль" %}</h3>
     </div >
     {% comment %} {% if messages %}
       {% for message in messages %}
@@ -57,7 +64,7 @@
     <form class="form settings_table" method="POST">
         {% csrf_token %}
         {{ form|crispy }}
-        <button class="btn btn-slim-wide" type="submit">{% translate "Save" %}</button>
+        <button class="btn btn-slim-wide" type="submit">{% translate "Сохранить" %}</button>
     </form>
 </div>
 {% endblock inner_bot %}

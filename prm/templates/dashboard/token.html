@@ -6,6 +6,10 @@
 {% load i18n %}
 {% load crispy_forms_tags %}
 
+{% block head_title %} - Token{% endblock head_title %}
+{% block crumbs_title %}Token{% endblock crumbs_title %}
+{% block page_title %}Token{% endblock page_title %}
+
 {% block inner_top %}
     {{ block.super }}
 {% endblock inner_top %}
@@ -13,12 +17,12 @@
 {% block inner_bot %}
 <div id="big_tiles_2" class="big_tiles">
     <div id="round" class="big_tile tile">
-        <h3 class="big_name">Покупай токены PRM и зарабатывай вместе с нами</h3>
+        <h3 class="big_name">{% translate "Покупай токены PRM и зарабатывай вместе с нами" %}</h3>
         <div class="round_content">
             <div class="table">
-                <p class="description">Round</p>
-                <p class="description">Price</p>
-                <p class="description">Осталось токенов</p>
+                <p class="description">{% translate "Раунд" %}</p>
+                <p class="description">{% translate "Цена" %}</p>
+                <p class="description">{% translate "Осталось токенов" %}</p>
 
                 <div class="round_number">
                     <img src="{% static 'img/icons/checkbox_active.svg'%}" alt="checkbox_active">
@@ -44,29 +48,9 @@
         </form>
 
     </div>
-    <div id="round" class="tile big_tile">
-        <h3 class="big_name">Раунды продаж</h3>
-        <div class="round_content">
-            <div class="table">
-                <p class="description">Round</p>
-                <p class="description">Price</p>
-                <p class="description">Total cost</p>
 
-                {% for token_round in token_rounds %}
-                    <div class="round_number">
-                        <img src="{% static 'img/icons/checkbox'%}{% if token_round.is_active %}_active{% endif %}.svg" alt="checkbox">
-                        <p class="round_percent">
-                            {{ token_round.name }} {{ token_round.percent_share }}%
-                        </p>
-                    </div>
-                    <p class="price">{{ token_round.currency }} {{ token_round.unit_price|unlocalize }}</p>
-                    <p class="total_cost">{{ token_round.currency }} {{ token_round.total_cost|intcomma }}</p>
-                {% endfor %}
+    {% include 'dashboard/components/token_rounds.html' %}
 
-            </div>
-            <img class="diagram" src="{% static 'img/icons/diagram.svg'%}" alt="">
-        </div >
-    </div>
 </div>
 <div class="full_tile tile">
     <div class="history_text">

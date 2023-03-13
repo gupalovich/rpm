@@ -2,6 +2,7 @@
 
 {% load static %}
 {% load l10n %}
+{% load i18n %}
 {% load humanize %}
 
 {% block inner_top %}
@@ -13,47 +14,27 @@
     <div id="defi" class="tile big_tile">
         <div class="defi_info">
             <h1 class="defi_name">DeFi Token PRM4ALL</h1>
-            <p class="description">Получай процент с товарооборота компании!</p>
-            <button class="btn btn-slim defi_btn">Купить</button>
+            <p class="description">{% translate "Получай процент с товарооборота компании!" %}</p>
+            <button class="btn btn-slim defi_btn">{% translate "Купить" %}</button>
         </div>
     </div>
-    <div id="round" class="tile big_tile">
-        <h3 class="big_name">Раунды продаж</h3>
-        <div class="round_content">
-            <div class="table">
-                <p class="description">Round</p>
-                <p class="description">Price</p>
-                <p class="description">Total cost</p>
 
-                {% for token_round in token_rounds %}
-                    <div class="round_number">
-                        <img src="{% static 'img/icons/checkbox'%}{% if token_round.is_active %}_active{% endif %}.svg" alt="checkbox">
-                        <p class="round_percent">
-                            {{ token_round.name }} {{ token_round.percent_share }}%
-                        </p>
-                    </div>
-                    <p class="price">{{ token_round.currency }} {{ token_round.unit_price|unlocalize }}</p>
-                    <p class="total_cost">{{ token_round.currency }} {{ token_round.total_cost|intcomma }}</p>
-                {% endfor %}
+    {% include 'dashboard/components/token_rounds.html' %}
 
-            </div>
-            <img class="diagram" src="{% static 'img/icons/diagram.svg'%}" alt="">
-        </div >
-    </div>
     <div id="prm" class="tile big_tile">
         <div class="prm_text">
             <h3 class="big_name">Partner<br>Relationship<br>Management</h3>
-            <p class="description">Стань частью будущего!</p>
+            <p class="description">{% translate "Стань частью будущего!" %}</p>
             <div class="button_row">
-                <button class="btn btn-slim">Смотреть презентацию</button>
-                <button class="btn btn-slim">Скачать PDF</button>
+                <button class="btn btn-slim">{% translate "Смотреть презентацию" %}</button>
+                <button class="btn btn-slim">{% translate "Скачать PDF" %}</button>
             </div>
         </div>
     </div>
     <div id="video" class="tile big_tile">
         <div class="video_text">
-            <h3 class="big_name">Видео о проекте</h3>
-            <p class="description">Революционное приложение для предпринимателей!</p>
+            <h3 class="big_name">{% translate "Видео о проекте" %}</h3>
+            <p class="description">{% translate "Революционное приложение для предпринимателей!" %}</p>
         </div>
         <iframe id="prm_video" src="https://www.youtube-nocookie.com/embed/M8Cqf67RZ44" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
     </div>

@@ -4,6 +4,8 @@
 {% load l10n %}
 {% load humanize %}
 
+{% block head_title %} - Dashboard{% endblock %}
+
 {% block content %}
 <img id="burger" src="{% static 'img/icons/menu_burger.svg' %}" alt="">
 <div class="dashboard_body">
@@ -92,11 +94,11 @@
     </div>
 
     <div id="main" class="main">
-        <p class="page_path">Pages / Dashboard</p>
+        <p class="page_path">Pages / {% block crumbs_title %}Dashboard{% endblock %}</p>
         <div class="tile header">
 
             <div class="page_name_div">
-                <h2 class="page_name">Dashboard</h2>
+                <h1 class="page_name">{% block page_title %}Dashboard{% endblock %}</h1>
             </div>
             <div class="bio_part">
                 <a href="" class="btn btn-slim invite_link">Ссылка для приглашения</a>
