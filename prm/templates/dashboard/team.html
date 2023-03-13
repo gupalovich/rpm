@@ -13,21 +13,29 @@
 {% endblock inner_top %}
 
 {% block inner_bot %}
-<div class="full_tile tile">
-    <div class="history_text">
-        <h3 class="big_name">{% translate "Моя команда" %}</h3>
+<section class="tile tile-lg">
+    <h2 class="big_name">{% translate "Моя команда" %}</h2>
+    <div class="flexible-table">
+        <div class="row row-header">
+            <div class="cell">{% translate "ФИО" %}</div>
+            <div class="cell">{% translate "Логин" %}</div>
+            <div class="cell">{% translate "Телефон" %}</div>
+            <div class="cell">{% translate "Кол-во купленных токенов" %}</div>
+            <div class="cell">{% translate "Дата регистрации" %}</div>
+            <div class="cell">{% translate "Город" %}</div>
+        </div>
         {% for user in user_children %}
-            <p>
-                {{ user.full_name }}
-                {{ user.username }}
-                {{ user.phone_number|clean_phone_number }}
-                {{ user.token_balance|intcomma }}
-                {{ user.date_joined|date:"d.b.Y" }}
-                {{ user.settings.city }}
-            </p>
+            <div class="row">
+                <div class="cell">{{ user.full_name }}</div>
+                <div class="cell">{{ user.username }}</div>
+                <div class="cell">{{ user.phone_number|clean_phone_number }}</div>
+                <div class="cell">{{ user.token_balance|intcomma }}</div>
+                <div class="cell">{{ user.date_joined|date:"d.b.Y" }}</div>
+                <div class="cell">{{ user.settings.city }}</div>
+            </div>
         {% endfor %}
-    </div >
-</div>
+    </div>
+</section>
 
 {% include "dashboard/components/transaction_history.html" %}
 

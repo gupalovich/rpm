@@ -588,6 +588,18 @@
     // box-shadow: 14px 17px 40px 4px rgba(112, 144, 176, 0.08);
 }
 
+
+.tile-lg {
+    flex-direction: column;
+    margin-top: 20px;
+    padding: 30px;
+
+    .big_name {
+        margin-bottom: 20px;
+        font-weight: 700;
+    }
+}
+
 .tiles {
     margin-top: 20px;
     display: grid;
@@ -687,6 +699,39 @@
     font-weight: 700;
 }
 
+.flexible-table {
+    display: flex;
+    flex-direction: column;
+
+    &__header {
+        font-weight: bold;
+    }
+
+    .row.row-header {
+        .cell {
+            padding-bottom: 10px;
+            color: var(--text-light);
+            font-weight: 500;
+            border-bottom: 1px solid var(--border-light);
+        }
+    }
+
+    .row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 210px));
+
+        .cell {
+            padding: 10px 0;
+            padding-right: 15px;
+            color: var(--text-dark);
+            font-size: 14px;
+            font-weight: 700;
+        }
+    }
+
+
+}
+
 .round_percent,
 .price,
 .total_cost {
@@ -698,7 +743,6 @@
     width: 100%;
     display: flex;
     align-items: center;
-    // flex-direction: column;
 }
 
 .big_name {

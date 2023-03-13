@@ -1,21 +1,27 @@
 {% load humanize %}
 {% load i18n %}
 
-<div class="full_tile tile">
-    <div class="history_text">
-        <h3 class="big_name">{% translate "История начислений" %}</h3>
+<section class="tile tile-lg">
+    <h2 class="big_name">{% translate "История начислений" %}</h2>
+    <div class="flexible-table">
+        <div class="row row-header">
+            <div class="cell">{% translate "От кого" %}</div>
+            <div class="cell">{% translate "Тип" %}</div>
+            <div class="cell">{% translate "Кол-во токенов" %}</div>
+            <div class="cell">{% translate "Дата начисления" %}</div>
+        </div>
         {% for transaction in user_transactions %}
-            <p>
-            {% if transaction.reward and transaction.buyer.username != user.username %}
-                {{ transaction.reward|intcomma }}
-                {% translate "бонус 5%" %}
-            {% else %}
-                {{ transaction.amount|intcomma }}
-                {% translate "покупка" %}
-            {% endif %}
-            {{ transaction.buyer.username }}
-            {{ transaction.created_at|date:"d.b.Y" }}
-            </p>
+            <div class="row">
+                <div class="cell">{{ transaction.buyer.username }}</div>
+                {% if transaction.reward and transaction.buyer.username != user.username %}
+                    <div class="cell">{% translate "бонус 5%" %}</div>
+                    <div class="cell">{{ transaction.reward|intcomma }}</div>
+                {% else %}
+                    <div class="cell">{% translate "покупка" %}</div>
+                    <div class="cell">{{ transaction.amount|intcomma }}</div>
+                {% endif %}
+                <div class="cell">{{ transaction.created_at|date:"d.b.Y" }}</div>
+            </div>
         {% endfor %}
-    </div >
-</div>
+    </div>
+</section>

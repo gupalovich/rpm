@@ -695,6 +695,19 @@ input[type=date]::-webkit-calendar-picker-indicator {
   background-position: 140%;
 }
 
+.tile-lg {
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  margin-top: 20px;
+  padding: 30px;
+}
+.tile-lg .big_name {
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
 .tiles {
   margin-top: 20px;
   display: grid;
@@ -806,6 +819,36 @@ input[type=date]::-webkit-calendar-picker-indicator {
       -ms-flex-positive: 1;
           flex-grow: 1;
   font-size: 0.9em;
+  font-weight: 700;
+}
+
+.flexible-table {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+.flexible-table__header {
+  font-weight: bold;
+}
+.flexible-table .row.row-header .cell {
+  padding-bottom: 10px;
+  color: var(--text-light);
+  font-weight: 500;
+  border-bottom: 1px solid var(--border-light);
+}
+.flexible-table .row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 210px));
+}
+.flexible-table .row .cell {
+  padding: 10px 0;
+  padding-right: 15px;
+  color: var(--text-dark);
+  font-size: 14px;
   font-weight: 700;
 }
 
