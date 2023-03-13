@@ -2,7 +2,9 @@ from decimal import ROUND_HALF_UP, Decimal
 
 import pytest
 
-from ..utils import calculate_rounded_total_price, get_token
+from prm.users.tests.factories import UserFactory
+
+from ..utils import calculate_rounded_total_price, create_transaction, get_token
 from .factories import TokenFactory
 
 
@@ -19,3 +21,13 @@ def test_get_token():
     assert not get_token()
     tokens = [TokenFactory(), TokenFactory()]
     assert get_token() == tokens[0]
+
+
+@pytest.mark.django_db
+def test_create_transaction():
+    user = UserFactory()
+    token = TokenFactory()
+    transaction = create_transaction(buyer=user, token_amount=100)
+    assert transaction.buyer == user
+    assert transaction.token_round == token.active_round
+    assert transaction.total_price

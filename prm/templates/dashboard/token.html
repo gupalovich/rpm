@@ -54,24 +54,9 @@
     {% include 'dashboard/components/token_rounds.html' %}
 
 </div>
-<div class="full_tile tile">
-    <div class="history_text">
-        <h3 class="big_name">История начислений</h3>
-        {% for transaction in user_transactions %}
-            <p>
-            {% if transaction.reward and transaction.buyer.username != user.username %}
-                {{ transaction.reward|intcomma }}
-                бонус 5%
-            {% else %}
-                {{ transaction.amount|intcomma }}
-                покупка
-            {% endif %}
-            {{ transaction.buyer.username }}
-            {{ transaction.created_at|date:"d.b.Y" }}
-            </p>
-        {% endfor %}
-    </div>
-</div>
+
+{% include "dashboard/components/transaction_history.html" %}
+
 {% endblock inner_bot %}
 
 

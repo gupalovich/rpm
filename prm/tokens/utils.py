@@ -12,3 +12,13 @@ def get_token():
     from .models import Token
 
     return Token.objects.first()
+
+
+def create_transaction(*, buyer, token_amount):
+    from .models import TokenTransaction
+
+    token = get_token()
+    transaction = TokenTransaction.objects.create(
+        buyer=buyer, token_round=token.active_round, amount=token_amount
+    )
+    return transaction
