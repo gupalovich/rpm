@@ -14,13 +14,14 @@ User = get_user_model()
 class BuyTokenForm(forms.Form):
     token_amount = forms.IntegerField(
         label="",
-        widget=forms.NumberInput(attrs={"placeholder": _("Введите кол-во токенов")}),
+        widget=forms.TextInput(attrs={"placeholder": _("Введите кол-во токенов")}),
     )
-    token_price_usdt = forms.DecimalField(
+    token_price_usd = forms.CharField(
         label="",
-        widget=forms.NumberInput(attrs={"placeholder": _("Стоимость USDT")}),
-        max_digits=12,
-        decimal_places=4,
+        widget=forms.TextInput(
+            attrs={"placeholder": _("Стоимость USDT"), "readonly": "readonly"}
+        ),
+        required=False,
     )
 
     def clean_token_amount(self):
@@ -28,12 +29,6 @@ class BuyTokenForm(forms.Form):
         if token_amount <= 0:
             raise forms.ValidationError(_("Неверное количество."))
         return token_amount
-
-    def clean_token_price_usdt(self):
-        token_price_usdt = self.cleaned_data.get("token_price_usdt", None)
-        if token_price_usdt <= 0:
-            raise forms.ValidationError(_("Неверное количество."))
-        return token_price_usdt
 
 
 class AvatarUpdateForm(forms.Form):

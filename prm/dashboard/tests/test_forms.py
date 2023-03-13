@@ -11,31 +11,21 @@ from ..forms import AvatarUpdateForm, BuyTokenForm, ProfileUserUpdateForm
 
 class BuyTokenFormTests(TestCase):
     def test_form_valid(self):
-        form_data = {"token_amount": 10, "token_price_usdt": 1.2345}
-        form = BuyTokenForm(data=form_data)
+        form = BuyTokenForm(data={"token_amount": 1111})
         self.assertTrue(form.is_valid())
 
     def test_form_invalid(self):
-        form_data = {"token_amount": "abc", "token_price_usdt": "1.23.45"}
-        form = BuyTokenForm(data=form_data)
+        form = BuyTokenForm(data={"token_amount": "abc", "token_price_usdt": "1.23.45"})
         self.assertFalse(form.is_valid())
-        self.assertEqual(len(form.errors), 2)
+        self.assertEqual(len(form.errors), 1)
 
     def test_token_amount_required(self):
-        form_data = {"token_price_usdt": 1.2345}
-        form = BuyTokenForm(data=form_data)
+        form = BuyTokenForm(data={"token_price_usdt": 1.2345})
         self.assertFalse(form.is_valid())
         self.assertTrue("token_amount" in form.errors)
 
-    def test_token_price_usdt_required(self):
-        form_data = {"token_amount": 10}
-        form = BuyTokenForm(data=form_data)
-        self.assertFalse(form.is_valid())
-        self.assertTrue("token_price_usdt" in form.errors)
-
-    def test_token_amount_non_negative(self):
-        form_data = {"token_amount": -10, "token_price_usdt": 1.2345}
-        form = BuyTokenForm(data=form_data)
+    def test_token_amount_clean_negative(self):
+        form = BuyTokenForm(data={"token_amount": -10})
         self.assertFalse(form.is_valid())
         self.assertTrue("token_amount" in form.errors)
 

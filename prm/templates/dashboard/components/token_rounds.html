@@ -14,7 +14,11 @@
 
             {% for token_round in token_rounds %}
                 <div class="round_number">
-                    <img src="{% static 'img/icons/checkbox'%}{% if token_round.is_active %}_active{% endif %}.svg" alt="checkbox">
+                    {% if token.active_round == token_round %}
+                    <img src="{% static 'img/icons/checkbox_active.svg'%}" alt="checkbox_active">
+                    {% else %}
+                    <img src="{% static 'img/icons/checkbox.svg'%}" alt="checkbox">
+                    {% endif %}
                     <p class="round_percent">
                         {{ token_round.name }} {{ token_round.percent_share }}%
                     </p>

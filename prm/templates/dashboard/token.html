@@ -45,6 +45,7 @@
         <form class="form-slim buy-token-form" method="POST">
             {% csrf_token %}
             {{ buy_token_form|crispy }}
+            <input type="hidden" value="{{ token.active_round.unit_price|unlocalize }}" name="current_token_price" id="current_token_price">
             <button class="btn btn-slim" type="submit">{% translate "Купить" %}</button>
         </form>
 
@@ -72,3 +73,8 @@
     </div>
 </div>
 {% endblock inner_bot %}
+
+
+{% block inline_javascript %}
+<script src="{% static "js/token-buy-form.js" %}"></script>
+{% endblock inline_javascript %}
