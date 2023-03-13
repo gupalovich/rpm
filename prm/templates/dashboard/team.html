@@ -2,6 +2,7 @@
 
 {% load humanize %}
 {% load i18n %}
+{% load dashboard_extras %}
 
 {% block head_title %} - Team{% endblock head_title %}
 {% block crumbs_title %}Team{% endblock crumbs_title %}
@@ -19,7 +20,7 @@
             <p>
                 {{ user.full_name }}
                 {{ user.username }}
-                {{ user.phone_number }}
+                {{ user.phone_number|clean_phone_number }}
                 {{ user.token_balance|intcomma }}
                 {{ user.date_joined|date:"d.b.Y" }}
                 {{ user.settings.city }}

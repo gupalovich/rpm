@@ -5,6 +5,7 @@
 {% load l10n %}
 {% load i18n %}
 {% load crispy_forms_tags %}
+{% load dashboard_extras %}
 
 {% block head_title %} - Token{% endblock head_title %}
 {% block crumbs_title %}Token{% endblock crumbs_title %}
@@ -33,7 +34,7 @@
                 </div>
                 <p class="price">
                     {{ token.active_round.currency }}
-                    {{ token.active_round.unit_price }}
+                    {{ token.active_round.unit_price|strip_zeros|unlocalize }}
                 </p>
                 <p class="total_cost">
                     {{ token.active_round.available_amount|intcomma }}

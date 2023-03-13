@@ -3,6 +3,7 @@
 {% load static %}
 {% load l10n %}
 {% load humanize %}
+{% load dashboard_extras %}
 
 {% block head_title %} - Dashboard{% endblock %}
 
@@ -141,7 +142,7 @@
                             <span>1 PRM =</span>
                             <span>
                                 {{ token.active_round.currency }}
-                                {{ token.active_round.unit_price|unlocalize }}
+                                {{ token.active_round.unit_price|strip_zeros|unlocalize }}
                             </span>
                         </p>
                     </div>

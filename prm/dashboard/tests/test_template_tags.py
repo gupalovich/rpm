@@ -1,4 +1,4 @@
-from ..templatetags.dashboard_extras import strip_zeros
+from ..templatetags.dashboard_extras import clean_phone_number, strip_zeros
 
 
 def test_strip_zeros():
@@ -14,3 +14,15 @@ def test_strip_zeros():
     ]
     for case, result in test_data:
         assert strip_zeros(case) == result
+
+
+def test_clean_phone_number():
+    test_data = [
+        ("001-702-571-1212", "0017025711212"),
+        ("(395)738-9875x6503", "39573898756503"),
+        ("9756445345", "9756445345"),
+        ("+1-761-982-8443x4156", "176198284434156"),
+        ("8 (999) 999-99-99", "89999999999"),
+    ]
+    for case, result in test_data:
+        assert clean_phone_number(case) == result
