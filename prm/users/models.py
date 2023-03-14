@@ -44,34 +44,25 @@ class User(AbstractUser):
 
     def clean_parent(self):
         """Validate parent - prevent from parent being it's own child"""
+        msg = _("Родитель не может быть рефераллом.")
         if self.parent == self:
-            raise ValidationError({"parent": _("Parent and Child cannot be the same.")})
+            raise ValidationError({"parent": msg})
 
     def clean_metamask_wallet(self):
         """Validate metamask wallet - ensure that people couldn't modify it if metamask confirmed"""
+        msg = _("Metamask подтвержден и не может быть изменен.")
         if self.metamask_wallet:
             user = User.objects.get(pk=self.pk)
             if user.metamask_confirmed != self.metamask_confirmed:
                 return
             if user.metamask_wallet and user.metamask_confirmed:
-                raise ValidationError(
-                    {
-                        "metamask_wallet": _(
-                            "Metamask подтвержден и не может быть изменен."
-                        )
-                    }
-                )
+                raise ValidationError({"metamask_wallet": msg})
 
     def clean_metamask_wallet_confirmed(self):
         """Validation for metamask wallet - ensure that a blank wallet cannot be confirmed"""
+        msg = _("Metamask не может быть подтвержден с пустым кошельком.")
         if self.metamask_confirmed and not self.metamask_wallet:
-            raise ValidationError(
-                {
-                    "metamask_wallet": _(
-                        "Metamask не может быть подтвержден с пустым кошельком."
-                    )
-                }
-            )
+            raise ValidationError({"metamask_wallet": msg})
 
     @property
     def full_name(self) -> str:

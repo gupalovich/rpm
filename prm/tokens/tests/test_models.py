@@ -97,9 +97,22 @@ class TokenRoundTests(TestCase):
             f"{token_round.name} - {token_round.unit_price}",
         )
 
-    def test_clean(self):
+    def test_clean_unit_price(self):
         token_round = TokenRoundFactory(unit_price=0)
         with self.assertRaises(ValidationError):
+            token_round.clean()
+
+    def test_clean_total_amount_sold(self):
+        token = TokenFactory()
+        token_round = token.active_round
+        token_round.save()  # set_total_amount
+        new_total_amount_sold = token.active_round.total_amount
+        # Test can set total_amount_sold == total_amount
+        token_round.total_amount_sold = new_total_amount_sold
+        token_round.clean()
+        # Test can't set total_amount_sold > total_amount
+        with self.assertRaises(ValidationError):
+            token_round.total_amount_sold = new_total_amount_sold + 1
             token_round.clean()
 
     def test_save(self):

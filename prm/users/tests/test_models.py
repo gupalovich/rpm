@@ -84,9 +84,8 @@ class UserTests(TestCase):
         user = UserFactory()
         self.assertEqual(user.get_absolute_url(), f"/dashboard/{user.username}/")
 
-    def test_clean_parent_not_equal_self(self):
+    def test_clean_parent(self):
         user = UserFactory()
-        # Ensure the clean method raises a validation error
         with self.assertRaises(ValidationError):
             user.parent = user
             user.clean()

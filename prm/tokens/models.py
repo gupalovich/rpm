@@ -61,8 +61,18 @@ class TokenRound(models.Model):
         return f"{self.name} - {self.unit_price}"
 
     def clean(self):
+        self.clean_unit_price()
+        self.clean_total_amount_sold()
+
+    def clean_unit_price(self):
+        msg = _("Цена не может быть меньше 0.")
         if self.unit_price <= 0:
-            raise ValidationError({"unit_price": "Цена не может быть меньше 0."})
+            raise ValidationError({"unit_price": msg})
+
+    def clean_total_amount_sold(self):
+        msg = _("Кол-во проданных токенов не может быть больше кол-ва токенов в раунде")
+        if self.total_amount_sold > self.total_amount:
+            raise ValidationError({"total_amount_sold": msg})
 
     def save(self, *args, **kwargs) -> None:
         self.set_total_amount()
