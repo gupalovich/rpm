@@ -3,7 +3,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from .utils import calculate_rounded_total_price, get_token
+from prm.core.services import get_token
+from prm.core.utils import calculate_rounded_total_price
 
 User = get_user_model()
 
@@ -90,12 +91,6 @@ class TokenRound(models.Model):
         if token:
             self.total_amount = round(token.total_amount * (self.percent_share / 100))
 
-    def set_total_amount_sold(self) -> None:
-        """На основе транзакций раунда, подсчитать кол-во проданных токенов"""
-        self.total_amount_sold = self.transactions.aggregate(
-            total=models.Sum("amount")
-        )["total"]
-
 
 class TokenTransaction(models.Model):
     class Meta:
@@ -104,9 +99,9 @@ class TokenTransaction(models.Model):
         ordering = ["-created_at"]
 
     class Status(models.TextChoices):
-        PENDING = _("Pending"), _("Pending")
-        FAILED = _("Failed"), _("Failed")
-        SUCCESS = _("Success"), _("Success")
+        PENDING = "pending", _("Pending")
+        FAILED = "failed", _("Failed")
+        SUCCESS = "success", _("Success")
 
     # Relations
     buyer = models.ForeignKey(

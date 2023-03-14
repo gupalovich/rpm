@@ -8,8 +8,9 @@ from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import RedirectView, UpdateView, View
 
+from prm.core.services import create_transaction
+from prm.core.utils import calculate_rounded_total_price
 from prm.tokens.models import Token, TokenRound, TokenTransaction
-from prm.tokens.utils import calculate_rounded_total_price
 
 from .forms import AvatarUpdateForm, BuyTokenForm, ProfileUserUpdateForm
 
@@ -69,12 +70,12 @@ class DashboardTokenView(DashboardBaseView):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        """
-        TODO: form handling
-        """
         form = BuyTokenForm(request.POST)
         if form.is_valid():
-            # token_amount = form.cleaned_data['token_amount']
+            token_amount = form.cleaned_data["token_amount"]
+
+            create_transaction(buyer=self.request.user, token_amount=token_amount)
+
             return redirect(
                 reverse_lazy(
                     "dashboard:token", kwargs={"username": self.request.user.username}

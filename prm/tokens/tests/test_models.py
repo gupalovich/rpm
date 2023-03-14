@@ -3,10 +3,10 @@ import re
 from decimal import Decimal
 
 from django.core.exceptions import ValidationError
-from django.db.models import Sum
 from django.test import TestCase
 
-from ..utils import calculate_rounded_total_price
+from prm.core.utils import calculate_rounded_total_price
+
 from .factories import (
     Token,
     TokenFactory,
@@ -145,18 +145,6 @@ class TokenRoundTests(TestCase):
             token_round.total_amount,
             round(token.total_amount * (token_round.percent_share / 100)),
         )
-
-    def test_set_total_amount_sold(self):
-        token = TokenFactory()
-        token_round = token.active_round
-        TokenTransactionFactory.create_batch(5, token_round=token_round)
-        # Tests
-        token_round.set_total_amount_sold()
-        self.assertEqual(
-            token_round.total_amount_sold,
-            token_round.transactions.aggregate(total=Sum("amount"))["total"],
-        )
-        self.assertIsInstance(token_round.total_amount_sold, int)
 
 
 class TokenTransactionTests(TestCase):

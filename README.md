@@ -9,7 +9,6 @@ PRM4ALL description
     - User admin inlines - разобраться в инлайн настройках пользователя
 
 2. Tokens
-    - TokenRound убрать поля is_completed
     - Логика перехода с одного раунда на другой
     - Перегон из BNB в $ на фронте
     - Автоматизация создания Token и TokenRound

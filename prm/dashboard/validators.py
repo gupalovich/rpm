@@ -2,7 +2,7 @@ from django.contrib.humanize.templatetags.humanize import intcomma
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-from prm.tokens.utils import get_token
+from prm.core.services import get_token
 
 
 def validate_image_size(image, max_size: int = 100000):
