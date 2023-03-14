@@ -10,7 +10,7 @@ PRM4ALL description
 
 2. Core
     - Таски
-        - Обновление total_amount_sold раунда
+        - ~~Обновление total_amount_sold раунда~~
         - Переход с одного раунда на другой
         - Задача на обновление token_balance пользователя
 

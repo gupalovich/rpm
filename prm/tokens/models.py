@@ -107,14 +107,6 @@ class TokenRound(models.Model):
         if token:
             self.total_amount = round(token.total_amount * (self.percent_share / 100))
 
-    def set_total_amount_sold(self) -> None:
-        """На основе транзакций раунда, подсчитать кол-во проданных токенов"""
-        amount_sold = self.transactions.filter(status="success").aggregate(
-            total=models.Sum("amount")
-        )["total"]
-        if amount_sold:
-            self.total_amount_sold = amount_sold
-
 
 class TokenTransaction(models.Model):
     class Meta:
@@ -147,7 +139,11 @@ class TokenTransaction(models.Model):
         "Цена токенов", max_digits=10, decimal_places=2, default=0
     )
     status = models.CharField(
-        "Статус", max_length=20, choices=Status.choices, default=Status.PENDING
+        "Статус",
+        db_index=True,
+        max_length=20,
+        choices=Status.choices,
+        default=Status.PENDING,
     )
     reward = models.PositiveIntegerField("Награда", blank=True, null=True)
     reward_sent = models.BooleanField("Награда начислена", default=False)

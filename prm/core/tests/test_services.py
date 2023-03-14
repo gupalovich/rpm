@@ -1,8 +1,18 @@
+from django.db.models import Sum
 from django.test import TestCase
 
-from prm.tokens.tests.factories import TokenFactory, TokenTransaction, UserFactory
+from prm.tokens.tests.factories import (
+    TokenFactory,
+    TokenTransaction,
+    TokenTransactionFactory,
+    UserFactory,
+)
 
-from ..services import create_transaction, get_token
+from ..services import (
+    create_transaction,
+    get_token,
+    update_active_round_total_amount_sold,
+)
 from ..utils import calculate_rounded_total_price
 
 
@@ -34,3 +44,23 @@ class ServiceTests(TestCase):
                     unit_price=token.active_round.unit_price, amount=trans.amount
                 ),
             )
+
+    def test_update_active_round_total_amount_sold(self):
+        token = TokenFactory()
+        token_round = token.active_round
+        # Create pending and success batch of transactions
+        TokenTransactionFactory.create_batch(
+            100, token_round=token_round, status=TokenTransaction.Status.SUCCESS
+        )
+        TokenTransactionFactory.create_batch(
+            100, token_round=token_round, status=TokenTransaction.Status.PENDING
+        )
+        # Update active_round amount
+        update_active_round_total_amount_sold()
+        token_round.refresh_from_db()
+        # Test result
+        amount_sold = token_round.transactions.filter(status="success").aggregate(
+            total=Sum("amount")
+        )["total"]
+        self.assertEqual(token_round.total_amount_sold, amount_sold)
+        self.assertIsInstance(token_round.total_amount_sold, int)
