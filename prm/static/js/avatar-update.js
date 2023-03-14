@@ -1,5 +1,5 @@
 function handleAvatarSelect() {
-    const avatarPreview = document.getElementById('avatar-preview');
+    const avatars = document.querySelectorAll('.avatar-img');
     const avatarForm = document.getElementById('avatar-form');
     const avatarFormData = new FormData(avatarForm);
     const errorBlock = document.getElementById('error-block');
@@ -12,7 +12,9 @@ function handleAvatarSelect() {
         if (xhr.readyState === 4 && xhr.status === 200) {
             // Update the preview of the avatar image
             const response = JSON.parse(xhr.responseText);
-            avatarPreview.src = response.avatar_url;
+            avatars.forEach(avatar => {
+                avatar.src = response.avatar_url;
+            });
             errorBlock.innerHTML = '';
         } else if (xhr.readyState === 4 && xhr.status === 400) {
             // Handle json errors

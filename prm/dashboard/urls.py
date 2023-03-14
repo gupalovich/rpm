@@ -10,7 +10,7 @@ from .views import (
     DashboardTokenView,
 )
 
-app_name = DashboardConfig.verbose_name
+app_name = DashboardConfig.label
 
 urlpatterns = [
     path("", view=DashboardRedirectView.as_view(), name="home-redirect"),

@@ -107,6 +107,14 @@ class TokenRound(models.Model):
         if token:
             self.total_amount = round(token.total_amount * (self.percent_share / 100))
 
+    def set_total_amount_sold(self) -> None:
+        """На основе транзакций раунда, подсчитать кол-во проданных токенов"""
+        amount_sold = self.transactions.filter(status="success").aggregate(
+            total=models.Sum("amount")
+        )["total"]
+        if amount_sold:
+            self.total_amount_sold = amount_sold
+
 
 class TokenTransaction(models.Model):
     class Meta:

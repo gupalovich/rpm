@@ -14,19 +14,15 @@ def create_transaction(*, buyer, token_amount):
     return transaction
 
 
-def update_total_amount_sold_for_active_round():
+def update_active_round_total_amount_sold():
     token = get_token()
-    token.active_round.set_total_amount_sold()
-    token.active_round.save()
+    token_round = token.active_round
+    total_amount_sold = token_round.total_amount_sold
 
+    token_round.set_total_amount_sold()
 
-# def set_total_amount_sold(self) -> None:
-#     """На основе транзакций раунда, подсчитать кол-во проданных токенов"""
-#     amount_sold = self.transactions.filter(status="success").aggregate(
-#         total=models.Sum("amount")
-#     )["total"]
-#     if amount_sold:
-#         self.total_amount_sold = amount_sold
+    if total_amount_sold != token_round.total_amount_sold:
+        token.active_round.save()
 
 
 # def test_set_total_amount_sold(self):
