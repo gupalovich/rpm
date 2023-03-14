@@ -72,6 +72,7 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
+    "prm.core",
     "prm.users",
     "prm.tokens",
     "prm.dashboard",
