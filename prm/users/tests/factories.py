@@ -2,7 +2,7 @@ from collections.abc import Sequence
 from typing import Any
 
 from django.contrib.auth import get_user_model
-from factory import Faker, LazyFunction, fuzzy, post_generation
+from factory import Faker, LazyFunction, post_generation
 from factory.django import DjangoModelFactory
 from faker import Faker as _Faker
 
@@ -21,7 +21,7 @@ class UserFactory(DjangoModelFactory):
     phone_number = Faker("phone_number")
     token_balance = LazyFunction(lambda: fake.random_int(min=0, max=100000))
     metamask_wallet = "0xEFE417C9e02f8B36f7969af9e4c40a25Bed74ecF"
-    metamask_confirmed = fuzzy.FuzzyChoice([True, False])
+    metamask_confirmed = False
 
     @post_generation
     def password(self, create: bool, extracted: Sequence[Any], **kwargs):

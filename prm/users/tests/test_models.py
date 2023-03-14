@@ -91,6 +91,34 @@ class UserTests(TestCase):
             user.parent = user
             user.clean()
 
+    def test_clean_metamask_wallet_blank(self):
+        user = UserFactory(metamask_wallet="", metamask_confirmed=False)
+        user.metamask_wallet = "123"
+        user.metamask_confirmed = True
+        user.clean()
+        user.save()
+
+    def test_clean_metamask_wallet_confirmed(self):
+        user = UserFactory(metamask_confirmed=True)
+        with self.assertRaises(ValidationError):
+            user.metamask_wallet = "123"
+            user.clean()
+
+    def test_clean_metamask_wallet_confirmed_to_blank(self):
+        user = UserFactory(metamask_wallet="123", metamask_confirmed=True)
+        with self.assertRaises(ValidationError):
+            user.metamask_wallet = ""
+            user.clean()
+
+    def test_clean_metamask_wallet_not_confirmed(self):
+        user = UserFactory(metamask_confirmed=False)
+        user.metamask_wallet = "123"
+        user.clean()
+        user.save()
+        # Try to change unconfirmed wallet
+        user.metamask_wallet = "1234"
+        user.clean()
+
     def test_property_full_name(self):
         user = UserFactory()
         self.assertEqual(user.full_name, f"{user.first_name} {user.last_name}")
