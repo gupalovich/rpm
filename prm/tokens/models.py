@@ -1,3 +1,5 @@
+import uuid as uuid_lib
+
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -53,7 +55,7 @@ class TokenRound(models.Model):
     unit_price = models.DecimalField("Цена", max_digits=6, decimal_places=3)
     total_amount = models.PositiveBigIntegerField("Токенов в раунде", default=0)
     total_amount_sold = models.PositiveIntegerField("Продано в раунде", default=0)
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField("Последнее обновление", auto_now=True)
 
     def __str__(self):
         return f"{self.name} - {self.unit_price}"
@@ -78,10 +80,14 @@ class TokenRound(models.Model):
             return round((self.total_amount_sold / self.total_amount) * 100, 2)
         return 0
 
+    progress.fget.short_description = "Прогресс"
+
     @property
     def available_amount(self) -> int:
         """Количество оставшихся токенов в раунде"""
         return self.total_amount - self.total_amount_sold
+
+    available_amount.fget.short_description = "Токенов в продаже"
 
     def set_total_amount(self) -> None:
         """Подсчитать число токенов в раунде на основе Token.total_amount"""
@@ -117,6 +123,7 @@ class TokenTransaction(models.Model):
         verbose_name="Раунд",
     )
     # Fields
+    uuid = models.UUIDField(db_index=True, default=uuid_lib.uuid4, editable=False)
     amount = models.PositiveIntegerField("Количество")
     total_price = models.DecimalField(
         "Цена токенов", max_digits=10, decimal_places=2, default=0
@@ -126,7 +133,7 @@ class TokenTransaction(models.Model):
     )
     reward = models.PositiveIntegerField("Награда", blank=True, null=True)
     reward_sent = models.BooleanField("Награда начислена", default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField("Создана в", auto_now_add=True)
 
     def __str__(self):
         return f"{self.buyer.username} - {self.amount} - {self.total_price}"
