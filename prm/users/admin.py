@@ -17,7 +17,7 @@ class UserSettingsInline(admin.StackedInline):
 class UserAdmin(auth_admin.UserAdmin):
     form = UserAdminChangeForm
     add_form = UserAdminCreationForm
-    # inlines = (UserSettingsInline,)
+    inlines = (UserSettingsInline,)
     fieldsets = (
         (None, {"fields": ("username", "password")}),
         (
@@ -63,8 +63,5 @@ class UserAdmin(auth_admin.UserAdmin):
         "first_name",
         "last_name",
         "is_superuser",
-    ]
-    list_select_related = [
-        "parent",
     ]
     search_fields = ["username"]
