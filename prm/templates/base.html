@@ -1,4 +1,7 @@
-{% load static i18n %}<!DOCTYPE html>
+{% load static i18n %}
+{% load django_htmx %}
+
+<!DOCTYPE html>
 {% get_current_language as LANGUAGE_CODE %}
 <html lang="{{ LANGUAGE_CODE }}">
   <head>
@@ -16,12 +19,13 @@
     {% endblock %}
 
     {% block javascript %}
+      <script defer src="{% static 'js/vendors.min.js' %}"></script>
       <script defer src="{% static 'js/project.min.js' %}"></script>
     {% endblock javascript %}
 
   </head>
 
-  <body>
+  <body hx-ext="debug, event-header" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
 
     {% comment %} {% if messages %}
       {% for message in messages %}
