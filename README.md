@@ -19,10 +19,10 @@ PRM4ALL description
         - Решение: ограничить время pending транзакции на n секунд, создать таск на обновление статуса с pending -> failed. Резервировать пулл токенов для продажи
 
 4. Dashboard
-    - Обработка формы "buy tokens"
-        - ~~Обработка post запроса для формы и сохранение транзакции~~
-        - Перевод формы в ajax
-    - HTMX if tab active
+    - HTMX
+        - обновление данных
+        - if tab active
+    - Формы "buy tokens" - Перевод формы в ajax
     - Подтверждение metamask_wallet после Update profile
     - ProfileUserUpdateForm валидации
         - Проверка полей имя/фамилия/город на плохие слова

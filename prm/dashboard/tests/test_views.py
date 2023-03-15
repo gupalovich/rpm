@@ -1,8 +1,16 @@
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase
+from django.db.models import Q
+from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
-from prm.tokens.tests.factories import TokenFactory, TokenRound, TokenRoundFactory
+from prm.core.utils import calculate_rounded_total_price
+from prm.tokens.tests.factories import (
+    TokenFactory,
+    TokenRound,
+    TokenRoundFactory,
+    TokenTransaction,
+    TokenTransactionFactory,
+)
 from prm.users.tests.factories import UserFactory
 
 
@@ -47,13 +55,76 @@ class DashboardRedirectViewTests(TestCase):
         self.assertRedirects(response, reverse("account_login"))
 
 
+class DashboardBaseViewTests(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.user = UserFactory()
+        self.children = [
+            UserFactory(parent=self.user),
+            UserFactory(parent=UserFactory()),
+        ]
+        self.token_round = TokenRoundFactory()
+        self.token_rounds = TokenRoundFactory.create_batch(3)
+        self.token = TokenFactory(active_round=self.token_round)
+        self.url = reverse("dashboard:index", kwargs={"username": self.user.username})
+        self.client.force_login(self.user)
+
+    def test_context_data(self):
+        response = self.client.get(self.url)
+        user_referral = f"{reverse('account_signup')}?referral={self.user.username}"
+        user_balance = calculate_rounded_total_price(
+            unit_price=self.user.token_balance,
+            amount=self.token.active_round.unit_price,
+        )
+        user_children = self.user.children.select_related("settings")
+        # test context
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["user"], self.user)
+        self.assertIn(user_referral, response.context["user_referral_link"])
+        self.assertEqual(response.context["user_balance"], user_balance)
+        self.assertEqual(len(response.context["user_children"]), 1)
+        self.assertQuerysetEqual(response.context["user_children"], user_children)
+        self.assertEqual(response.context["token"], self.token)
+        self.assertQuerysetEqual(
+            response.context["token_rounds"], TokenRound.objects.all()
+        )
+
+    def test_context_data_transactions(self):
+        response = self.client.get(self.url)
+        # create transactions
+        TokenTransactionFactory.create_batch(
+            3, buyer=self.user, status=TokenTransaction.Status.SUCCESS
+        )
+        TokenTransactionFactory.create_batch(
+            3, buyer=self.user, status=TokenTransaction.Status.PENDING
+        )
+        TokenTransactionFactory(
+            buyer=self.children[0],
+            status=TokenTransaction.Status.SUCCESS,
+            reward_sent=True,
+        )
+        TokenTransactionFactory(
+            buyer=self.children[1],
+            status=TokenTransaction.Status.SUCCESS,
+            reward_sent=True,
+        )
+        # query transactions
+        user_transactions = (
+            TokenTransaction.objects.filter(status=TokenTransaction.Status.SUCCESS)
+            .select_related("buyer")
+            .filter(Q(buyer=self.user) | Q(buyer__parent=self.user, reward_sent=True))
+        )
+        context_transactions = response.context["user_transactions"]
+        self.assertQuerysetEqual(context_transactions, user_transactions)
+        self.assertEqual(len(context_transactions), 4)
+
+
 class DashboardIndexViewTests(TestCase):
     def setUp(self) -> None:
         self.user = UserFactory()
-        self.url = reverse("dashboard:index", kwargs={"username": self.user.username})
         self.token_round = TokenRoundFactory()
-        self.token_rounds = TokenRoundFactory.create_batch(7)
         self.token = TokenFactory(active_round=self.token_round)
+        self.url = reverse("dashboard:index", kwargs={"username": self.user.username})
 
     def test_get(self):
         self.client.force_login(self.user)
@@ -61,11 +132,6 @@ class DashboardIndexViewTests(TestCase):
         # Test response
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "dashboard/index.html")
-        # Test context
-        self.assertEqual(response.context["token"], self.token)
-        self.assertQuerysetEqual(
-            response.context["token_rounds"], TokenRound.objects.all()
-        )
 
     def test_get_anon(self):
         response = self.client.get(self.url)
@@ -76,7 +142,6 @@ class DashboardIndexViewTests(TestCase):
 class DashboardTokenViewTests(TestCase):
     def setUp(self) -> None:
         self.user = UserFactory()
-        self.url = reverse("dashboard:token", kwargs={"username": self.user.username})
         self.form_data = {
             "token_amount": "10",
             "token_price_usdt": "1.23",
@@ -86,9 +151,9 @@ class DashboardTokenViewTests(TestCase):
             "token_price_usdt": "invalid",
         }
         self.token_round = TokenRoundFactory()
-        self.token_rounds = TokenRoundFactory.create_batch(7)
         self.token = TokenFactory(active_round=self.token_round)
         self.token.active_round.save()  # set total_amount on active_round
+        self.url = reverse("dashboard:token", kwargs={"username": self.user.username})
 
     def test_get(self):
         self.client.force_login(self.user)
@@ -96,11 +161,6 @@ class DashboardTokenViewTests(TestCase):
         # Test response
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "dashboard/token.html")
-        # Test context
-        self.assertEqual(response.context["token"], self.token)
-        self.assertQuerysetEqual(
-            response.context["token_rounds"], TokenRound.objects.all()
-        )
 
     def test_get_anon(self):
         response = self.client.get(self.url)
@@ -132,9 +192,8 @@ class DashboardTokenViewTests(TestCase):
 class DashboardTeamViewTests(TestCase):
     def setUp(self) -> None:
         self.user = UserFactory()
+        self.token = TokenFactory()
         self.url = reverse("dashboard:team", kwargs={"username": self.user.username})
-        self.token_round = TokenRoundFactory()
-        self.token = TokenFactory(active_round=self.token_round)
 
     def test_get(self):
         self.client.force_login(self.user)
@@ -142,8 +201,6 @@ class DashboardTeamViewTests(TestCase):
         # Test response
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "dashboard/team.html")
-        # Test context
-        self.assertEqual(response.context["token"], self.token)
 
     def test_get_anon(self):
         response = self.client.get(self.url)
@@ -162,7 +219,6 @@ class DashboardProfileViewTests(TestCase):
         # Test response
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "dashboard/profile.html")
-        # Test context
 
     def test_get_anon(self):
         response = self.client.get(self.url)
