@@ -1,16 +1,19 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import RedirectView, UpdateView, View
 
-from prm.core.services import create_transaction
+from prm.core.services import (
+    create_transaction,
+    get_token,
+    get_token_rounds,
+    get_user_transactions,
+)
 from prm.core.utils import calculate_rounded_total_price
-from prm.tokens.models import Token, TokenRound, TokenTransaction
 
 from .forms import AvatarUpdateForm, BuyTokenForm, ProfileUserUpdateForm
 
@@ -32,8 +35,8 @@ class DashboardBaseView(LoginRequiredMixin, View):
     template_name = ""
 
     def get_context_data(self):
-        token = Token.objects.first()
-        token_rounds = TokenRound.objects.all()
+        token = get_token()
+        token_rounds = get_token_rounds()
         user = self.request.user
         user_referral = self.request.build_absolute_uri(
             reverse_lazy("account_signup") + "?referral=" + user.username
@@ -42,11 +45,7 @@ class DashboardBaseView(LoginRequiredMixin, View):
             unit_price=user.token_balance,
             amount=token.active_round.unit_price,
         )
-        user_transactions = (
-            TokenTransaction.objects.filter(status=TokenTransaction.Status.SUCCESS)
-            .select_related("buyer")
-            .filter(Q(buyer=user) | Q(buyer__parent=user, reward_sent=True))
-        )
+        user_transactions = get_user_transactions(user=user)
         user_children = user.children.select_related("settings")
         return {
             "user": user,
