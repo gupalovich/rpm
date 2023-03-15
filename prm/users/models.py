@@ -68,6 +68,12 @@ class User(AbstractUser):
     def full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
 
+    def update_token_balance(self, amount: int):
+        if not isinstance(amount, int):
+            return
+        self.token_balance += amount
+        self.save()
+
 
 class UserSettings(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="settings")

@@ -39,8 +39,10 @@ class DashboardBaseView(LoginRequiredMixin, View):
             unit_price=user.token_balance,
             amount=token.active_round.unit_price,
         )
-        user_transactions = TokenTransaction.objects.select_related("buyer").filter(
-            Q(buyer=user) | Q(buyer__parent=user, reward_sent=True)
+        user_transactions = (
+            TokenTransaction.objects.filter(status=TokenTransaction.Status.SUCCESS)
+            .select_related("buyer")
+            .filter(Q(buyer=user) | Q(buyer__parent=user, reward_sent=True))
         )
         user_children = user.children.select_related("settings")
         return {
@@ -72,14 +74,14 @@ class DashboardTokenView(DashboardBaseView):
     def post(self, request, *args, **kwargs):
         form = BuyTokenForm(request.POST)
         if form.is_valid():
+            user = self.request.user
             token_amount = form.cleaned_data["token_amount"]
 
-            create_transaction(buyer=self.request.user, token_amount=token_amount)
+            create_transaction(buyer=user, token_amount=token_amount)
+            user.update_token_balance(token_amount)
 
             return redirect(
-                reverse_lazy(
-                    "dashboard:token", kwargs={"username": self.request.user.username}
-                )
+                reverse_lazy("dashboard:token", kwargs={"username": user.username})
             )
         context = self.get_context_data()
         context["buy_token_form"] = form

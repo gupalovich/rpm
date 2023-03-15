@@ -121,3 +121,15 @@ class UserTests(TestCase):
     def test_property_full_name(self):
         user = UserFactory()
         self.assertEqual(user.full_name, f"{user.first_name} {user.last_name}")
+
+    def test_update_token_balance(self):
+        user = UserFactory(token_balance=0)
+        amounts = [(100, 100), (55, 155), (-100, 55)]
+        for amount, result in amounts:
+            user.update_token_balance(amount)
+            self.assertEqual(user.token_balance, result)
+
+    def test_update_token_balance_float(self):
+        user = UserFactory(token_balance=0)
+        user.update_token_balance(0.1)
+        self.assertEqual(user.token_balance, 0)

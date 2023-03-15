@@ -15,17 +15,20 @@ PRM4ALL description
         - Задача на обновление token_balance пользователя
 
 3. Tokens
+    - Обдумать нужен ли статус на транзакции
     - Перегон из BNB в $ на фронте
     - Автоматизация создания Token и TokenRound
+    - Если иметь транзакции PENDING - возможна ситуация, если пользователь завис и оплатил позже, когда раунд уже закончился - статус транзакции меняется на SUCCESS и подсчет проданных токенов ломается.
 
 4. Dashboard
     - Обработка формы "buy tokens"
         - ~~Обработка post запроса для формы и сохранение транзакции~~
         - Перевод формы в ajax
         - В беке добавить статус транзакции. Создавать её, как только пользователь нажал кнопку "Купить", со статусом "PENDING". Как только транзакция на стороне метамаска прошла, отправлять xhr со статусом ответа и обновлять статус транзакции
-    - HTMX
+    - HTMX if tab active
     - Ссылка для приглашения
     - Маленький аватар некоректный размер
+    - Подтверждение metamask_wallet после Update profile
     - ProfileUserUpdateForm добавить больше валидации + тестирование
         - Проверка полей имя/фамилия/город на плохие слова
 
@@ -104,6 +107,34 @@ PRM4ALL description
 
     Mailhog работает на порту:
     http://localhost:8025/
+
+## Докер:
+
+### Полезные команды
+
+    # containers status
+    docker-compose -f production.yml ps
+
+    # containers logs
+    docker-compose -f production.yml logs
+
+    # remove unused(dangling) images
+    docker image prune
+
+    # django shell run
+    docker-compose -f production.yml run --rm django python manage.py shell
+
+    # django dump db data
+    docker-compose -f production.yml run --rm django bash
+    python -Xutf8 manage.py dumpdata {app}.{Model -o data.json
+      # Открыть вторую консоль, сохраняя сессию в старой
+      docker cp 5f5cecd3798e:/app/data.json ./data.json
+
+    # If you want to scale application
+    # ❗ Don’t try to scale postgres, celerybeat, or traefik
+    docker-compose -f production.yml up --scale django=4
+    docker-compose -f production.yml up --scale celeryworker=2
+
 
 ## Документация
 ---

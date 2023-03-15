@@ -52,7 +52,9 @@ class TokenRound(models.Model):
     currency = models.CharField(
         "Валюта", max_length=5, choices=Currency.choices, default=Currency.USD
     )
-    unit_price = models.DecimalField("Цена", max_digits=6, decimal_places=3)
+    unit_price = models.DecimalField(
+        "Цена", db_index=True, max_digits=6, decimal_places=3
+    )
     total_amount = models.PositiveBigIntegerField("Токенов в раунде", default=0)
     total_amount_sold = models.PositiveIntegerField("Продано в раунде", default=0)
     updated_at = models.DateTimeField("Последнее обновление", auto_now=True)
