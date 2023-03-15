@@ -2,6 +2,7 @@
 
 {% load static %}
 {% load l10n %}
+{% load i18n %}
 {% load humanize %}
 {% load dashboard_extras %}
 
@@ -102,7 +103,10 @@
                 <h1 class="page_name">{% block page_title %}Dashboard{% endblock %}</h1>
             </div>
             <div class="bio_part">
-                <a href="" class="btn btn-slim invite_link">Ссылка для приглашения</a>
+                <button id="invite_link" class="btn btn-slim invite_link" data-referral-link="{{ user_referral_link }}">
+                    <span>{% translate "Ссылка для приглашения" %}</span>
+                    <span>{% translate "Скопировано" %}</span>
+                </button>
                 <a href="" class="metamask_button">
                     <img src="{% static 'img/icons/metamask.svg'%}" alt="metamask">
                 </a>

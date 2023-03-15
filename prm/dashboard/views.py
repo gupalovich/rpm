@@ -35,6 +35,9 @@ class DashboardBaseView(LoginRequiredMixin, View):
         token = Token.objects.first()
         token_rounds = TokenRound.objects.all()
         user = self.request.user
+        user_referral = self.request.build_absolute_uri(
+            reverse_lazy("account_signup") + "?referral=" + user.username
+        )
         user_balance = calculate_rounded_total_price(
             unit_price=user.token_balance,
             amount=token.active_round.unit_price,
@@ -47,6 +50,7 @@ class DashboardBaseView(LoginRequiredMixin, View):
         user_children = user.children.select_related("settings")
         return {
             "user": user,
+            "user_referral_link": user_referral,
             "user_balance": user_balance,
             "user_transactions": user_transactions,
             "user_children": user_children,

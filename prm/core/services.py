@@ -15,7 +15,7 @@ def create_transaction(*, buyer, token_amount):
         buyer=buyer,
         token_round=token.active_round,
         amount=token_amount,
-        status=TokenTransaction.Status.SUCCESS,  # TODO: remove
+        # status=TokenTransaction.Status.SUCCESS,  # TODO: remove
     )
     return transaction
 

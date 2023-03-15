@@ -671,14 +671,26 @@ input[type=date]::-webkit-calendar-picker-indicator {
   font-family: "DM Sans", sans-serif;
   font-weight: 400;
 }
+.invite_link span:last-child {
+  display: none;
+}
 
-.metamask_button {
+.invite_link.animate span:first-child {
+  display: none;
+}
+.invite_link.animate span:last-child {
+  display: inline-block;
+}
+
+.invite_link.animate .metamask_button {
   background-color: var(--white);
   border: none;
 }
 
 .avatar_icon {
-  max-width: 40px;
+  --avatar-sm-wh: 41px;
+  width: var(--avatar-sm-wh);
+  height: var(--avatar-sm-wh);
   border-radius: 100%;
 }
 
@@ -1095,14 +1107,12 @@ input[type=date]::-webkit-calendar-picker-indicator {
 .avatar {
   --avatar-wh: 90px;
   position: relative;
-  max-width: var(--avatar-wh);
-  max-height: var(--avatar-wh);
-  width: 100%;
-  height: auto;
+  width: var(--avatar-wh);
+  height: var(--avatar-wh);
 }
 .avatar .avatar_pic {
-  width: 100%;
-  height: 100%;
+  width: var(--avatar-wh);
+  height: var(--avatar-wh);
   border-radius: 50%;
   border: solid var(--white) 4px;
 }

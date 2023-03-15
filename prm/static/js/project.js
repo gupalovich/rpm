@@ -19,3 +19,24 @@ phoneInputs.forEach((input) => {
         formatPhone(input);
     });
 });
+
+
+// Invite link copy
+const inviteLinkButton = document.querySelector('#invite_link');
+if (inviteLinkButton) {
+    inviteLinkButton.addEventListener('click', (event) => {
+        event.preventDefault();
+
+        // Copy the referral link to clipboard
+        const referralLink = inviteLinkButton.dataset.referralLink;
+        navigator.clipboard.writeText(referralLink);
+
+        // Add "animate" class to the button
+        inviteLinkButton.classList.add('animate');
+
+        // Remove the "animate" class after the animation is complete
+        setTimeout(() => {
+            inviteLinkButton.classList.remove('animate');
+        }, 3000);
+    });
+}
