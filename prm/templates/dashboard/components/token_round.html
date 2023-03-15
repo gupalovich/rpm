@@ -1,0 +1,31 @@
+{% load static %}
+{% load humanize %}
+{% load l10n %}
+{% load i18n %}
+{% load dashboard_extras %}
+
+<div id="active_round" class="round_content"
+    hx-get="{% url 'dashboard:update_index_content' %}"
+    hx-trigger="every 2s"
+    hx-swap="outerHTML">
+    <div class="table">
+        <p class="description">{% translate "Раунд" %}</p>
+        <p class="description">{% translate "Цена" %}</p>
+        <p class="description">{% translate "Осталось токенов" %}</p>
+
+        <div class="round_number">
+            <img src="{% static 'img/icons/checkbox_active.svg'%}" alt="checkbox_active">
+            <p class="round_percent">
+                {{ token.active_round.name }}
+                {{ token.active_round.percent_share }}%
+            </p>
+        </div>
+        <p class="price">
+            {{ token.active_round.currency }}
+            {{ token.active_round.unit_price|strip_zeros|unlocalize }}
+        </p>
+        <p class="total_cost">
+            {{ token.active_round.available_amount|intcomma }}
+        </p>
+    </div>
+</div >

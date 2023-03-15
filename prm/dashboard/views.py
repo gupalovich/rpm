@@ -1,10 +1,12 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import JsonResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.http import require_GET
 from django.views.generic import RedirectView, UpdateView, View
 
 from prm.core.services import (
@@ -18,6 +20,17 @@ from prm.core.utils import calculate_rounded_total_price
 from .forms import AvatarUpdateForm, BuyTokenForm, ProfileUserUpdateForm
 
 User = get_user_model()
+
+
+@require_GET
+def update_index(request: HttpRequest):
+    # Render the HTML fragments using the data
+    token = get_token()
+    token_round_html = render_to_string(
+        "dashboard/components/token_round.html", {"token": token}
+    )
+
+    return HttpResponse(token_round_html)
 
 
 class DashboardRedirectView(RedirectView):

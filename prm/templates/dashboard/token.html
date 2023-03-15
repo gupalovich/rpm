@@ -19,29 +19,9 @@
 <div id="big_tiles_2" class="big_tiles">
     <div id="round" class="big_tile tile">
         <h3 class="big_name">{% translate "Покупай токены PRM и зарабатывай вместе с нами" %}</h3>
-        <div class="round_content">
-            <div class="table">
-                <p class="description">{% translate "Раунд" %}</p>
-                <p class="description">{% translate "Цена" %}</p>
-                <p class="description">{% translate "Осталось токенов" %}</p>
 
-                <div class="round_number">
-                    <img src="{% static 'img/icons/checkbox_active.svg'%}" alt="checkbox_active">
-                    <p class="round_percent">
-                        {{ token.active_round.name }}
-                        {{ token.active_round.percent_share }}%
-                    </p>
-                </div>
-                <p class="price">
-                    {{ token.active_round.currency }}
-                    {{ token.active_round.unit_price|strip_zeros|unlocalize }}
-                </p>
-                <p class="total_cost">
-                    {{ token.active_round.available_amount|intcomma }}
-                </p>
-            </div>
+        {% include 'dashboard/components/token_round.html' %}
 
-        </div >
         <form class="form-slim buy-token-form" method="POST">
             {% csrf_token %}
             {{ buy_token_form|crispy }}
