@@ -1,8 +1,10 @@
+import json
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import JsonResponse
-from django.shortcuts import redirect, render
+from django.http import HttpResponseBadRequest, HttpResponseNotAllowed, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import RedirectView, TemplateView, UpdateView, View
@@ -18,6 +20,21 @@ from prm.core.utils import calculate_rounded_total_price
 from .forms import AvatarUpdateForm, BuyTokenForm, ProfileUserUpdateForm
 
 User = get_user_model()
+
+
+def metamask_confirm(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        account_address = data.get("accountAddress")
+        user = get_object_or_404(User, username=data.get("user"))
+
+        if not account_address:
+            return HttpResponseBadRequest()
+
+        user.confirm_metamask(account_address)
+
+        return JsonResponse({"message": "Success"})
+    return HttpResponseNotAllowed(["POST"])
 
 
 class PollUserBalance(TemplateView):

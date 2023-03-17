@@ -55,6 +55,8 @@ class User(AbstractUser):
             user = User.objects.get(pk=self.pk)
             if user.metamask_confirmed != self.metamask_confirmed:
                 return
+            if user.metamask_wallet == self.metamask_wallet:
+                return
             if user.metamask_wallet and user.metamask_confirmed:
                 raise ValidationError({"metamask_wallet": msg})
 
@@ -69,9 +71,24 @@ class User(AbstractUser):
         return f"{self.first_name} {self.last_name}"
 
     def update_token_balance(self, amount: int):
+        """
+        TODO: move to service layer
+        """
         if not isinstance(amount, int):
             return
         self.token_balance += amount
+        self.save()
+
+    def confirm_metamask(self, wallet: str):
+        """
+        TODO: move to service layer
+        """
+        if self.metamask_confirmed:
+            return
+        if not self.metamask_wallet and wallet:
+            self.metamask_wallet = wallet
+        if self.metamask_wallet and self.metamask_wallet == wallet:
+            self.metamask_confirmed = True
         self.save()
 
 

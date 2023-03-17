@@ -1,3 +1,5 @@
+import json
+
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db.models import Q
 from django.test import RequestFactory, TestCase
@@ -12,6 +14,46 @@ from prm.tokens.tests.factories import (
     TokenTransactionFactory,
 )
 from prm.users.tests.factories import UserFactory
+
+
+class MetamaskConfirmViewTests(TestCase):
+    def setUp(self) -> None:
+        self.user = UserFactory(metamask_wallet="", metamask_confirmed=False)
+        self.url = reverse("dashboard:metamask_confirm")
+        self.wallet = "0x123abc"
+
+    def test_get(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 405)
+
+    def test_post(self):
+        data = {"accountAddress": self.wallet, "user": self.user.username}
+        response = self.client.post(
+            self.url, data=json.dumps(data), content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content), {"message": "Success"})
+        # Test metamask was confirmed
+        self.assertFalse(self.user.metamask_wallet)
+        self.assertFalse(self.user.metamask_confirmed)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.metamask_wallet, self.wallet)
+        self.assertTrue(self.user.metamask_confirmed)
+
+    def test_post_empty_account(self):
+        data = {"accountAddress": "", "user": self.user.username}
+        response = self.client.post(
+            self.url, data=json.dumps(data), content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_post_unknown_user(self):
+        data = {"accountAddress": self.wallet, "user": "test123"}
+        response = self.client.post(
+            self.url, data=json.dumps(data), content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 404)
 
 
 class DashboardRedirectViewTests(TestCase):

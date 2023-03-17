@@ -13,7 +13,6 @@ PRM4ALL description
 
 3. Dashboard
     - Формы "buy tokens" - Перевод формы в ajax
-    - Подтверждение metamask_wallet после Update profile
 
 4. Документация
 

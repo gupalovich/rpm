@@ -133,3 +133,30 @@ class UserTests(TestCase):
         user = UserFactory(token_balance=0)
         user.update_token_balance(0.1)
         self.assertEqual(user.token_balance, 0)
+
+    def test_confirm_metamask(self):
+        wallet = "0x123abc"
+        user = UserFactory(metamask_wallet="", metamask_confirmed=False)
+        user.confirm_metamask(wallet)
+        user.refresh_from_db()
+        # test confirmed
+        self.assertEqual(user.metamask_wallet, wallet)
+        self.assertTrue(user.metamask_confirmed)
+
+    def test_confirm_metamask_already_confirmed(self):
+        wallet = "0x123abc"
+        user = UserFactory(metamask_wallet="", metamask_confirmed=True)
+        user.confirm_metamask(wallet)
+        user.refresh_from_db()
+        # test confirmed
+        self.assertEqual(user.metamask_wallet, "")
+        self.assertTrue(user.metamask_confirmed)
+
+    def test_confirm_metamask_wallet_not_empty(self):
+        wallet = "0x123abc"
+        user = UserFactory(metamask_wallet=wallet, metamask_confirmed=False)
+        user.confirm_metamask(wallet)
+        user.refresh_from_db()
+        # test confirmed
+        self.assertEqual(user.metamask_wallet, wallet)
+        self.assertTrue(user.metamask_confirmed)

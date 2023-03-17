@@ -12,6 +12,7 @@ from .views import (
     PollTokenRounds,
     PollUserBalance,
     PollUserTransactions,
+    metamask_confirm,
 )
 
 app_name = DashboardConfig.label
@@ -20,6 +21,7 @@ urlpatterns = [
     path("", view=DashboardRedirectView.as_view(), name="home_redirect"),
     path("~redirect/", view=DashboardRedirectView.as_view(), name="redirect"),
     path("~avatar-update/", AvatarUpdateView.as_view(), name="avatar_update"),
+    path("~metamask-confirm/", metamask_confirm, name="metamask_confirm"),
     # Polling views
     path("~poll-user-balance/", PollUserBalance.as_view(), name="poll_user_balance"),
     path(

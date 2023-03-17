@@ -49,27 +49,69 @@
     <div class="settings_text">
         <h3 class="big_name">{% translate "Редактировать профиль" %}</h3>
     </div >
-    {% comment %} {% if messages %}
-      {% for message in messages %}
-        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
-          {{ message }}
-        </div>
-      {% endfor %}
-    {% endif %} {% endcomment %}
     <form id="avatar-form" method="POST" enctype="multipart/form-data" action="{% url 'dashboard:avatar_update' %}">
         {% csrf_token %}
         <input type="file" name="avatar" id="avatar-input" style="display: none;" onchange="handleAvatarSelect()">
         <div id="error-block" class="alert-error"></div>
     </form>
-    <form class="form settings_table" method="POST">
+    <form id="profile-form" class="form settings_table" method="POST">
         {% csrf_token %}
         {{ form|crispy }}
-        <button class="btn btn-slim-wide" type="submit">{% translate "Сохранить" %}</button>
+        <button class="btn btn-slim-wide" type="submit" id="profile-submit-btn">
+            {% translate "Сохранить" %}
+        </button>
     </form>
 </div>
 {% endblock inner_bot %}
 
 
 {% block inline_javascript %}
+<script defer src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>;
 <script defer src="{% static 'js/avatar-update.js' %}"></script>
+<script>
+    const profileForm = document.getElementById("profile-form")
+    function metamaskConfirm() {
+        try {
+            window.ethereum.request({ method: 'eth_requestAccounts' }).then(function () {
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+                provider.getNetwork().then(function (result) {
+                    if (result['chainId'] != 1) {
+                        alert('Switch to Mainnet!');
+                    } else {
+                        provider.listAccounts().then(function (result) {
+                            accountAddress = result[0];
+                            // Send POST request
+                            fetch("{% url 'dashboard:metamask_confirm' %}", {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRFToken': "{{ csrf_token }}",
+                                },
+                                body: JSON.stringify({
+                                    accountAddress: accountAddress,
+                                    user: '{{ request.user.username }}',
+                                })
+                            }).then(function (response) {
+                                // Handle response
+                                console.log(response);
+                                document.getElementById('id_metamask_wallet').value = accountAddress;
+                                profileForm.submit()
+                            });
+                        });
+                    }
+                });
+            });
+        } catch {
+            console.log('Пожалуйста установите MetaMask приложение для вашего браузера.');
+            profileForm.submit()
+        }
+    }
+
+    {% if not user.metamask_confirmed %}
+        document.getElementById("profile-submit-btn").addEventListener("click", (event) => {
+            event.preventDefault();
+            metamaskConfirm();
+        });
+    {% endif %}
+</script>
 {% endblock inline_javascript %}
