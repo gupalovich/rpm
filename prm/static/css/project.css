@@ -5,6 +5,7 @@
   --accent-vibrant: #4318FF;
   --border-light: #E0E5F2;
   --bg-light: #F4F7FE;
+  --bg-grey: #EFF4FB;
   --text-dark: #2B3674;
   --text-light: #A3AED0;
   --placeholder: #8F9BBA;
@@ -715,10 +716,6 @@ input[type=date]::-webkit-calendar-picker-indicator {
   margin-top: 20px;
   padding: 30px;
 }
-.tile-lg .big_name {
-  margin-bottom: 20px;
-  font-weight: 700;
-}
 
 .tiles {
   margin-top: 20px;
@@ -824,7 +821,7 @@ input[type=date]::-webkit-calendar-picker-indicator {
 
 .table {
   display: grid;
-  grid-template-columns: 1.5fr 0.7fr 1fr;
+  grid-template-columns: 1.5fr 0.7fr 1fr 1fr;
   grid-column-gap: 20px;
   grid-row-gap: 5px;
   -webkit-box-flex: 1;
@@ -866,13 +863,30 @@ input[type=date]::-webkit-calendar-picker-indicator {
 
 .round_percent,
 .price,
-.total_cost {
+.total_cost,
+.progress-container {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+}
+
+.progress-container {
+  padding-right: 20%;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  border-radius: 21px;
+  background-color: var(--bg-grey);
+}
+.progress-bar .progress {
+  height: 100%;
+  border-radius: 5px;
+  background-color: var(--accent-vibrant);
 }
 
 .round_content {
@@ -886,7 +900,9 @@ input[type=date]::-webkit-calendar-picker-indicator {
 }
 
 .big_name {
+  margin-bottom: 20px;
   font-size: 1.5em;
+  font-weight: 700;
   color: var(--text-dark);
 }
 

@@ -10,14 +10,10 @@ PRM4ALL description
         - Начисление rewards пользователям
 
 2. Tokens
-    - TokenTransaction null - подумать над реализацией
 
 3. Dashboard
     - Формы "buy tokens" - Перевод формы в ajax
     - Подтверждение metamask_wallet после Update profile
-    - ProfileUserUpdateForm валидации
-        - Проверка полей имя/фамилия/город на плохие слова
-    - Добавление прогресс бара
 
 4. Документация
 

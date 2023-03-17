@@ -14,6 +14,7 @@
             <p class="description">{% translate "Раунд" %}</p>
             <p class="description">{% translate "Цена" %}</p>
             <p class="description">{% translate "Полная стоимость" %}</p>
+            <p class="description">{% translate "Прогресс" %}</p>
 
             {% for token_round in token_rounds %}
                 <div class="round_number">
@@ -28,6 +29,11 @@
                 </div>
                 <p class="price">{{ token_round.currency }} {{ token_round.unit_price|strip_zeros|unlocalize }}</p>
                 <p class="total_cost">{{ token_round.currency }} {{ token_round.total_cost|intcomma }}</p>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress" style="width: {{ token_round.progress|unlocalize }}%"></div>
+                    </div>
+                </div>
             {% endfor %}
 
         </div>

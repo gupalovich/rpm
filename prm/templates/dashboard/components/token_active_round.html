@@ -12,6 +12,7 @@
         <p class="description">{% translate "Раунд" %}</p>
         <p class="description">{% translate "Цена" %}</p>
         <p class="description">{% translate "Осталось токенов" %}</p>
+        <p class="description">{% translate "Прогресс" %}</p>
 
         <div class="round_number">
             <img src="{% static 'img/icons/checkbox_active.svg'%}" alt="checkbox_active">
@@ -27,5 +28,10 @@
         <p class="total_cost">
             {{ token.active_round.available_amount|intcomma }}
         </p>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress" style="width: {{ token.active_round.progress|unlocalize }}%"></div>
+            </div>
+        </div>
     </div>
 </div >

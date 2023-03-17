@@ -609,11 +609,6 @@
     flex-direction: column;
     margin-top: 20px;
     padding: 30px;
-
-    .big_name {
-        margin-bottom: 20px;
-        font-weight: 700;
-    }
 }
 
 .tiles {
@@ -707,7 +702,7 @@
 
 .table {
     display: grid;
-    grid-template-columns: 1.5fr 0.7fr 1fr;
+    grid-template-columns: 1.5fr 0.7fr 1fr 1fr;
     grid-column-gap: 20px;
     grid-row-gap: 5px;
     flex-grow: 1;
@@ -750,10 +745,29 @@
 
 .round_percent,
 .price,
-.total_cost {
+.total_cost,
+.progress-container {
     display: flex;
     align-items: center;
 }
+
+.progress-container {
+    padding-right: 20%;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    border-radius: 21px;
+    background-color: var(--bg-grey);
+
+    .progress {
+        height: 100%;
+        border-radius: 5px;
+        background-color: var(--accent-vibrant);
+    }
+}
+
 
 .round_content {
     width: 100%;
@@ -762,9 +776,10 @@
 }
 
 .big_name {
+    margin-bottom: 20px;
     font-size: 1.5em;
+    font-weight: 700;
     color: var(--text-dark);
-    ;
 }
 
 .round_checkbox {
