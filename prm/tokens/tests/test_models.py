@@ -199,6 +199,10 @@ class TokenTransactionTests(TestCase):
         self.assertIsInstance(transaction.reward_sent, bool)
         self.assertTrue(transaction.created_at)
 
+    def test_buyer_null(self):
+        transaction = TokenTransactionFactory(buyer=None, token_round=self.token_round)
+        self.assertEqual(transaction.buyer, None)
+
     def test_str(self):
         transaction = TokenTransactionFactory()
         self.assertEqual(

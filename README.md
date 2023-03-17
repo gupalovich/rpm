@@ -17,6 +17,7 @@ PRM4ALL description
     - Подтверждение metamask_wallet после Update profile
     - ProfileUserUpdateForm валидации
         - Проверка полей имя/фамилия/город на плохие слова
+    - Добавление прогресс бара
 
 4. Документация
 

@@ -127,6 +127,8 @@ class TokenTransaction(models.Model):
         on_delete=models.PROTECT,
         related_name="transactions",
         verbose_name="Покупатель",
+        null=True,
+        blank=True,
     )
     token_round = models.ForeignKey(
         TokenRound,
@@ -167,7 +169,7 @@ class TokenTransaction(models.Model):
         )
 
     def set_reward(self) -> None:
-        if self.buyer.parent:
+        if self.buyer and self.buyer.parent:  # self.buyer for null cases
             self.reward = round(self.amount * (5 / 100))
         else:
             self.reward = 0
