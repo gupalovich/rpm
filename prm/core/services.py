@@ -43,3 +43,11 @@ def set_next_active_token_round():
         if next_round:
             token.active_round = next_round
             token.save()
+
+
+def user_update_token_balance(*, user, amount: int):
+    """Обновить баланс токенов пользователя"""
+    if not isinstance(amount, int):
+        return
+    user.token_balance += amount
+    user.save()

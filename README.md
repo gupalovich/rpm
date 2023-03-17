@@ -8,12 +8,17 @@ PRM4ALL description
 1. Core
     - Сервисы
         - Начисление rewards пользователям
+    - Редис кеширование
 
 2. Tokens
+    TokenTransactionRaw
+	    platform
 
 3. Dashboard
     - Рефакторинг htmx polling
-    - Решить имеющиеся TODO
+
+3. Users
+    - Верификация метамаск с подписью
 
 4. Документация
 

@@ -30,7 +30,9 @@ class User(AbstractUser):
     )
     # wallet
     token_balance = models.PositiveIntegerField(_("Баланс токенов"), default=0)
-    metamask_wallet = models.CharField(_("Metamask"), max_length=150, blank=True)
+    metamask_wallet = models.CharField(
+        _("Metamask"), db_index=True, blank=True, max_length=150
+    )
     metamask_confirmed = models.BooleanField(_("Metamask подтвержден"), default=False)
 
     def get_absolute_url(self):
