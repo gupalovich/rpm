@@ -12,7 +12,10 @@ PRM4ALL description
 2. Tokens
 
 3. Dashboard
+    - Рефакторинг js
+        - Использовать HTMX
     - Формы "buy tokens" - Перевод формы в ajax
+    - Решить имеющиеся TODO
 
 4. Документация
 

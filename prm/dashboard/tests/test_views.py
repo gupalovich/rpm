@@ -1,10 +1,10 @@
 import json
 
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.db.models import Q
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
+from prm.core.selectors import get_user_transactions
 from prm.core.utils import calculate_rounded_total_price
 from prm.tokens.tests.factories import (
     TokenFactory,
@@ -151,11 +151,7 @@ class DashboardBaseViewTests(TestCase):
             reward_sent=True,
         )
         # query transactions
-        user_transactions = (
-            TokenTransaction.objects.filter(status=TokenTransaction.Status.SUCCESS)
-            .select_related("buyer")
-            .filter(Q(buyer=self.user) | Q(buyer__parent=self.user, reward_sent=True))
-        )
+        user_transactions = get_user_transactions(user=self.user)
         context_transactions = response.context["user_transactions"]
         self.assertQuerysetEqual(context_transactions, user_transactions)
         self.assertEqual(len(context_transactions), 4)

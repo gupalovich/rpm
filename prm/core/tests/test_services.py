@@ -3,7 +3,6 @@ from django.test import TestCase
 
 from prm.tokens.tests.factories import (
     TokenFactory,
-    TokenRound,
     TokenRoundFactory,
     TokenTransaction,
     TokenTransactionFactory,
@@ -12,8 +11,6 @@ from prm.tokens.tests.factories import (
 
 from ..services import (
     create_transaction,
-    get_token,
-    get_token_rounds,
     set_next_active_token_round,
     update_active_round_total_amount_sold,
 )
@@ -23,16 +20,6 @@ from ..utils import calculate_rounded_total_price
 class ServiceTests(TestCase):
     def setUp(self) -> None:
         pass
-
-    def test_get_token(self):
-        self.assertFalse(get_token())
-        tokens = [TokenFactory(), TokenFactory()]
-        self.assertEqual(get_token(), tokens[0])
-
-    def test_get_token_rounds(self):
-        self.assertFalse(get_token_rounds())
-        TokenRoundFactory.create_batch(3)
-        self.assertQuerysetEqual(get_token_rounds(), TokenRound.objects.all())
 
     def test_create_transaction(self):
         token = TokenFactory()

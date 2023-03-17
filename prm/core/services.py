@@ -1,31 +1,6 @@
-from django.db.models import Q, Sum
+from django.db.models import Sum
 
-
-def get_token():
-    from prm.tokens.models import Token
-
-    return Token.objects.first()
-
-
-def get_token_rounds():
-    from prm.tokens.models import TokenRound
-
-    return TokenRound.objects.all()
-
-
-def get_user_transactions(*, user):
-    """
-    TODO: test
-    """
-
-    from prm.tokens.models import TokenTransaction
-
-    user_transactions = (
-        TokenTransaction.objects.filter(status=TokenTransaction.Status.SUCCESS)
-        .select_related("buyer")
-        .filter(Q(buyer=user) | Q(buyer__parent=user, reward_sent=True))
-    )
-    return user_transactions
+from .selectors import get_token
 
 
 def create_transaction(*, buyer, token_amount):
@@ -36,7 +11,6 @@ def create_transaction(*, buyer, token_amount):
         buyer=buyer,
         token_round=token.active_round,
         amount=token_amount,
-        # status=TokenTransaction.Status.SUCCESS,  # TODO: remove
     )
     return transaction
 

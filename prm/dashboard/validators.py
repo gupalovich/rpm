@@ -2,15 +2,15 @@ from django.contrib.humanize.templatetags.humanize import intcomma
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-from prm.core.services import get_token
+from prm.core.selectors import get_token
 
 
-def validate_image_size(image, max_size: int = 100000):
+def validate_image_size(image, max_size: int = 300000):
     if image.size > max_size:
         raise ValidationError(_(f"The maximum image size is {int(max_size / 1000)}kb"))
 
 
-def validate_image_min_pixel_size(image, min_width: int = 100, min_height: int = 100):
+def validate_image_min_pixel_size(image, min_width: int = 90, min_height: int = 90):
     width, height = image.image.size
     if width < min_width or height < min_height:
         raise ValidationError(

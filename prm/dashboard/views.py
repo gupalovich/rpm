@@ -9,12 +9,8 @@ from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import RedirectView, TemplateView, UpdateView, View
 
-from prm.core.services import (
-    create_transaction,
-    get_token,
-    get_token_rounds,
-    get_user_transactions,
-)
+from prm.core.selectors import get_token, get_token_rounds, get_user_transactions
+from prm.core.services import create_transaction
 from prm.core.utils import calculate_rounded_total_price
 
 from .forms import AvatarUpdateForm, BuyTokenForm, ProfileUserUpdateForm

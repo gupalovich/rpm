@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from prm.core.services import get_token
+from prm.core.selectors import get_token
 from prm.core.utils import calculate_rounded_total_price
 
 User = get_user_model()
