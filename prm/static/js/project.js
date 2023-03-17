@@ -3,18 +3,19 @@ let burger = document.getElementById("burger");
 let sidenav = document.getElementById("sidenav");
 let main = document.getElementById("main");
 
+if (burger) {
+    function close_menu() {
+        sidenav.classList.remove('_active');
+    }
 
-function close_menu() {
-    sidenav.classList.remove('_active');
-}
+    main.onclick = close_menu;
 
-main.onclick = close_menu;
+    if (burger && sidenav) {
+        burger.addEventListener("click", function (e) {
+            sidenav.classList.toggle('_active');
 
-if (burger && sidenav) {
-    burger.addEventListener("click", function (e) {
-        sidenav.classList.toggle('_active');
-
-    });
+        });
+    }
 }
 
 
