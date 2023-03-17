@@ -4,9 +4,9 @@
 {% load i18n %}
 {% load dashboard_extras %}
 
-<div id="active_round" class="round_content"
-    hx-get="{% url 'dashboard:update_index_content' %}"
-    hx-trigger="every 2s"
+<div id="token_active_round" class="round_content"
+    hx-get="{% url 'dashboard:poll_active_round' %}"
+    hx-trigger="every 30s"
     hx-swap="outerHTML">
     <div class="table">
         <p class="description">{% translate "Раунд" %}</p>

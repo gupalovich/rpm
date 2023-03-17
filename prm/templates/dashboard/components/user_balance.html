@@ -1,0 +1,45 @@
+{% load static %}
+{% load l10n %}
+{% load i18n %}
+{% load humanize %}
+{% load dashboard_extras %}
+
+<div class="tiles"
+    hx-get="{% url 'dashboard:poll_user_balance' %}"
+    hx-trigger="every 30s"
+    hx-swap="outerHTML">
+    <div id="my_tokens" class="tile little_tile">
+        <img class="tile_icon" src="{% static 'img/icons/my_tokens_icon.svg'%}" alt="">
+        <div class="tile_text">
+            <p class="tile_name">{% translate "Мои токены" %}</p>
+            <p class="tile_counter">{{ user.token_balance|intcomma }}</p>
+        </div>
+    </div>
+    <div id="token_sum" class="tile little_tile">
+        <img class="tile_icon" src="{% static 'img/icons/sum_icon.svg'%}" alt="">
+        <div class="tile_text">
+            <p class="tile_name">{% translate "Сумма токенов" %}</p>
+            <p class="tile_counter">$ {{ user_balance|unlocalize }}</p>
+        </div>
+    </div>
+    <div id="token_amount" class="tile little_tile">
+        <img class="tile_icon" src="" alt="">
+        <div class="tile_text">
+            <p class="tile_name">{% translate "Кол-во токенов в продаже" %}</p>
+            <p class="tile_counter">{{ token.available_amount|intcomma }}</p>
+        </div>
+    </div>
+    <div id="rate" class="tile little_tile">
+        <img class="tile_icon" src="{% static 'img/icons/rate_icon.svg'%}" alt="">
+        <div class="tile_text">
+            <p class="tile_name">{% translate "Курс токена" %}</p>
+            <p class="tile_counter">
+                <span>1 PRM =</span>
+                <span>
+                    {{ token.active_round.currency }}
+                    {{ token.active_round.unit_price|strip_zeros|unlocalize }}
+                </span>
+            </p>
+        </div>
+    </div>
+</div>

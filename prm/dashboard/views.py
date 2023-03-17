@@ -1,13 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
-from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.http import require_GET
-from django.views.generic import RedirectView, UpdateView, View
+from django.views.generic import RedirectView, TemplateView, UpdateView, View
 
 from prm.core.services import (
     create_transaction,
@@ -22,15 +20,40 @@ from .forms import AvatarUpdateForm, BuyTokenForm, ProfileUserUpdateForm
 User = get_user_model()
 
 
-@require_GET
-def update_index(request: HttpRequest):
-    # Render the HTML fragments using the data
-    token = get_token()
-    token_round_html = render_to_string(
-        "dashboard/components/token_round.html", {"token": token}
-    )
+class PollUserBalance(TemplateView):
+    template_name = "dashboard/components/user_balance.html"
 
-    return HttpResponse(token_round_html)
+    def get_context_data(self, *args, **kwargs):
+        user = self.request.user
+        token = get_token()
+        user_balance = calculate_rounded_total_price(
+            unit_price=user.token_balance,
+            amount=token.active_round.unit_price,
+        )
+        return {"user": user, "user_balance": user_balance, "token": token}
+
+
+class PollTokenActiveRound(TemplateView):
+    template_name = "dashboard/components/token_active_round.html"
+
+    def get_context_data(self, *args, **kwargs):
+        return {"token": get_token()}
+
+
+class PollTokenRounds(TemplateView):
+    template_name = "dashboard/components/token_rounds.html"
+
+    def get_context_data(self, *args, **kwargs):
+        return {"token": get_token(), "token_rounds": get_token_rounds()}
+
+
+class PollUserTransactions(TemplateView):
+    template_name = "dashboard/components/transaction_history.html"
+
+    def get_context_data(self, *args, **kwargs):
+        user = self.request.user
+        transactions = get_user_transactions(user=user)
+        return {"user_transactions": transactions}
 
 
 class DashboardRedirectView(RedirectView):

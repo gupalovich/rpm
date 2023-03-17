@@ -19,7 +19,7 @@ class DashboardRedirectViewTests(TestCase):
         self.user = UserFactory()
         self.token = TokenFactory()
         self.url = reverse("dashboard:redirect")
-        self.url_home = reverse("dashboard:home-redirect")
+        self.url_home = reverse("dashboard:home_redirect")
 
     def test_get(self):
         self.client.force_login(self.user)

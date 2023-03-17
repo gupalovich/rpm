@@ -1,0 +1,17 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% translate "Bad Request" %}{% endblock %}
+
+{% block page_title %}{% translate "Bad Request" %}{% endblock page_title %}
+
+{% block page_subtitle %}
+    {% if exception %}
+        {{ exception }}
+    {% else %}
+        У вас нет доступа к этой странице.
+    {% endif %}
+{% endblock page_subtitle %}
+
+{% block inner %}{% endblock %}

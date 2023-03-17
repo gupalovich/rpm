@@ -1,7 +1,10 @@
 {% load humanize %}
 {% load i18n %}
 
-<section class="tile tile-lg">
+<section class="tile tile-lg"
+    hx-get="{% url 'dashboard:poll_user_transactions' %}"
+    hx-trigger="every 30s"
+    hx-swap="outerHTML">
     <h2 class="big_name">{% translate "История начислений" %}</h2>
     <div class="flexible-table">
         <div class="row row-header">
