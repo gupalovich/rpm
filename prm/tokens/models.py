@@ -86,7 +86,7 @@ class TokenRound(models.Model):
         return round(self.unit_price * self.total_amount)
 
     @property
-    def progress(self) -> float | int:
+    def progress(self) -> int | float:
         """Подсчитать прогресс текущего раунда в процентах"""
         if self.total_amount:
             return round((self.total_amount_sold / self.total_amount) * 100, 2)

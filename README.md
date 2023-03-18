@@ -11,14 +11,18 @@ PRM4ALL description
     - Редис кеширование
 
 2. Tokens
-    TokenTransactionRaw
-	    platform
+    - TokenTransactionRaw
+	    - platform
+    - TokenTransaction
+        - Убрать uuuid
+        - Добавить txhash
 
 3. Dashboard
     - Рефакторинг htmx polling
 
 3. Users
     - Верификация метамаск с подписью
+    - unique check for metamask_wallet
 
 4. Документация
 

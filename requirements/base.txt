@@ -8,6 +8,10 @@ hiredis==2.2.2  # https://github.com/redis/hiredis-py  # comment to run locally
 celery==5.2.7  # pyup: < 6.0  # https://github.com/celery/celery
 django-celery-beat==2.4.0  # https://github.com/celery/django-celery-beat
 flower==1.2.0  # https://github.com/mher/flower
+# web3
+web3==5.31.3  # https://web3py.readthedocs.io/en/v5/
+eth-account==0.5.9  # https://eth-account.readthedocs.io/en/stable/eth_account.html
+
 
 # Django
 # ------------------------------------------------------------------------------

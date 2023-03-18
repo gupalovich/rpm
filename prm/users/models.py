@@ -74,23 +74,11 @@ class User(AbstractUser):
 
     def update_token_balance(self, amount: int):
         """
-        TODO: move to service layer
+        TODO: remove
         """
         if not isinstance(amount, int):
             return
         self.token_balance += amount
-        self.save()
-
-    def confirm_metamask(self, wallet: str):
-        """
-        TODO: move to service layer
-        """
-        if self.metamask_confirmed:
-            return
-        if not self.metamask_wallet and wallet:
-            self.metamask_wallet = wallet
-        if self.metamask_wallet and self.metamask_wallet == wallet:
-            self.metamask_confirmed = True
         self.save()
 
 

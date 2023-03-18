@@ -1,6 +1,9 @@
+from django.contrib.auth import get_user_model
 from django.db.models import Sum
 
 from .selectors import get_token
+
+User = get_user_model()
 
 
 def create_transaction(*, buyer, token_amount):
@@ -45,9 +48,46 @@ def set_next_active_token_round():
             token.save()
 
 
-def user_update_token_balance(*, user, amount: int):
-    """Обновить баланс токенов пользователя"""
-    if not isinstance(amount, int):
-        return
-    user.token_balance += amount
-    user.save()
+class MetamaskService:
+    def __init__(self) -> None:
+        pass
+
+    @staticmethod
+    def verify_signature(
+        *, account_address, signature, csrf_token, original_message: str = ""
+    ) -> bool:
+        """Верификация подписи метамаск и кошелька пользователя
+
+        Args:
+            request (HttpRequest): джанго POST-запрос
+            original_message (str, optional): Соль. Дефолт "" и используется csrf_token.
+
+        Returns:
+            bool
+        """
+
+        from eth_account.messages import defunct_hash_message
+        from web3.auto import w3
+
+        # defunct hash
+        original_message = original_message if original_message else csrf_token
+        message_hash = defunct_hash_message(text=original_message)
+        signer = w3.eth.account.recoverHash(message_hash, signature=signature)
+
+        if signer == account_address:
+            return True
+        return False
+
+    @staticmethod
+    def confirm_user_wallet(*, user: User, account_address: str) -> None:
+        """Обновить metamask_wallet и metamask_confirmed пользователя
+
+        Args:
+            user (User): User instance
+            account_address (str): Metamask account_address
+        """
+        if user.metamask_confirmed:
+            return
+        user.metamask_wallet = account_address
+        user.metamask_confirmed = True
+        user.save()
