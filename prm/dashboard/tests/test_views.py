@@ -28,25 +28,13 @@ class MetamaskConfirmViewTests(TestCase):
         self.assertEqual(response.status_code, 405)
 
     def test_post(self):
+        """Signature logic can't be tested here"""
         data = {"accountAddress": self.wallet, "user": self.user.username}
         response = self.client.post(
             self.url, data=json.dumps(data), content_type="application/json"
         )
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.content), {"message": "Success"})
-        # Test metamask was confirmed
-        self.assertFalse(self.user.metamask_wallet)
-        self.assertFalse(self.user.metamask_confirmed)
-        self.user.refresh_from_db()
-        self.assertEqual(self.user.metamask_wallet, self.wallet)
-        self.assertTrue(self.user.metamask_confirmed)
-
-    def test_post_empty_account(self):
-        data = {"accountAddress": "", "user": self.user.username}
-        response = self.client.post(
-            self.url, data=json.dumps(data), content_type="application/json"
-        )
         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {"error": "Invalid signature"})
 
     def test_post_unknown_user(self):
         data = {"accountAddress": self.wallet, "user": "test123"}

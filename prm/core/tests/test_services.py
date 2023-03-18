@@ -10,6 +10,7 @@ from prm.tokens.tests.factories import (
 )
 
 from ..services import (
+    MetamaskService,
     create_transaction,
     set_next_active_token_round,
     update_active_round_total_amount_sold,
@@ -110,3 +111,43 @@ class ServiceTests(TestCase):
         set_next_active_token_round()
         self.assertTrue(token.active_round.total_amount > 0)
         self.assertEqual(token.active_round, active_round)
+
+
+class MetamaskServiceTests(TestCase):
+    def setUp(self) -> None:
+        self.address = "0x123abc"
+
+    def test_verify_signature_invalid(self):
+        is_valid = MetamaskService.verify_signature(
+            account_address=self.address,
+            signature=self.address,
+            csrf_token=self.address,
+        )
+        self.assertFalse(is_valid)
+
+    def test_confirm_user_wallet(self):
+        user = UserFactory(metamask_wallet="", metamask_confirmed=False)
+        # update wallet info
+        MetamaskService.confirm_user_wallet(user=user, account_address=self.address)
+        user.refresh_from_db()
+        # test confirmed
+        self.assertEqual(user.metamask_wallet, self.address)
+        self.assertTrue(user.metamask_confirmed)
+
+    def test_confirm_user_wallet_already_confirmed(self):
+        user = UserFactory(metamask_wallet="", metamask_confirmed=True)
+        # update wallet info
+        MetamaskService.confirm_user_wallet(user=user, account_address=self.address)
+        user.refresh_from_db()
+        # test confirmed
+        self.assertEqual(user.metamask_wallet, "")
+        self.assertTrue(user.metamask_confirmed)
+
+    def test_confirm_user_wallet_wallet_not_empty(self):
+        user = UserFactory(metamask_wallet=self.address, metamask_confirmed=False)
+        # update wallet info
+        MetamaskService.confirm_user_wallet(user=user, account_address="123")
+        user.refresh_from_db()
+        # test confirmed
+        self.assertEqual(user.metamask_wallet, "123")
+        self.assertTrue(user.metamask_confirmed)

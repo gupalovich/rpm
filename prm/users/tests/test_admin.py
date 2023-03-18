@@ -27,10 +27,6 @@ class TestUserAdmin:
                 "password2": "My_R@ndom-P@ssw0rd",
             },
         )
-        print(response.content)
-        print(response.content)
-        print(response.content)
-        print(response.content)
         assert response.status_code == 200
         # assert User.objects.filter(username="test").exists()
 

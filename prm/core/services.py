@@ -64,19 +64,25 @@ class MetamaskService:
 
         Returns:
             bool
+
+        TODO: test valid case
         """
+        from eth_utils.exceptions import ValidationError
 
-        from eth_account.messages import defunct_hash_message
-        from web3.auto import w3
+        try:
+            from eth_account.messages import defunct_hash_message
+            from web3.auto import w3
 
-        # defunct hash
-        original_message = original_message if original_message else csrf_token
-        message_hash = defunct_hash_message(text=original_message)
-        signer = w3.eth.account.recoverHash(message_hash, signature=signature)
+            # defunct hash
+            original_message = original_message if original_message else csrf_token
+            message_hash = defunct_hash_message(text=original_message)
+            signer = w3.eth.account.recoverHash(message_hash, signature=signature)
 
-        if signer == account_address:
-            return True
-        return False
+            if signer == account_address:
+                return True
+            return False
+        except (TypeError, ValidationError):
+            return False
 
     @staticmethod
     def confirm_user_wallet(*, user: User, account_address: str) -> None:
