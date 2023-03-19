@@ -29,6 +29,7 @@ def update_active_round_total_amount_sold():
     )["total"]
     if amount_sold:
         token_round.total_amount_sold = amount_sold
+        token.full_clean()
         token_round.save()
 
 
@@ -45,6 +46,7 @@ def set_next_active_token_round():
         ).first()
         if next_round:
             token.active_round = next_round
+            token.full_clean()
             token.save()
 
 
@@ -96,4 +98,5 @@ class MetamaskService:
             return
         user.metamask_wallet = account_address
         user.metamask_confirmed = True
+        user.full_clean()
         user.save()

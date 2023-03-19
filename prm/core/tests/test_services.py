@@ -116,6 +116,11 @@ class ServiceTests(TestCase):
 class MetamaskServiceTests(TestCase):
     def setUp(self) -> None:
         self.address = "0x123abc"
+        self.user = UserFactory(
+            phone_number="8 (999) 999-99-99",
+            metamask_wallet="",
+            metamask_confirmed=False,
+        )
 
     def test_verify_signature_invalid(self):
         is_valid = MetamaskService.verify_signature(
@@ -126,28 +131,33 @@ class MetamaskServiceTests(TestCase):
         self.assertFalse(is_valid)
 
     def test_confirm_user_wallet(self):
-        user = UserFactory(metamask_wallet="", metamask_confirmed=False)
         # update wallet info
-        MetamaskService.confirm_user_wallet(user=user, account_address=self.address)
-        user.refresh_from_db()
+        MetamaskService.confirm_user_wallet(
+            user=self.user, account_address=self.address
+        )
+        self.user.refresh_from_db()
         # test confirmed
-        self.assertEqual(user.metamask_wallet, self.address)
-        self.assertTrue(user.metamask_confirmed)
+        self.assertEqual(self.user.metamask_wallet, self.address)
+        self.assertTrue(self.user.metamask_confirmed)
 
     def test_confirm_user_wallet_already_confirmed(self):
-        user = UserFactory(metamask_wallet="", metamask_confirmed=True)
+        self.user.metamask_confirmed = True
+        self.user.save()
         # update wallet info
-        MetamaskService.confirm_user_wallet(user=user, account_address=self.address)
-        user.refresh_from_db()
+        MetamaskService.confirm_user_wallet(
+            user=self.user, account_address=self.address
+        )
+        self.user.refresh_from_db()
         # test confirmed
-        self.assertEqual(user.metamask_wallet, "")
-        self.assertTrue(user.metamask_confirmed)
+        self.assertEqual(self.user.metamask_wallet, "")
+        self.assertTrue(self.user.metamask_confirmed)
 
     def test_confirm_user_wallet_wallet_not_empty(self):
-        user = UserFactory(metamask_wallet=self.address, metamask_confirmed=False)
+        self.user.metamask_wallet = self.address
+        self.user.save()
         # update wallet info
-        MetamaskService.confirm_user_wallet(user=user, account_address="123")
-        user.refresh_from_db()
+        MetamaskService.confirm_user_wallet(user=self.user, account_address="123")
+        self.user.refresh_from_db()
         # test confirmed
-        self.assertEqual(user.metamask_wallet, "123")
-        self.assertTrue(user.metamask_confirmed)
+        self.assertEqual(self.user.metamask_wallet, "123")
+        self.assertTrue(self.user.metamask_confirmed)

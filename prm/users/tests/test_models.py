@@ -50,7 +50,7 @@ class UserTests(TestCase):
         self.assertEqual(user.avatar, "avatars/default.png")
         # wallet
         self.assertTrue(user.token_balance)
-        self.assertTrue(user.metamask_wallet)
+        self.assertFalse(user.metamask_wallet)
         self.assertIsInstance(user.metamask_confirmed, bool)
         # settings
         self.assertTrue(user.settings.birthday)
@@ -98,7 +98,7 @@ class UserTests(TestCase):
         user.save()
 
     def test_clean_metamask_wallet_confirmed(self):
-        user = UserFactory(metamask_confirmed=True)
+        user = UserFactory(metamask_wallet="0xFFF", metamask_confirmed=True)
         with self.assertRaises(ValidationError):
             user.metamask_wallet = "123"
             user.clean()
