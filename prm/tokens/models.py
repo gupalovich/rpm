@@ -1,6 +1,7 @@
 import uuid as uuid_lib
 
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -173,3 +174,34 @@ class TokenTransaction(models.Model):
             self.reward = round(self.amount * (5 / 100))
         else:
             self.reward = 0
+
+
+class TokenTransactionRaw(models.Model):
+    class Meta:
+        verbose_name = _("Token Transaction Raw")
+        verbose_name_plural = _("Token Transactions Raw")
+        ordering = ["-time_stamp"]
+        
+    class BlockChain(models.TextChoices):
+        BSCSCAN = "bscscan", _("bscscan")
+
+    address = models.CharField(max_length=100)
+    topics = ArrayField(
+        models.CharField(max_length=100),
+        size=4
+    )
+    data = models.CharField(max_length=100)
+    block_number = models.CharField(max_length=100)
+    block_hash = models.CharField(max_length=66)
+    time_stamp = models.DateTimeField()
+    gas_price = models.CharField(max_length=100)
+    gas_used = models.CharField(max_length=100)
+    log_index = models.CharField(max_length=100)
+    transaction_hash = models.CharField(max_length=66, unique=True, db_index=True, primary_key=True)
+    transaction_index = models.CharField(max_length=100)
+    block_chain = models.CharField(
+        db_index=True,
+        max_length=20,
+        choices=BlockChain.choices,
+        default=BlockChain.BSCSCAN,
+    )

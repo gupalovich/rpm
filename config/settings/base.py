@@ -303,5 +303,10 @@ ACCOUNT_FORMS = {"signup": "prm.users.forms.UserSignupForm"}
 # SOCIALACCOUNT_FORMS = {"signup": "prm.users.forms.UserSocialSignupForm"}
 
 
+# BSCScan Settings
+BSCSCAN_API_KEY = env.str("BSCSCAN_API_KEY")
+BSCSCAN_DOMAIN = env.str("BSCSCAN_DOMAIN") 
+BSCSCAN_CONTRACT_ADDRESS = env.str("BSCSCAN_CONTRACT_ADDRESS") 
+
 # Your stuff...
 # ------------------------------------------------------------------------------
