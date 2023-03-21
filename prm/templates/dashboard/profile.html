@@ -107,6 +107,9 @@
                         });
                     }
                 });
+            }).catch(error => {
+                alert(`Подтвердите запрос Metamask\nОшибка: ${error.message}`)
+                profileForm.submit();
             });
         } catch {
             alert('Пожалуйста установите MetaMask приложение для вашего браузера.');

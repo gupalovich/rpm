@@ -29,12 +29,12 @@ def update_active_round_total_amount_sold():
     )["total"]
     if amount_sold:
         token_round.total_amount_sold = amount_sold
-        token.full_clean()
+        token_round.full_clean()
         token_round.save()
 
 
 def set_next_active_token_round():
-    """Переключить раунд на следующий на основе возрастания token_round.unit_price"""
+    """Переключить раунд на следующий по уровню возрастания token_round.unit_price"""
     token = get_token()
     token_round = token.active_round
 
