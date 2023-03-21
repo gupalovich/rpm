@@ -27,7 +27,9 @@ def metamask_confirm(request):
         csrf_token = data.get("csrf_token")
         # verify signature
         is_valid_signature = MetamaskService.verify_signature(
-            account_address=account_address, signature=signature, csrf_token=csrf_token
+            account_address=account_address,
+            signature=signature,
+            original_message=csrf_token,
         )
         if not is_valid_signature:
             return JsonResponse({"error": "Invalid signature"}, status=400)

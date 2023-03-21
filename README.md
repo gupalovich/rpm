@@ -10,22 +10,20 @@ PRM4ALL description
         - Начисление rewards пользователям
     - Редис кеширование
 
-2. Tokens
-    - TokenTransactionRaw
-	    - platform
+2. Dashboard
+    - Рефакторинг htmx polling
+
+3. Tokens
     - TokenTransaction
         - Убрать uuuid
         - Добавить txhash
 
-3. Dashboard
-    - Рефакторинг htmx polling
-
-3. Users
+4. Users
     - unique check for metamask_wallet
 
-4. Документация
+5. Документация
 
-5. Интернационализация
+6. Интернационализация
     - Английский
     - Испанский
 

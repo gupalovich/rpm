@@ -56,16 +56,15 @@ class MetamaskService:
 
     @staticmethod
     def verify_signature(
-        *, account_address, signature, csrf_token, original_message: str = ""
+        *, account_address: str, signature: str, original_message: str
     ) -> bool:
         """Верификация подписи метамаск и кошелька пользователя
 
         Args:
             request (HttpRequest): джанго POST-запрос
-            original_message (str, optional): Соль. Дефолт "" и используется csrf_token.
-
-        Returns:
-            bool
+            account_address (str): Публичный адресс кошелька метамаск
+            signature (str): Подпись запроса
+            original_message (str): Соль подписи. Обычно это csrf_token.
 
         TODO: test valid case
         """
@@ -76,7 +75,6 @@ class MetamaskService:
             from web3.auto import w3
 
             # defunct hash
-            original_message = original_message if original_message else csrf_token
             message_hash = defunct_hash_message(text=original_message)
             signer = w3.eth.account.recoverHash(message_hash, signature=signature)
 

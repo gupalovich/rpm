@@ -126,7 +126,7 @@ class MetamaskServiceTests(TestCase):
         is_valid = MetamaskService.verify_signature(
             account_address=self.address,
             signature=self.address,
-            csrf_token=self.address,
+            original_message=self.address,
         )
         self.assertFalse(is_valid)
 

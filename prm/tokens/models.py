@@ -169,6 +169,9 @@ class TokenTransaction(models.Model):
         )
 
     def set_reward(self) -> None:
+        """
+        TODO: remove hard-coded reward percentage
+        """
         if self.buyer and self.buyer.parent:  # self.buyer for null cases
             self.reward = round(self.amount * (5 / 100))
         else:
