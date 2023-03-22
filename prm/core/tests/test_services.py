@@ -46,22 +46,29 @@ class ServiceTests(TestCase):
     def test_update_active_round_total_amount_sold(self):
         token = TokenFactory(active_round=TokenRoundFactory())
         token_round = token.active_round
+        token_round.save()
         # Create pending and success batch of transactions
         TokenTransactionFactory.create_batch(
-            3, token_round=token_round, status=TokenTransaction.Status.SUCCESS
+            3,
+            amount=1000000,
+            token_round=token_round,
+            status=TokenTransaction.Status.SUCCESS,
         )
         TokenTransactionFactory.create_batch(
             3, token_round=token_round, status=TokenTransaction.Status.PENDING
         )
-        # Update active_round amount
+        TokenTransactionFactory.create_batch(
+            3, token_round=token_round, status=TokenTransaction.Status.FAILED
+        )
+        # # Update active_round amount
         update_active_round_total_amount_sold()
         token_round.refresh_from_db()
-        # Test result
+        # # Test result
         amount_sold = token_round.transactions.filter(status="success").aggregate(
             total=Sum("amount")
         )["total"]
         self.assertEqual(token_round.total_amount_sold, amount_sold)
-        self.assertIsInstance(token_round.total_amount_sold, int)
+        self.assertEqual(token_round.total_amount_sold, 3000000)
 
     def test_set_next_active_token_round(self):
         """
