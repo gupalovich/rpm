@@ -1,12 +1,16 @@
 import json
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
 from django.views.generic import RedirectView, TemplateView, UpdateView, View
 
 from prm.core.selectors import get_token, get_token_rounds, get_user_transactions
@@ -113,6 +117,8 @@ class DashboardBaseView(LoginRequiredMixin, View):
             "token_rounds": token_rounds,
         }
 
+    @vary_on_cookie
+    @method_decorator(cache_page(settings.CACHE_TTL))
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
         return render(request, self.template_name, context)
@@ -125,6 +131,8 @@ class DashboardIndexView(DashboardBaseView):
 class DashboardTokenView(DashboardBaseView):
     template_name = "dashboard/token.html"
 
+    @vary_on_cookie
+    @method_decorator(cache_page(settings.CACHE_TTL))
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
         context["buy_token_form"] = BuyTokenForm()
@@ -157,6 +165,11 @@ class DashboardProfileView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     slug_url_kwarg = "username"
     template_name = "dashboard/profile.html"
     success_message = _("Информация успешно обновлена")
+
+    @vary_on_cookie
+    @method_decorator(cache_page(settings.CACHE_TTL))
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy(

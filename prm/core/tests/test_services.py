@@ -44,7 +44,7 @@ class ServiceTests(TestCase):
             )
 
     def test_update_active_round_total_amount_sold(self):
-        token = TokenFactory()
+        token = TokenFactory(active_round=TokenRoundFactory())
         token_round = token.active_round
         # Create pending and success batch of transactions
         TokenTransactionFactory.create_batch(

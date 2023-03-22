@@ -9,6 +9,8 @@ PRM4ALL description
     - Сервисы
         - Начисление rewards пользователям
     - Редис кеширование
+        - htmx кеширование
+        - Тестирование
 
 2. Dashboard
     - Рефакторинг htmx polling
@@ -19,7 +21,6 @@ PRM4ALL description
         - Добавить txhash
 
 4. Users
-    - unique check for metamask_wallet
 
 5. Документация
 

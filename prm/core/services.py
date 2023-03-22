@@ -51,9 +51,6 @@ def set_next_active_token_round():
 
 
 class MetamaskService:
-    def __init__(self) -> None:
-        pass
-
     @staticmethod
     def verify_signature(
         *, account_address: str, signature: str, original_message: str
