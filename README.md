@@ -6,20 +6,16 @@ PRM4ALL description
 ---
 
 1. Core
-    - Сервисы
-        - Начисление rewards пользователям
     - Кеширование
-        - Тестирование
-        - htmx кеширование
+        - Тестрование CacheService
         - Кеширование статики
 
 2. Dashboard
-    - Рефакторинг htmx polling
+    - Пагинация транзакций рефераллов
 
 3. Tokens
     - TokenTransaction
-        - Убрать uuuid
-        - Добавить txhash
+        - Убрать uuid / Добавить txhash
 
 4. Users
 

@@ -1,21 +1,15 @@
 import json
 
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
-from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.cache import cache_page
-from django.views.decorators.vary import vary_on_cookie
 from django.views.generic import RedirectView, TemplateView, UpdateView, View
 
-from prm.core.selectors import get_token, get_token_rounds, get_user_transactions
-from prm.core.services import MetamaskService, create_transaction
-from prm.core.utils import calculate_rounded_total_price
+from prm.core.services import CacheService, MetamaskService, create_transaction
 
 from .forms import AvatarUpdateForm, BuyTokenForm, ProfileUserUpdateForm
 
@@ -49,34 +43,32 @@ class PollUserBalance(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         user = self.request.user
-        token = get_token()
-        user_balance = calculate_rounded_total_price(
-            unit_price=user.token_balance,
-            amount=token.active_round.unit_price,
-        )
+        token = CacheService.get_token()
+        user_balance = CacheService.get_user_balance(user, token)
         return {"user": user, "user_balance": user_balance, "token": token}
 
 
-class PollTokenActiveRound(LoginRequiredMixin, TemplateView):
+class PollToken(LoginRequiredMixin, TemplateView):
     template_name = "dashboard/components/token_active_round.html"
 
     def get_context_data(self, *args, **kwargs):
-        return {"token": get_token()}
+        return {"token": CacheService.get_token()}
 
 
 class PollTokenRounds(LoginRequiredMixin, TemplateView):
     template_name = "dashboard/components/token_rounds.html"
 
     def get_context_data(self, *args, **kwargs):
-        return {"token": get_token(), "token_rounds": get_token_rounds()}
+        token = CacheService.get_token()
+        token_rounds = CacheService.get_token_rounds()
+        return {"token": token, "token_rounds": token_rounds}
 
 
 class PollUserTransactions(LoginRequiredMixin, TemplateView):
     template_name = "dashboard/components/transaction_history.html"
 
     def get_context_data(self, *args, **kwargs):
-        user = self.request.user
-        transactions = get_user_transactions(user=user)
+        transactions = CacheService.get_user_transactions(self.request.user)
         return {"user_transactions": transactions}
 
 
@@ -95,18 +87,15 @@ class DashboardBaseView(LoginRequiredMixin, View):
     template_name = ""
 
     def get_context_data(self):
-        token = get_token()
-        token_rounds = get_token_rounds()
+        token = CacheService.get_token()
+        token_rounds = CacheService.get_token_rounds()
         user = self.request.user
         user_referral = self.request.build_absolute_uri(
             reverse_lazy("account_signup") + "?referral=" + user.username
         )
-        user_balance = calculate_rounded_total_price(
-            unit_price=user.token_balance,
-            amount=token.active_round.unit_price,
-        )
-        user_transactions = get_user_transactions(user=user)
-        user_children = user.children.select_related("settings")
+        user_balance = CacheService.get_user_balance(user, token)
+        user_transactions = CacheService.get_user_transactions(user)
+        user_children = CacheService.get_user_children(user)
         return {
             "user": user,
             "user_referral_link": user_referral,
@@ -117,8 +106,6 @@ class DashboardBaseView(LoginRequiredMixin, View):
             "token_rounds": token_rounds,
         }
 
-    @vary_on_cookie
-    @method_decorator(cache_page(settings.CACHE_TTL))
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
         return render(request, self.template_name, context)
@@ -131,8 +118,6 @@ class DashboardIndexView(DashboardBaseView):
 class DashboardTokenView(DashboardBaseView):
     template_name = "dashboard/token.html"
 
-    @vary_on_cookie
-    @method_decorator(cache_page(settings.CACHE_TTL))
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
         context["buy_token_form"] = BuyTokenForm()
@@ -165,11 +150,6 @@ class DashboardProfileView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     slug_url_kwarg = "username"
     template_name = "dashboard/profile.html"
     success_message = _("Информация успешно обновлена")
-
-    @vary_on_cookie
-    @method_decorator(cache_page(settings.CACHE_TTL))
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy(

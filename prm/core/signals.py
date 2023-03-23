@@ -8,19 +8,29 @@ from prm.users.models import User
 
 @receiver([post_save], sender=User)
 def cache_invalidate_user(*args, **kwargs):
-    cache.clear()
+    username = kwargs["instance"].username
+    cache.delete_many(
+        [
+            f"user_{username}_balance",
+            f"user_{username}_transactions",
+            f"user_{username}_children",
+        ]
+    )
 
 
 @receiver([post_save], sender=Token)
 def cache_invalidate_token(*args, **kwargs):
-    cache.clear()
+    cache.delete_many(["token", "token_active_round", "token_rounds"])
 
 
 @receiver([post_save], sender=TokenRound)
 def cache_invalidate_token_rounds(*args, **kwargs):
-    cache.clear()
+    cache.delete_many(["token", "token_active_round", "token_rounds"])
 
 
 @receiver([post_save], sender=TokenTransaction)
 def cache_invalidate_token_transactions(*args, **kwargs):
-    cache.clear()
+    user = kwargs["instance"].buyer
+    if user:
+        username = user.username
+        cache.delete(f"user_{username}_transactions")

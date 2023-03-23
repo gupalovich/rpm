@@ -1,9 +1,13 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.db.models import Sum
 
-from .selectors import get_token
+from .selectors import get_token, get_token_rounds, get_user_transactions
+from .utils import calculate_rounded_total_price
 
 User = get_user_model()
+CACHE_TTL = settings.CACHE_TTL
 
 
 def create_transaction(*, buyer, token_amount):
@@ -95,3 +99,52 @@ class MetamaskService:
         user.metamask_confirmed = True
         user.full_clean()
         user.save()
+
+
+class CacheService:
+    @staticmethod
+    def get_token():
+        token = cache.get("token")
+        if token is None:
+            token = get_token()
+            cache.set("token", token, CACHE_TTL)
+            cache.set(
+                "token_active_round",
+                token.active_round,
+                CACHE_TTL,
+            )
+        return token
+
+    @staticmethod
+    def get_token_rounds():
+        return cache.get_or_set("token_rounds", get_token_rounds, CACHE_TTL)
+
+    @staticmethod
+    def get_user_balance(user: User, token):
+        username = user.username
+        return cache.get_or_set(
+            f"user_{username}_balance",
+            lambda: calculate_rounded_total_price(
+                unit_price=user.token_balance,
+                amount=token.active_round.unit_price,
+            ),
+            CACHE_TTL,
+        )
+
+    @staticmethod
+    def get_user_transactions(user: User):
+        username = user.username
+        return cache.get_or_set(
+            f"user_{username}_transactions",
+            lambda: get_user_transactions(user=user),
+            CACHE_TTL,
+        )
+
+    @staticmethod
+    def get_user_children(user: User):
+        username = user.username
+        return cache.get_or_set(
+            f"user_{username}_children",
+            lambda: user.children.select_related("settings"),
+            CACHE_TTL,
+        )
