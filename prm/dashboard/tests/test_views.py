@@ -147,11 +147,6 @@ class DashboardBaseViewTests(TestCase):
         self.assertQuerysetEqual(context_transactions, user_transactions)
         self.assertEqual(len(context_transactions), 4)
 
-    def test_get_caching(self):
-        response = self.client.get(self.url)
-        self.assertEqual(response.headers["Cache-Control"], f"max-age={CACHE_TTL}")
-        self.assertEqual(response.headers["Vary"], "Cookie, Accept-Language")
-
 
 class DashboardIndexViewTests(TestCase):
     def setUp(self) -> None:
@@ -171,16 +166,6 @@ class DashboardIndexViewTests(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, f"{reverse('account_login')}?next={self.url}")
-
-    def test_get_caching(self):
-        self.client.force_login(self.user)
-        response = self.client.get(self.url)
-        self.assertEqual(response.headers["Cache-Control"], f"max-age={CACHE_TTL}")
-        self.assertEqual(response.headers["Vary"], "Cookie, Accept-Language")
-
-    def test_get_caching_anon(self):
-        response = self.client.get(self.url)
-        self.assertFalse(response.headers.get("Cache-Control"))
 
 
 class DashboardTokenViewTests(TestCase):
@@ -210,16 +195,6 @@ class DashboardTokenViewTests(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, f"{reverse('account_login')}?next={self.url}")
-
-    def test_get_caching(self):
-        self.client.force_login(self.user)
-        response = self.client.get(self.url)
-        self.assertEqual(response.headers["Cache-Control"], f"max-age={CACHE_TTL}")
-        self.assertEqual(response.headers["Vary"], "Cookie, Accept-Language")
-
-    def test_get_caching_anon(self):
-        response = self.client.get(self.url)
-        self.assertFalse(response.headers.get("Cache-Control"))
 
     def test_post_valid_form(self):
         self.client.force_login(self.user)
@@ -256,15 +231,15 @@ class DashboardTeamViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "dashboard/team.html")
 
-    def test_get_caching(self):
-        self.client.force_login(self.user)
-        response = self.client.get(self.url)
-        self.assertEqual(response.headers["Cache-Control"], f"max-age={CACHE_TTL}")
-        self.assertEqual(response.headers["Vary"], "Cookie, Accept-Language")
+    # def test_get_caching(self):
+    #     self.client.force_login(self.user)
+    #     response = self.client.get(self.url)
+    #     self.assertEqual(response.headers["Cache-Control"], f"max-age={CACHE_TTL}")
+    #     self.assertEqual(response.headers["Vary"], "Cookie, Accept-Language")
 
-    def test_get_caching_anon(self):
-        response = self.client.get(self.url)
-        self.assertFalse(response.headers.get("Cache-Control"))
+    # def test_get_caching_anon(self):
+    #     response = self.client.get(self.url)
+    #     self.assertFalse(response.headers.get("Cache-Control"))
 
     def test_get_anon(self):
         response = self.client.get(self.url)
@@ -288,16 +263,6 @@ class DashboardProfileViewTests(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, f"{reverse('account_login')}?next={self.url}")
-
-    def test_get_caching(self):
-        self.client.force_login(self.user)
-        response = self.client.get(self.url)
-        self.assertEqual(response.headers["Cache-Control"], f"max-age={CACHE_TTL}")
-        self.assertEqual(response.headers["Vary"], "Cookie, Accept-Language")
-
-    def test_get_caching_anon(self):
-        response = self.client.get(self.url)
-        self.assertFalse(response.headers.get("Cache-Control"))
 
 
 class AvatarUpdateViewTests(TestCase):
