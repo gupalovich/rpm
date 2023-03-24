@@ -3,6 +3,7 @@ import json
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.cache import cache
 from django.http import HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
@@ -44,15 +45,26 @@ class PollUserBalance(LoginRequiredMixin, TemplateView):
     def get_context_data(self, *args, **kwargs):
         user = self.request.user
         token = CacheService.get_token()
+        token_active_round = CacheService.get_token_active_round()
         user_balance = CacheService.get_user_balance(user, token)
-        return {"user": user, "user_balance": user_balance, "token": token}
+        return {
+            "user": user,
+            "user_balance": user_balance,
+            "token": token,
+            "token_active_round": token_active_round,
+        }
 
 
 class PollToken(LoginRequiredMixin, TemplateView):
     template_name = "dashboard/components/token_active_round.html"
 
     def get_context_data(self, *args, **kwargs):
-        return {"token": CacheService.get_token()}
+        token = CacheService.get_token()
+        token_active_round = CacheService.get_token_active_round()
+        return {
+            "token": token,
+            "token_active_round": token_active_round,
+        }
 
 
 class PollTokenRounds(LoginRequiredMixin, TemplateView):
@@ -60,8 +72,13 @@ class PollTokenRounds(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         token = CacheService.get_token()
+        token_active_round = CacheService.get_token_active_round()
         token_rounds = CacheService.get_token_rounds()
-        return {"token": token, "token_rounds": token_rounds}
+        return {
+            "token": token,
+            "token_active_round": token_active_round,
+            "token_rounds": token_rounds,
+        }
 
 
 class PollUserTransactions(LoginRequiredMixin, TemplateView):
@@ -89,6 +106,7 @@ class DashboardBaseView(LoginRequiredMixin, View):
     def get_context_data(self):
         token = CacheService.get_token()
         token_rounds = CacheService.get_token_rounds()
+        token_active_round = cache.get("token_active_round")
         user = self.request.user
         user_referral = self.request.build_absolute_uri(
             reverse_lazy("account_signup") + "?referral=" + user.username
@@ -104,6 +122,7 @@ class DashboardBaseView(LoginRequiredMixin, View):
             "user_children": user_children,
             "token": token,
             "token_rounds": token_rounds,
+            "token_active_round": token_active_round,
         }
 
     def get(self, request, *args, **kwargs):

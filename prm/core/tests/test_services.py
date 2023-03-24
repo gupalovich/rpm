@@ -194,7 +194,16 @@ class CacheServiceTests(TestCase):
         result = CacheService.get_token()
         self.assertEqual(result, self.token)
         self.assertEqual(cache.get(key), self.token)
-        self.assertEqual(cache.get("token_active_round"), self.token.active_round)
+
+    @override_settings(CACHES=CACHES)
+    def test_get_token_active_round(self):
+        key = "token_active_round"
+        self.assertFalse(cache.get(key))
+        # Test cached result
+        CacheService.get_token()
+        result = CacheService.get_token_active_round()
+        self.assertEqual(result, self.token.active_round)
+        self.assertEqual(cache.get(key), self.token.active_round)
 
     @override_settings(CACHES=CACHES)
     def test_get_token_rounds(self):

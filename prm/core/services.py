@@ -116,6 +116,10 @@ class CacheService:
         return token
 
     @staticmethod
+    def get_token_active_round():
+        return cache.get("token_active_round")
+
+    @staticmethod
     def get_token_rounds():
         return cache.get_or_set("token_rounds", get_token_rounds, CACHE_TTL)
 

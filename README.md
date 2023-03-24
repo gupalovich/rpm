@@ -6,12 +6,10 @@ PRM4ALL description
 ---
 
 1. Core
-    - Кеширование
-        - Тестрование CacheService
-        - Кеширование статики
 
 2. Dashboard
     - Пагинация транзакций рефераллов
+    - Объединить в PollToken, PollTokenRounds
 
 3. Tokens
     - TokenTransaction
