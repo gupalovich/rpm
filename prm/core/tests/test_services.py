@@ -1,5 +1,6 @@
+from django.core.cache import cache
 from django.db.models import Sum
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from prm.tokens.tests.factories import (
     TokenFactory,
@@ -174,43 +175,77 @@ class MetamaskServiceTests(TestCase):
 
 
 class CacheServiceTests(TestCase):
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "",
+        }
+    }
+
     def setUp(self) -> None:
         self.user = UserFactory()
         self.token = TokenFactory()
 
+    @override_settings(CACHES=CACHES)
     def test_get_token(self):
+        key = "token"
+        self.assertFalse(cache.get(key))
+        # Test cached result
         result = CacheService.get_token()
         self.assertEqual(result, self.token)
+        self.assertEqual(cache.get(key), self.token)
+        self.assertEqual(cache.get("token_active_round"), self.token.active_round)
 
+    @override_settings(CACHES=CACHES)
     def test_get_token_rounds(self):
+        key = "token_rounds"
+        self.assertFalse(cache.get(key))
+        # Test cached result
         TokenRoundFactory.create_batch(5)
+        qs = TokenRound.objects.all()
         result = CacheService.get_token_rounds()
-        self.assertQuerysetEqual(result, TokenRound.objects.all())
+        self.assertQuerysetEqual(result, qs)
+        self.assertQuerysetEqual(cache.get(key), qs)
 
+    @override_settings(CACHES=CACHES)
     def test_get_user_balance(self):
-        result = CacheService.get_user_balance(self.user, self.token)
-        self.assertEqual(
-            result,
-            calculate_rounded_total_price(
-                unit_price=self.user.token_balance,
-                amount=self.token.active_round.unit_price,
-            ),
+        key = f"user_{self.user.username}_balance"
+        self.assertFalse(cache.get(key))
+        # Test cached result
+        user_balance = calculate_rounded_total_price(
+            unit_price=self.user.token_balance,
+            amount=self.token.active_round.unit_price,
         )
+        result = CacheService.get_user_balance(self.user, self.token)
+        self.assertEqual(result, user_balance)
+        self.assertEqual(cache.get(key), user_balance)
 
+    @override_settings(CACHES=CACHES)
     def test_get_user_transactions(self):
+        key = f"user_{self.user.username}_transactions"
+        self.assertFalse(cache.get(key))
+        # Create transactions
         TokenTransactionFactory.create_batch(
             5, buyer=self.user, status=TokenTransaction.Status.SUCCESS
         )
         TokenTransactionFactory.create_batch(2, status=TokenTransaction.Status.SUCCESS)
+        # Test cached result
         result = CacheService.get_user_transactions(self.user)
         self.assertEqual(result.count(), 5)
         self.assertQuerysetEqual(result, get_user_transactions(user=self.user))
+        self.assertQuerysetEqual(cache.get(key), get_user_transactions(user=self.user))
 
+    @override_settings(CACHES=CACHES)
     def test_get_user_children(self):
+        key = f"user_{self.user.username}_children"
+        self.assertFalse(cache.get(key))
+        # Create children
         UserFactory.create_batch(5, parent=self.user)
         UserFactory.create_batch(2, parent=UserFactory())
         UserFactory.create_batch(2)
-        # Test
+        # Test cached result
+        qs = self.user.children.select_related("settings")
         result = CacheService.get_user_children(self.user)
         self.assertEqual(result.count(), 5)
-        self.assertQuerysetEqual(result, self.user.children.select_related("settings"))
+        self.assertQuerysetEqual(result, qs)
+        self.assertQuerysetEqual(cache.get(key), qs)
