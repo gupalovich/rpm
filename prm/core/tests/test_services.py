@@ -198,6 +198,7 @@ class CacheServiceTests(TestCase):
     @override_settings(CACHES=CACHES)
     def test_get_token_active_round(self):
         key = "token_active_round"
+        self.token.save()  # invalidate cache from test_get_token
         self.assertFalse(cache.get(key))
         # Test cached result
         CacheService.get_token()
