@@ -47,6 +47,95 @@ class MetamaskConfirmViewTests(TestCase):
         self.assertEqual(response.status_code, 404)
 
 
+class PollTokenTests(TestCase):
+    def setUp(self) -> None:
+        self.user = UserFactory()
+        self.token = TokenFactory()
+        self.url = reverse("dashboard:poll_active_round")
+        self.url_1 = reverse("dashboard:poll_token_rounds")
+
+    def test_context_data(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        # tests
+        self.assertEqual(response.context["token"], self.token)
+        self.assertFalse(response.context["token_active_round"])
+        self.assertTrue(response.context["token_rounds"] is not None)
+
+    def test_get(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        template = "dashboard/components/token_active_round.html"
+        # tests
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, template)
+
+    def test_get_rounds(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url_1)
+        template = "dashboard/components/token_rounds.html"
+        # tests
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, template)
+
+    def test_get_anon(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+
+
+class PollUserBalanceTests(TestCase):
+    def setUp(self) -> None:
+        self.user = UserFactory()
+        self.token = TokenFactory()
+        self.url = reverse("dashboard:poll_user_balance")
+
+    def test_context_data(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        # tests
+        self.assertEqual(response.context["user"], self.user)
+        self.assertTrue(response.context["user_balance"])
+        self.assertEqual(response.context["token"], self.token)
+        self.assertFalse(response.context["token_active_round"])
+
+    def test_get(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        template = "dashboard/components/user_balance.html"
+        # tests
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, template)
+
+    def test_get_anon(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+
+
+class PollUserTransactionsTests(TestCase):
+    def setUp(self) -> None:
+        self.user = UserFactory()
+        self.token = TokenFactory()
+        self.url = reverse("dashboard:poll_user_transactions")
+
+    def test_context_data(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        # tests
+        self.assertTrue(response.context["user_transactions"] is not None)
+
+    def test_get(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        template = "dashboard/components/transaction_history.html"
+        # tests
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, template)
+
+    def test_get_anon(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+
+
 class DashboardRedirectViewTests(TestCase):
     def setUp(self) -> None:
         self.user = UserFactory()

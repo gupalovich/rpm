@@ -39,6 +39,25 @@ def metamask_confirm(request):
     return HttpResponseNotAllowed(["POST"])
 
 
+class PollToken(LoginRequiredMixin, TemplateView):
+    def get_context_data(self, *args, **kwargs):
+        token = CacheService.get_token()
+        token_active_round = CacheService.get_token_active_round()
+        token_rounds = CacheService.get_token_rounds()
+        return {
+            "token": token,
+            "token_active_round": token_active_round,
+            "token_rounds": token_rounds,
+        }
+
+    def get(self, request, *args, **kwargs):
+        template_name = "dashboard/components/token_active_round.html"
+        if request.path == reverse_lazy("dashboard:poll_token_rounds"):
+            template_name = "dashboard/components/token_rounds.html"
+        context = self.get_context_data()
+        return render(request, template_name, context)
+
+
 class PollUserBalance(LoginRequiredMixin, TemplateView):
     template_name = "dashboard/components/user_balance.html"
 
@@ -52,32 +71,6 @@ class PollUserBalance(LoginRequiredMixin, TemplateView):
             "user_balance": user_balance,
             "token": token,
             "token_active_round": token_active_round,
-        }
-
-
-class PollToken(LoginRequiredMixin, TemplateView):
-    template_name = "dashboard/components/token_active_round.html"
-
-    def get_context_data(self, *args, **kwargs):
-        token = CacheService.get_token()
-        token_active_round = CacheService.get_token_active_round()
-        return {
-            "token": token,
-            "token_active_round": token_active_round,
-        }
-
-
-class PollTokenRounds(LoginRequiredMixin, TemplateView):
-    template_name = "dashboard/components/token_rounds.html"
-
-    def get_context_data(self, *args, **kwargs):
-        token = CacheService.get_token()
-        token_active_round = CacheService.get_token_active_round()
-        token_rounds = CacheService.get_token_rounds()
-        return {
-            "token": token,
-            "token_active_round": token_active_round,
-            "token_rounds": token_rounds,
         }
 
 
