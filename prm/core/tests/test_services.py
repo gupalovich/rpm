@@ -3,13 +3,16 @@ from django.test import TestCase
 
 from prm.tokens.tests.factories import (
     TokenFactory,
+    TokenRound,
     TokenRoundFactory,
     TokenTransaction,
     TokenTransactionFactory,
     UserFactory,
 )
 
+from ..selectors import get_user_transactions
 from ..services import (
+    CacheService,
     MetamaskService,
     create_transaction,
     set_next_active_token_round,
@@ -168,3 +171,46 @@ class MetamaskServiceTests(TestCase):
         # test confirmed
         self.assertEqual(self.user.metamask_wallet, "123")
         self.assertTrue(self.user.metamask_confirmed)
+
+
+class CacheServiceTests(TestCase):
+    def setUp(self) -> None:
+        self.user = UserFactory()
+        self.token = TokenFactory()
+
+    def test_get_token(self):
+        result = CacheService.get_token()
+        self.assertEqual(result, self.token)
+
+    def test_get_token_rounds(self):
+        TokenRoundFactory.create_batch(5)
+        result = CacheService.get_token_rounds()
+        self.assertQuerysetEqual(result, TokenRound.objects.all())
+
+    def test_get_user_balance(self):
+        result = CacheService.get_user_balance(self.user, self.token)
+        self.assertEqual(
+            result,
+            calculate_rounded_total_price(
+                unit_price=self.user.token_balance,
+                amount=self.token.active_round.unit_price,
+            ),
+        )
+
+    def test_get_user_transactions(self):
+        TokenTransactionFactory.create_batch(
+            5, buyer=self.user, status=TokenTransaction.Status.SUCCESS
+        )
+        TokenTransactionFactory.create_batch(2, status=TokenTransaction.Status.SUCCESS)
+        result = CacheService.get_user_transactions(self.user)
+        self.assertEqual(result.count(), 5)
+        self.assertQuerysetEqual(result, get_user_transactions(user=self.user))
+
+    def test_get_user_children(self):
+        UserFactory.create_batch(5, parent=self.user)
+        UserFactory.create_batch(2, parent=UserFactory())
+        UserFactory.create_batch(2)
+        # Test
+        result = CacheService.get_user_children(self.user)
+        self.assertEqual(result.count(), 5)
+        self.assertQuerysetEqual(result, self.user.children.select_related("settings"))
