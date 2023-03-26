@@ -52,14 +52,13 @@
 }
 
 .right_part {
-    margin: 0 0.6em 1em 0;
     background: url("../img/Background 5.4.png") center no-repeat;
     background-size: cover;
     border-radius: 0px 0px 0px 17%;
     display: flex;
     flex-direction: column;
     align-items: center;
-}
+  }
 
 .right_content {
     display: flex;
@@ -81,8 +80,7 @@
 }
 
 .right_footer {
-    position: absolute;
-    bottom: 0;
+    margin-top: 500px;
 }
 
 
@@ -207,12 +205,20 @@
 
 
 .form-submit {
+    grid-column-start: 1;
+    grid-column-end: 3;
     display: flex;
     flex-direction: column;
 }
 
+#reg_btn{
+    width: 50%;
+  }
+
 
 .checkbox {
+    display: flex;
+    align-self: start;
     gap: 11px;
     margin-top: 50px;
 }
@@ -283,7 +289,7 @@
 //
 
 
-.dashboard_html {
+.dashboard_body {
     background-color: var(--bg-light);
 
     // @media (max-width: 1414px){
@@ -434,9 +440,12 @@
 .sidenav {
     height: 1fr;
     width: 290px;
+    max-width: 290px;
     background-color: var(--bg-light);
     flex: 0 1 auto;
     display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
     flex-direction: column;
 }
 
@@ -547,7 +556,7 @@
     // display: inline-block;
     font-size: 1.9em;
     color: var(--text-dark);
-    ;
+    font-weight: 700;
 }
 
 .bio_part {
@@ -683,6 +692,7 @@
 
 .defi_name {
     font-size: 2.1em;
+    font-weight: 700;
 }
 
 .description {
@@ -921,7 +931,7 @@
 // ###############PROFILE################//// ###############PROFILE################//// ###############PROFILE################//
 // ###############PROFILE################//// ###############PROFILE################//// ###############PROFILE################//
 
-.dashboard_html {
+.dashboard_body {
     @media (max-width: 1230px) {
         .profile_tiles {
             grid-template-columns: 1fr;
