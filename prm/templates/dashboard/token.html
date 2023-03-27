@@ -26,7 +26,7 @@
             {% csrf_token %}
             {{ buy_token_form|crispy }}
             <input type="hidden" value="{{ token.active_round.unit_price|unlocalize }}" name="current_token_price" id="current_token_price">
-            <button class="btn btn-slim" type="submit">{% translate "Купить" %}</button>
+            <button id="buyButton" class="btn btn-slim" type="button">{% translate "Купить" %}</button>
         </form>
 
     </div>
@@ -41,5 +41,6 @@
 
 
 {% block inline_javascript %}
+<script src="{% static "js/smart-logic.js" %}"></script>
 <script src="{% static "js/token-buy-form.js" %}"></script>
 {% endblock inline_javascript %}

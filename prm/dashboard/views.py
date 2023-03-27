@@ -12,6 +12,7 @@ from django.views.generic import RedirectView, TemplateView, UpdateView, View
 from prm.core.selectors import get_token, get_token_rounds, get_user_transactions
 from prm.core.services import create_transaction
 from prm.core.utils import calculate_rounded_total_price
+from prm.users.services import recalculate_user_balance
 
 from .forms import AvatarUpdateForm, BuyTokenForm, ProfileUserUpdateForm
 
@@ -28,7 +29,8 @@ def metamask_confirm(request):
             return HttpResponseBadRequest()
 
         user.confirm_metamask(account_address)
-
+        recalculate_user_balance(user)
+        
         return JsonResponse({"message": "Success"})
     return HttpResponseNotAllowed(["POST"])
 

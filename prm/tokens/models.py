@@ -4,10 +4,17 @@ from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
 from prm.core.selectors import get_token
-from prm.core.utils import calculate_rounded_total_price
+from prm.core.utils import (
+    calculate_rounded_total_price, 
+    hex_to_dec, 
+    hex_to_text,
+    hex_remove_zeros,
+)
 
 User = get_user_model()
 
@@ -111,11 +118,43 @@ class TokenRound(models.Model):
             self.total_amount = round(token.total_amount * (self.percent_share / 100))
 
 
+class TokenTransactionRaw(models.Model):
+    class Meta:
+        verbose_name = _("Token Transaction Raw")
+        verbose_name_plural = _("Token Transactions Raw")
+        ordering = ["-time_stamp"]
+        unique_together = ('transaction_hash', 'log_index')
+        
+    class BlockChain(models.TextChoices):
+        BSCSCAN = "bscscan", _("bscscan")
+
+    address = models.CharField(max_length=100)
+    topics = ArrayField(
+        models.CharField(max_length=100),
+        size=4
+    )
+    data = models.TextField()
+    block_number = models.CharField(max_length=100)
+    block_hash = models.CharField(max_length=66)
+    time_stamp = models.DateTimeField()
+    gas_price = models.CharField(max_length=100)
+    gas_used = models.CharField(max_length=100)
+    log_index = models.CharField(max_length=100)
+    transaction_hash = models.CharField(max_length=66, db_index=True)
+    transaction_index = models.CharField(max_length=100)
+    block_chain = models.CharField(
+        db_index=True,
+        max_length=20,
+        choices=BlockChain.choices,
+        default=BlockChain.BSCSCAN,
+    )
+
 class TokenTransaction(models.Model):
     class Meta:
         verbose_name = _("Token Transaction")
         verbose_name_plural = _("Token Transactions")
         ordering = ["-created_at"]
+        unique_together = ('tx_hash', 'tx_log_index')
 
     class Status(models.TextChoices):
         PENDING = "pending", _("Pending")
@@ -138,7 +177,9 @@ class TokenTransaction(models.Model):
         verbose_name="Раунд",
     )
     # Fields
-    uuid = models.UUIDField(db_index=True, default=uuid_lib.uuid4, editable=False)
+    buyer_address = models.CharField(db_index=True, max_length=70)
+    tx_log_index = models.IntegerField()
+    tx_hash = models.CharField(db_index=True, unique=True, editable=False, max_length=70)
     amount = models.PositiveIntegerField("Количество")
     total_price = models.DecimalField(
         "Цена токенов", max_digits=10, decimal_places=2, default=0
@@ -150,16 +191,17 @@ class TokenTransaction(models.Model):
         choices=Status.choices,
         default=Status.PENDING,
     )
+    
     reward = models.PositiveIntegerField("Награда", blank=True, null=True)
     reward_sent = models.BooleanField("Награда начислена", default=False)
-    created_at = models.DateTimeField("Создана в", auto_now_add=True)
+    created_at = models.DateTimeField("Создана в")
 
     def __str__(self):
-        return f"{self.buyer.username} - {self.amount} - {self.total_price}"
+        return f"{self.buyer.username if self.buyer else self.buyer_address} - {self.amount} - {self.total_price}"
 
     def save(self, *args, **kwargs):
         self.set_total_price()
-        self.set_reward()
+        # self.set_reward()
         return super().save(*args, **kwargs)
 
     def set_total_price(self) -> None:
@@ -176,32 +218,44 @@ class TokenTransaction(models.Model):
             self.reward = 0
 
 
-class TokenTransactionRaw(models.Model):
-    class Meta:
-        verbose_name = _("Token Transaction Raw")
-        verbose_name_plural = _("Token Transactions Raw")
-        ordering = ["-time_stamp"]
-        
-    class BlockChain(models.TextChoices):
-        BSCSCAN = "bscscan", _("bscscan")
+@receiver(post_save, sender=TokenTransactionRaw)
+def create_token_transaction(sender, instance: TokenTransactionRaw, **kwargs): 
+    if len(instance.data) < 98:
+        return
+    
+    try:
+        func_name = hex_to_text(instance.data[-96:]).strip()
+    except UnicodeDecodeError:
+        return
 
-    address = models.CharField(max_length=100)
-    topics = ArrayField(
-        models.CharField(max_length=100),
-        size=4
-    )
-    data = models.CharField(max_length=100)
-    block_number = models.CharField(max_length=100)
-    block_hash = models.CharField(max_length=66)
-    time_stamp = models.DateTimeField()
-    gas_price = models.CharField(max_length=100)
-    gas_used = models.CharField(max_length=100)
-    log_index = models.CharField(max_length=100)
-    transaction_hash = models.CharField(max_length=66, unique=True, db_index=True, primary_key=True)
-    transaction_index = models.CharField(max_length=100)
-    block_chain = models.CharField(
-        db_index=True,
-        max_length=20,
-        choices=BlockChain.choices,
-        default=BlockChain.BSCSCAN,
-    )
+    if "buyToken" in func_name:
+        token = get_token()
+        buyer_address = str(hex_remove_zeros(instance.data[64:128])).lower()
+        buyer = User.objects.filter(
+            metamask_wallet=buyer_address).first()
+        token_transaction = TokenTransaction(**{
+            "tx_hash": instance.transaction_hash,
+            "tx_log_index": instance.log_index,
+            "buyer": buyer,
+            "buyer_address": buyer_address,
+            "token_round": token.active_round,
+            "amount": int(instance.data[128:192], base=16),
+            "status": TokenTransaction.Status.SUCCESS,
+            "created_at": instance.time_stamp,
+        }).save()
+    elif "rewardToken" in func_name:
+        token_transaction = TokenTransaction.objects.filter(
+            tx_hash=instance.transaction_hash
+        ).first()
+        token_transaction.reward_sent = True
+        token_transaction.reward = round(hex_to_dec(instance.data[128:192]) * (5 / 100))
+        token_transaction.save()
+
+@receiver(post_save, sender=TokenTransaction)
+def create_token_transaction(sender, instance: TokenTransaction, **kwargs): 
+    print(f"#{instance.id} Transaction saved")
+    if instance.buyer:
+        instance.buyer.update_token_balance(instance.amount)
+    
+        if instance.reward_sent:
+            instance.buyer.parent.update_token_balance(instance.reward)

@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from .validators import validate_phone_number
+from prm.core.utils import hex_remove_zeros
 
 
 class User(AbstractUser):
@@ -88,8 +89,10 @@ class User(AbstractUser):
         if self.metamask_confirmed:
             return
         if not self.metamask_wallet and wallet:
-            self.metamask_wallet = wallet
-        if self.metamask_wallet and self.metamask_wallet == wallet:
+            wallet_cleaned = str(hex_remove_zeros(wallet)).lower()
+            self.metamask_wallet = wallet_cleaned
+            print(self.metamask_wallet)
+        if self.metamask_wallet and self.metamask_wallet == wallet_cleaned:
             self.metamask_confirmed = True
         self.save()
 
