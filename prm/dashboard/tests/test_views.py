@@ -1,5 +1,6 @@
 import json
 
+from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
@@ -15,6 +16,8 @@ from prm.tokens.tests.factories import (
 )
 from prm.users.tests.factories import UserFactory
 
+CACHE_TTL = settings.CACHE_TTL
+
 
 class MetamaskConfirmViewTests(TestCase):
     def setUp(self) -> None:
@@ -28,25 +31,13 @@ class MetamaskConfirmViewTests(TestCase):
         self.assertEqual(response.status_code, 405)
 
     def test_post(self):
+        """Signature logic can't be tested here"""
         data = {"accountAddress": self.wallet, "user": self.user.username}
         response = self.client.post(
             self.url, data=json.dumps(data), content_type="application/json"
         )
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.content), {"message": "Success"})
-        # Test metamask was confirmed
-        self.assertFalse(self.user.metamask_wallet)
-        self.assertFalse(self.user.metamask_confirmed)
-        self.user.refresh_from_db()
-        self.assertEqual(self.user.metamask_wallet, self.wallet)
-        self.assertTrue(self.user.metamask_confirmed)
-
-    def test_post_empty_account(self):
-        data = {"accountAddress": "", "user": self.user.username}
-        response = self.client.post(
-            self.url, data=json.dumps(data), content_type="application/json"
-        )
         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {"error": "Invalid signature"})
 
     def test_post_unknown_user(self):
         data = {"accountAddress": self.wallet, "user": "test123"}
@@ -54,6 +45,95 @@ class MetamaskConfirmViewTests(TestCase):
             self.url, data=json.dumps(data), content_type="application/json"
         )
         self.assertEqual(response.status_code, 404)
+
+
+class PollTokenTests(TestCase):
+    def setUp(self) -> None:
+        self.user = UserFactory()
+        self.token = TokenFactory()
+        self.url = reverse("dashboard:poll_active_round")
+        self.url_1 = reverse("dashboard:poll_token_rounds")
+
+    def test_context_data(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        # tests
+        self.assertEqual(response.context["token"], self.token)
+        self.assertFalse(response.context["token_active_round"])
+        self.assertTrue(response.context["token_rounds"] is not None)
+
+    def test_get(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        template = "dashboard/components/token_active_round.html"
+        # tests
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, template)
+
+    def test_get_rounds(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url_1)
+        template = "dashboard/components/token_rounds.html"
+        # tests
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, template)
+
+    def test_get_anon(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+
+
+class PollUserBalanceTests(TestCase):
+    def setUp(self) -> None:
+        self.user = UserFactory()
+        self.token = TokenFactory()
+        self.url = reverse("dashboard:poll_user_balance")
+
+    def test_context_data(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        # tests
+        self.assertEqual(response.context["user"], self.user)
+        self.assertTrue(response.context["user_balance"])
+        self.assertEqual(response.context["token"], self.token)
+        self.assertFalse(response.context["token_active_round"])
+
+    def test_get(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        template = "dashboard/components/user_balance.html"
+        # tests
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, template)
+
+    def test_get_anon(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+
+
+class PollUserTransactionsTests(TestCase):
+    def setUp(self) -> None:
+        self.user = UserFactory()
+        self.token = TokenFactory()
+        self.url = reverse("dashboard:poll_user_transactions")
+
+    def test_context_data(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        # tests
+        self.assertTrue(response.context["user_transactions"] is not None)
+
+    def test_get(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        template = "dashboard/components/transaction_history.html"
+        # tests
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, template)
+
+    def test_get_anon(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
 
 
 class DashboardRedirectViewTests(TestCase):
@@ -239,6 +319,16 @@ class DashboardTeamViewTests(TestCase):
         # Test response
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "dashboard/team.html")
+
+    # def test_get_caching(self):
+    #     self.client.force_login(self.user)
+    #     response = self.client.get(self.url)
+    #     self.assertEqual(response.headers["Cache-Control"], f"max-age={CACHE_TTL}")
+    #     self.assertEqual(response.headers["Vary"], "Cookie, Accept-Language")
+
+    # def test_get_caching_anon(self):
+    #     response = self.client.get(self.url)
+    #     self.assertFalse(response.headers.get("Cache-Control"))
 
     def test_get_anon(self):
         response = self.client.get(self.url)

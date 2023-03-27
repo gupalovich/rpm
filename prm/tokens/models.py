@@ -92,7 +92,7 @@ class TokenRound(models.Model):
         return round(self.unit_price * self.total_amount)
 
     @property
-    def progress(self) -> float | int:
+    def progress(self) -> int | float:
         """Подсчитать прогресс текущего раунда в процентах"""
         if self.total_amount:
             return round((self.total_amount_sold / self.total_amount) * 100, 2)
@@ -209,6 +209,9 @@ class TokenTransaction(models.Model):
         )
 
     def set_reward(self) -> None:
+        """
+        TODO: remove hard-coded reward percentage
+        """
         if self.buyer and self.buyer.parent:  # self.buyer for null cases
             self.reward = round(self.amount * (5 / 100))
         else:

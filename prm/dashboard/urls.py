@@ -8,8 +8,7 @@ from .views import (
     DashboardRedirectView,
     DashboardTeamView,
     DashboardTokenView,
-    PollTokenActiveRound,
-    PollTokenRounds,
+    PollToken,
     PollUserBalance,
     PollUserTransactions,
     metamask_confirm,
@@ -23,13 +22,11 @@ urlpatterns = [
     path("~avatar-update/", AvatarUpdateView.as_view(), name="avatar_update"),
     path("~metamask-confirm/", metamask_confirm, name="metamask_confirm"),
     # Polling views
-    path("~poll-user-balance/", PollUserBalance.as_view(), name="poll_user_balance"),
+    path("poll-active-round/", PollToken.as_view(), name="poll_active_round"),
+    path("poll-token-rounds/", PollToken.as_view(), name="poll_token_rounds"),
+    path("poll-user-balance/", PollUserBalance.as_view(), name="poll_user_balance"),
     path(
-        "~poll-active-round/", PollTokenActiveRound.as_view(), name="poll_active_round"
-    ),
-    path("~poll-token-rounds/", PollTokenRounds.as_view(), name="poll_token_rounds"),
-    path(
-        "~poll-user-transactions/",
+        "poll-user-transactions/",
         PollUserTransactions.as_view(),
         name="poll_user_transactions",
     ),

@@ -34,6 +34,8 @@ CACHES = {
         },
     }
 }
+CACHE_TTL = env("CACHE_TTL", default=60 * 15)
+CACHE_STATIC_TTL = env("CACHE_STATIC_TTL", default=60 * 60)
 
 # SECURITY
 # ------------------------------------------------------------------------------

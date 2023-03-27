@@ -12,6 +12,17 @@ SECRET_KEY = env(
     "DJANGO_SECRET_KEY",
     default="tOZcER0pICbyOPADK7iv4W8LbDwzLeBpp1w8JXMe7U0K7ZF2wBbEZ3dn7hOCwMY7",
 )
+
+# CACHES
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#caches
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+        "LOCATION": "",
+    }
+}
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#test-runner
 TEST_RUNNER = "django.test.runner.DiscoverRunner"
 
@@ -28,5 +39,3 @@ EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 # DEBUGGING FOR TEMPLATES
 # ------------------------------------------------------------------------------
 TEMPLATES[0]["OPTIONS"]["debug"] = True  # type: ignore # noqa F405
-# Your stuff...
-# ------------------------------------------------------------------------------

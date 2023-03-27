@@ -31,7 +31,7 @@ class User(AbstractUser):
     # wallet
     token_balance = models.PositiveIntegerField(_("Баланс токенов"), default=0)
     metamask_wallet = models.CharField(
-        _("Metamask"), db_index=True, blank=True, max_length=150
+        _("Metamask"), db_index=True, unique=True, blank=True, null=True, max_length=150
     )
     metamask_confirmed = models.BooleanField(_("Metamask подтвержден"), default=False)
 
@@ -74,25 +74,11 @@ class User(AbstractUser):
 
     def update_token_balance(self, amount: int):
         """
-        TODO: move to service layer
+        TODO: remove
         """
         if not isinstance(amount, int):
             return
         self.token_balance += amount
-        self.save()
-
-    def confirm_metamask(self, wallet: str):
-        """
-        TODO: move to service layer
-        """
-        if self.metamask_confirmed:
-            return
-        wallet_cleaned = wallet.lower()
-        if not self.metamask_wallet and wallet:
-            self.metamask_wallet = wallet_cleaned
-            print(self.metamask_wallet)
-        if self.metamask_wallet and self.metamask_wallet == wallet_cleaned:
-            self.metamask_confirmed = True
         self.save()
 
 

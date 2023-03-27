@@ -20,7 +20,6 @@ class UserFactory(DjangoModelFactory):
     last_name = LazyFunction(lambda: fake.last_name())
     phone_number = Faker("phone_number")
     token_balance = LazyFunction(lambda: fake.random_int(min=0, max=100000))
-    metamask_wallet = "0xEFE417C9e02f8B36f7969af9e4c40a25Bed74ecF"
     metamask_confirmed = False
 
     @post_generation

@@ -3,14 +3,15 @@ import json
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import HttpResponseBadRequest, HttpResponseNotAllowed, JsonResponse
+from django.core.cache import cache
+from django.http import HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import RedirectView, TemplateView, UpdateView, View
 
 from prm.core.selectors import get_token, get_token_rounds, get_user_transactions
-from prm.core.services import create_transaction
+from prm.core.services import CacheService, MetamaskService, create_transaction
 from prm.core.utils import calculate_rounded_total_price
 from prm.users.services import recalculate_user_balance, set_parent_in_smart
 
@@ -22,54 +23,69 @@ User = get_user_model()
 def metamask_confirm(request):
     if request.method == "POST":
         data = json.loads(request.body)
-        account_address = data.get("accountAddress")
         user = get_object_or_404(User, username=data.get("user"))
-
-        if not account_address:
-            return HttpResponseBadRequest()
-
-        user.confirm_metamask(account_address)
+        account_address = data.get("accountAddress")
+        signature = data.get("signature")
+        csrf_token = data.get("csrf_token")
+        # verify signature
+        is_valid_signature = MetamaskService.verify_signature(
+            account_address=account_address,
+            signature=signature,
+            original_message=csrf_token,
+        )
+        if not is_valid_signature:
+            return JsonResponse({"error": "Invalid signature"}, status=400)
+        # update user metamask data
+        MetamaskService.confirm_user_wallet(user=user, account_address=account_address)
+        
         if user.parent:
             set_parent_in_smart(user)
         recalculate_user_balance(user)
-        
+
         return JsonResponse({"message": "Success"})
     return HttpResponseNotAllowed(["POST"])
 
 
-class PollUserBalance(TemplateView):
+class PollToken(LoginRequiredMixin, TemplateView):
+    def get_context_data(self, *args, **kwargs):
+        token = CacheService.get_token()
+        token_active_round = CacheService.get_token_active_round()
+        token_rounds = CacheService.get_token_rounds()
+        return {
+            "token": token,
+            "token_active_round": token_active_round,
+            "token_rounds": token_rounds,
+        }
+
+    def get(self, request, *args, **kwargs):
+        template_name = "dashboard/components/token_active_round.html"
+        if request.path == reverse_lazy("dashboard:poll_token_rounds"):
+            template_name = "dashboard/components/token_rounds.html"
+        context = self.get_context_data()
+        return render(request, template_name, context)
+
+
+class PollUserBalance(LoginRequiredMixin, TemplateView):
     template_name = "dashboard/components/user_balance.html"
 
     def get_context_data(self, *args, **kwargs):
         user = self.request.user
-        token = get_token()
-        user_balance = calculate_rounded_total_price(
-            unit_price=user.token_balance,
-            amount=token.active_round.unit_price,
-        )
-        return {"user": user, "user_balance": user_balance, "token": token}
+        token = CacheService.get_token()
+        token_active_round = CacheService.get_token_active_round()
+        user_balance = CacheService.get_user_balance(user, token)
+        return {
+            "user": user,
+            "user_balance": user_balance,
+            "token": token,
+            "token_active_round": token_active_round,
+        }
 
 
-class PollTokenActiveRound(TemplateView):
-    template_name = "dashboard/components/token_active_round.html"
-
-    def get_context_data(self, *args, **kwargs):
-        return {"token": get_token()}
-
-
-class PollTokenRounds(TemplateView):
-    template_name = "dashboard/components/token_rounds.html"
-
-    def get_context_data(self, *args, **kwargs):
-        return {"token": get_token(), "token_rounds": get_token_rounds()}
-
-
-class PollUserTransactions(TemplateView):
+class PollUserTransactions(LoginRequiredMixin, TemplateView):
     template_name = "dashboard/components/transaction_history.html"
 
     def get_context_data(self, *args, **kwargs):
-        user = self.request.user
-        transactions = get_user_transactions(user=user)
+        transactions = CacheService.get_user_transactions(self.request.user)
         return {"user_transactions": transactions}
 
 
@@ -88,18 +104,16 @@ class DashboardBaseView(LoginRequiredMixin, View):
     template_name = ""
 
     def get_context_data(self):
-        token = get_token()
-        token_rounds = get_token_rounds()
+        token = CacheService.get_token()
+        token_rounds = CacheService.get_token_rounds()
+        token_active_round = cache.get("token_active_round")
         user = self.request.user
         user_referral = self.request.build_absolute_uri(
             reverse_lazy("account_signup") + "?referral=" + user.username
         )
-        user_balance = calculate_rounded_total_price(
-            unit_price=user.token_balance,
-            amount=token.active_round.unit_price,
-        )
-        user_transactions = get_user_transactions(user=user)
-        user_children = user.children.select_related("settings")
+        user_balance = CacheService.get_user_balance(user, token)
+        user_transactions = CacheService.get_user_transactions(user)
+        user_children = CacheService.get_user_children(user)
         return {
             "user": user,
             "user_referral_link": user_referral,
@@ -108,6 +122,7 @@ class DashboardBaseView(LoginRequiredMixin, View):
             "user_children": user_children,
             "token": token,
             "token_rounds": token_rounds,
+            "token_active_round": token_active_round,
         }
 
     def get(self, request, *args, **kwargs):

@@ -136,6 +136,11 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+# CACHES
+# ------------------------------------------------------------------------------
+CACHE_TTL = env("CACHE_TTL", default=60)
+CACHE_STATIC_TTL = env("CACHE_STATIC_TTL", default=60)
+
 # STATIC
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-root

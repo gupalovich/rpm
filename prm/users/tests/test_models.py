@@ -50,7 +50,7 @@ class UserTests(TestCase):
         self.assertEqual(user.avatar, "avatars/default.png")
         # wallet
         self.assertTrue(user.token_balance)
-        self.assertTrue(user.metamask_wallet)
+        self.assertFalse(user.metamask_wallet)
         self.assertIsInstance(user.metamask_confirmed, bool)
         # settings
         self.assertTrue(user.settings.birthday)
@@ -98,7 +98,7 @@ class UserTests(TestCase):
         user.save()
 
     def test_clean_metamask_wallet_confirmed(self):
-        user = UserFactory(metamask_confirmed=True)
+        user = UserFactory(metamask_wallet="0xFFF", metamask_confirmed=True)
         with self.assertRaises(ValidationError):
             user.metamask_wallet = "123"
             user.clean()
@@ -133,30 +133,3 @@ class UserTests(TestCase):
         user = UserFactory(token_balance=0)
         user.update_token_balance(0.1)
         self.assertEqual(user.token_balance, 0)
-
-    def test_confirm_metamask(self):
-        wallet = "0x123abc"
-        user = UserFactory(metamask_wallet="", metamask_confirmed=False)
-        user.confirm_metamask(wallet)
-        user.refresh_from_db()
-        # test confirmed
-        self.assertEqual(user.metamask_wallet, wallet)
-        self.assertTrue(user.metamask_confirmed)
-
-    def test_confirm_metamask_already_confirmed(self):
-        wallet = "0x123abc"
-        user = UserFactory(metamask_wallet="", metamask_confirmed=True)
-        user.confirm_metamask(wallet)
-        user.refresh_from_db()
-        # test confirmed
-        self.assertEqual(user.metamask_wallet, "")
-        self.assertTrue(user.metamask_confirmed)
-
-    def test_confirm_metamask_wallet_not_empty(self):
-        wallet = "0x123abc"
-        user = UserFactory(metamask_wallet=wallet, metamask_confirmed=False)
-        user.confirm_metamask(wallet)
-        user.refresh_from_db()
-        # test confirmed
-        self.assertEqual(user.metamask_wallet, wallet)
-        self.assertTrue(user.metamask_confirmed)

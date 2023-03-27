@@ -66,8 +66,10 @@
 
 
 {% block inline_javascript %}
-<script defer src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>;
 <script defer src="{% static 'js/avatar-update.js' %}"></script>
+
+{% if not user.metamask_confirmed %}
+<script defer src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
 <script>
     const profileForm = document.getElementById("profile-form")
     function metamaskConfirm() {
@@ -80,38 +82,46 @@
                     } else {
                         provider.listAccounts().then(function (result) {
                             accountAddress = result[0];
-                            // Send POST request
-                            fetch("{% url 'dashboard:metamask_confirm' %}", {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRFToken': "{{ csrf_token }}",
-                                },
-                                body: JSON.stringify({
-                                    accountAddress: accountAddress,
-                                    user: '{{ request.user.username }}',
-                                })
-                            }).then(function (response) {
-                                // Handle response
-                                console.log(response);
-                                document.getElementById('id_metamask_wallet').value = accountAddress;
-                                profileForm.submit()
-                            });
+                            signer = provider.getSigner();
+                            signer.signMessage("{{ csrf_token }}").then((signature) => {
+                                // Send POST request
+                                fetch("{% url 'dashboard:metamask_confirm' %}", {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRFToken': "{{ csrf_token }}",
+                                    },
+                                    body: JSON.stringify({
+                                        user: '{{ request.user.username }}',
+                                        accountAddress: accountAddress,
+                                        signature: signature,
+                                        csrf_token: "{{ csrf_token }}"
+                                    })
+                                }).then(function (response) {
+                                    // Handle response
+                                    console.log(response);
+                                    document.getElementById('id_metamask_wallet').value = accountAddress;
+                                    profileForm.submit();
+                                });
+                            })
                         });
                     }
                 });
+            }).catch(error => {
+                alert(`Подтвердите запрос Metamask\nОшибка: ${error.message}`)
+                profileForm.submit();
             });
         } catch {
-            console.log('Пожалуйста установите MetaMask приложение для вашего браузера.');
-            profileForm.submit()
+            alert('Пожалуйста установите MetaMask приложение для вашего браузера.');
+            profileForm.submit();
         }
     }
 
-    {% if not user.metamask_confirmed %}
-        document.getElementById("profile-submit-btn").addEventListener("click", (event) => {
-            event.preventDefault();
-            metamaskConfirm();
-        });
-    {% endif %}
+    document.getElementById("profile-submit-btn").addEventListener("click", (event) => {
+        event.preventDefault();
+        metamaskConfirm();
+    });
 </script>
+{% endif %}
+
 {% endblock inline_javascript %}
