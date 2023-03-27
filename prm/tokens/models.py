@@ -1,5 +1,3 @@
-import uuid as uuid_lib
-
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
@@ -13,7 +11,7 @@ from prm.core.utils import (
     calculate_rounded_total_price, 
     hex_to_dec, 
     hex_to_text,
-    hex_remove_zeros,
+    hex_to_metamask,
 )
 
 User = get_user_model()
@@ -201,7 +199,6 @@ class TokenTransaction(models.Model):
 
     def save(self, *args, **kwargs):
         self.set_total_price()
-        # self.set_reward()
         return super().save(*args, **kwargs)
 
     def set_total_price(self) -> None:
@@ -230,7 +227,7 @@ def create_token_transaction(sender, instance: TokenTransactionRaw, **kwargs):
 
     if "buyToken" in func_name:
         token = get_token()
-        buyer_address = str(hex_remove_zeros(instance.data[64:128])).lower()
+        buyer_address = hex_to_metamask(instance.data[64:128])
         buyer = User.objects.filter(
             metamask_wallet=buyer_address).first()
         token_transaction = TokenTransaction(**{
@@ -253,9 +250,9 @@ def create_token_transaction(sender, instance: TokenTransactionRaw, **kwargs):
 
 @receiver(post_save, sender=TokenTransaction)
 def create_token_transaction(sender, instance: TokenTransaction, **kwargs): 
-    print(f"#{instance.id} Transaction saved")
-    if instance.buyer:
-        instance.buyer.update_token_balance(instance.amount)
-    
+    if instance.buyer:    
         if instance.reward_sent:
             instance.buyer.parent.update_token_balance(instance.reward)
+            return
+        
+        instance.buyer.update_token_balance(instance.amount)

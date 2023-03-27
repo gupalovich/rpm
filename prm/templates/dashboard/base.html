@@ -103,10 +103,12 @@
                 <h1 class="page_name">{% block page_title %}Dashboard{% endblock %}</h1>
             </div>
             <div class="bio_part">
-                <button id="invite_link" class="btn btn-slim invite_link" data-referral-link="{{ user_referral_link }}">
-                    <span>{% translate "Ссылка для приглашения" %}</span>
-                    <span>{% translate "Скопировано" %}</span>
-                </button>
+                {% if request.user.metamask_confirmed %}
+                    <button id="invite_link" class="btn btn-slim invite_link" data-referral-link="{{ user_referral_link }}">
+                        <span>{% translate "Ссылка для приглашения" %}</span>
+                        <span>{% translate "Скопировано" %}</span>
+                    </button>
+                {% endif %}
                 <a href="" class="metamask_button">
                     <img src="{% static 'img/icons/metamask.svg'%}" alt="metamask">
                 </a>

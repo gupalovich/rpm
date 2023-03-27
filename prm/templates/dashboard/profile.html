@@ -75,7 +75,7 @@
             window.ethereum.request({ method: 'eth_requestAccounts' }).then(function () {
                 provider = new ethers.providers.Web3Provider(window.ethereum);
                 provider.getNetwork().then(function (result) {
-                    if (result['chainId'] != 1) {
+                    if (result['chainId'] != 97) {
                         alert('Switch to Mainnet!');
                     } else {
                         provider.listAccounts().then(function (result) {

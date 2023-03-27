@@ -21,4 +21,10 @@ def hex_to_text(hex_value):
     return bytes.fromhex(clean_hex(hex_value)).decode('utf-8')
 
 def hex_remove_zeros(hex_value):
-    return hex(hex_to_dec(clean_hex(hex_value)))
+    return hex(hex_to_dec(hex_value))
+
+def hex_to_metamask(hex_value):
+    raw_hex = hex_remove_zeros(hex_value)
+    if len(raw_hex) < 42:
+        raw_hex = '0x' + '0' * (42 - len(raw_hex)) + raw_hex[2:]
+    return raw_hex

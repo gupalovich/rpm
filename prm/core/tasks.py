@@ -32,7 +32,7 @@ def transactions_pooling():
         }, headers={'User-Agent': 'PostmanRuntime/7.29.2'}).json()["result"]
     
     for event in events_list:
-        if last_transaction.transaction_hash == clean_hex(event["transactionHash"]):
+        if last_transaction and last_transaction.transaction_hash == clean_hex(event["transactionHash"]):
             continue
         data = {}
         data["address"] = clean_hex(event["address"])
