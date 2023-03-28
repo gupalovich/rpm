@@ -77,35 +77,31 @@
             window.ethereum.request({ method: 'eth_requestAccounts' }).then(function () {
                 provider = new ethers.providers.Web3Provider(window.ethereum);
                 provider.getNetwork().then(function (result) {
-                    if (result['chainId'] != 97) {
-                        alert('Switch to Mainnet!');
-                    } else {
-                        provider.listAccounts().then(function (result) {
-                            accountAddress = result[0];
-                            signer = provider.getSigner();
-                            signer.signMessage("{{ csrf_token }}").then((signature) => {
-                                // Send POST request
-                                fetch("{% url 'dashboard:metamask_confirm' %}", {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'X-CSRFToken': "{{ csrf_token }}",
-                                    },
-                                    body: JSON.stringify({
-                                        user: '{{ request.user.username }}',
-                                        accountAddress: accountAddress,
-                                        signature: signature,
-                                        csrf_token: "{{ csrf_token }}"
-                                    })
-                                }).then(function (response) {
-                                    // Handle response
-                                    console.log(response);
-                                    document.getElementById('id_metamask_wallet').value = accountAddress;
-                                    profileForm.submit();
-                                });
-                            })
-                        });
-                    }
+                    provider.listAccounts().then(function (result) {
+                        accountAddress = result[0];
+                        signer = provider.getSigner();
+                        signer.signMessage("{{ csrf_token }}").then((signature) => {
+                            // Send POST request
+                            fetch("{% url 'dashboard:metamask_confirm' %}", {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRFToken': "{{ csrf_token }}",
+                                },
+                                body: JSON.stringify({
+                                    user: '{{ request.user.username }}',
+                                    accountAddress: accountAddress,
+                                    signature: signature,
+                                    csrf_token: "{{ csrf_token }}"
+                                })
+                            }).then(function (response) {
+                                // Handle response
+                                console.log(response);
+                                document.getElementById('id_metamask_wallet').value = accountAddress;
+                                profileForm.submit();
+                            });
+                        })
+                    });
                 });
             }).catch(error => {
                 alert(`Подтвердите запрос Metamask\nОшибка: ${error.message}`)
