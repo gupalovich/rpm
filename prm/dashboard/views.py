@@ -10,9 +10,7 @@ from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import RedirectView, TemplateView, UpdateView, View
 
-from prm.core.selectors import get_token, get_token_rounds, get_user_transactions
-from prm.core.services import CacheService, MetamaskService, create_transaction
-from prm.core.utils import calculate_rounded_total_price
+from prm.core.services import CacheService, MetamaskService
 from prm.users.services import recalculate_user_balance, set_parent_in_smart
 
 from .forms import AvatarUpdateForm, BuyTokenForm, ProfileUserUpdateForm
@@ -37,7 +35,7 @@ def metamask_confirm(request):
             return JsonResponse({"error": "Invalid signature"}, status=400)
         # update user metamask data
         MetamaskService.confirm_user_wallet(user=user, account_address=account_address)
-        
+
         if user.parent:
             set_parent_in_smart(user)
         recalculate_user_balance(user)
@@ -146,11 +144,6 @@ class DashboardTokenView(DashboardBaseView):
         form = BuyTokenForm(request.POST)
         if form.is_valid():
             user = self.request.user
-            token_amount = form.cleaned_data["token_amount"]
-
-            create_transaction(buyer=user, token_amount=token_amount)
-            user.update_token_balance(token_amount)
-
             return redirect(
                 reverse_lazy("dashboard:token", kwargs={"username": user.username})
             )

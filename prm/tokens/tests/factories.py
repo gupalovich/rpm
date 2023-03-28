@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from django.utils import timezone
 from factory import LazyAttribute, LazyFunction, SubFactory
 from factory.django import DjangoModelFactory
 from factory.fuzzy import FuzzyChoice
@@ -52,3 +53,6 @@ class TokenTransactionFactory(DjangoModelFactory):
     token_round = SubFactory(TokenRoundFactory)
     # Fields
     amount = LazyFunction(lambda: fake.random_int(min=100, max=40000000))
+    tx_log_index = 1
+    tx_hash = LazyFunction(lambda: fake.uuid4())
+    created_at = LazyAttribute(lambda _: timezone.now())

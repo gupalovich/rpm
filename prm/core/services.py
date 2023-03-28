@@ -10,18 +10,6 @@ User = get_user_model()
 CACHE_TTL = settings.CACHE_TTL
 
 
-def create_transaction(*, buyer, token_amount):
-    from prm.tokens.models import TokenTransaction
-
-    token = get_token()
-    transaction = TokenTransaction.objects.create(
-        buyer=buyer,
-        token_round=token.active_round,
-        amount=token_amount,
-    )
-    return transaction
-
-
 def update_active_round_total_amount_sold():
     """
     На основе транзакций раунда, подсчитать кол-во проданных токенов, для success транзакций
