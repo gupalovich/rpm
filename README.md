@@ -28,12 +28,15 @@ PRM4ALL description
 
 1. Обновить example.env на .env
 2. `set READ_DOT_ENV_FILE=TRUE`
-3. В .env обновить DATABASE_URL и создать свою postgres бд
+3. В .env: <br>
+    3.1. обновить DATABASE_URL и создать свою postgres бд <br>
+    3.2. Добавить private key в `BSCSCAN_PRIVATE_KEY`. [Инструкция](https://support.metamask.io/hc/en-us/articles/360015289632-How-to-export-an-account-s-private-key) <br>
 4. Закоментить hiredis в requirements/local.txt
 5. `pip install -r requirements/local.txt`
 6. `python manage.py migrate`
 7. `python manage.py createsuperuser`
 8. `python manage.py runserver`
+9. Добавить переодическую таску `transactions_pooling` в админке
 
 ### Докер
 
