@@ -6,14 +6,12 @@ PRM4ALL description
 ---
 
 1. Core
+    - Sitemap
 
 2. Dashboard
     - Пагинация транзакций рефераллов
-    - Объединить в PollToken, PollTokenRounds
 
 3. Tokens
-    - TokenTransaction
-        - Убрать uuid / Добавить txhash
 
 4. Users
 
