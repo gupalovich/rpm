@@ -274,3 +274,4 @@ prm/media/avatars/*
 .env
 .envs/*
 !.envs/.local/
+supervisord.conf

@@ -4,7 +4,8 @@
 DJANGO_SETTINGS_MODULE=config.settings.production
 DJANGO_SECRET_KEY=5k1yHp6bWsMWlwIfWDEtiLPbizZxupiUE2xW0ZpdaxAzAGHl4jKYHipiAaKgpCHu
 DJANGO_ADMIN_URL=ehTIu16KDddOjzOFMajIB17F5gzTPeHn/
-DJANGO_ALLOWED_HOSTS=.prm4all.com
+DJANGO_ALLOWED_HOSTS=.prm4all.com,45.9.41.187
+DJANGO_CSRF_TRUSTED_ORIGINS=https://dev.presale.prm4all.com/
 
 # Security
 # ------------------------------------------------------------------------------
@@ -15,8 +16,9 @@ DJANGO_SECURE_SSL_REDIRECT=False
 # ------------------------------------------------------------------------------
 DJANGO_SERVER_EMAIL=
 
-MAILGUN_API_KEY=
-MAILGUN_DOMAIN=
+# Mailgun
+MAILGUN_API_KEY=key-53a1139ff76a9936ab49ba546182b5d3
+MAILGUN_DOMAIN=mg.novel2read.com
 
 
 # django-allauth
@@ -29,7 +31,7 @@ WEB_CONCURRENCY=4
 
 # Sentry
 # ------------------------------------------------------------------------------
-SENTRY_DSN=
+SENTRY_DSN="https://3de59f65a2f54fc89ab6fd044ca08714@o139112.ingest.sentry.io/4504915496140800"
 
 
 # Redis
@@ -43,3 +45,9 @@ REDIS_URL=redis://redis:6379/0
 CELERY_FLOWER_USER=LSZLGNNriCIYuUwIYUpNBPJHfHBjSXOV
 CELERY_FLOWER_PASSWORD=27JYvxY1wm5sw7R2UBKl4PNTBox1fJh1wIg0Ad2m514duNkaJTzs2djIFtgpw14x
 
+# BSCScan
+BSCSCAN_API_KEY=
+BSCSCAN_DOMAIN=https://api-testnet.bscscan.com
+BSCSCAN_HTTP_PROVIDER=https://data-seed-prebsc-1-s1.binance.org:8545
+BSCSCAN_CONTRACT_ADDRESS=0xC40c6eD98C389B9aCe25C7B264aaff748FC72c30
+BSCSCAN_PRIVATE_KEY=
