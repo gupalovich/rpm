@@ -1,3 +1,9 @@
+// Tippy
+tippy('[data-tippy-content]', {
+    placement: 'bottom',
+    animation: 'scale',
+});
+
 // Menu
 let burger = document.getElementById("burger");
 let sidenav = document.getElementById("sidenav");

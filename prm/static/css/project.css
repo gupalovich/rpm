@@ -94,6 +94,32 @@ input[type=date]::-webkit-calendar-picker-indicator {
   display: none;
 }
 
+.tippy-box[data-animation=scale][data-placement^=top] {
+  -webkit-transform-origin: bottom;
+          transform-origin: bottom;
+}
+
+.tippy-box[data-animation=scale][data-placement^=bottom] {
+  -webkit-transform-origin: top;
+          transform-origin: top;
+}
+
+.tippy-box[data-animation=scale][data-placement^=left] {
+  -webkit-transform-origin: right;
+          transform-origin: right;
+}
+
+.tippy-box[data-animation=scale][data-placement^=right] {
+  -webkit-transform-origin: left;
+          transform-origin: left;
+}
+
+.tippy-box[data-animation=scale][data-state=hidden] {
+  -webkit-transform: scale(0.5);
+          transform: scale(0.5);
+  opacity: 0;
+}
+
 .title_left {
   font-size: 2.2em;
   font-weight: 700;
@@ -160,9 +186,16 @@ input[type=date]::-webkit-calendar-picker-indicator {
   background: url("../img/Background 5.4.png") center no-repeat;
   background-size: cover;
   border-radius: 0px 0px 0px 17%;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 
 .right_content {
@@ -241,7 +274,6 @@ input[type=date]::-webkit-calendar-picker-indicator {
 }
 
 .form-lg {
-  
   grid-template-columns: 1fr 1fr;
 }
 
@@ -323,15 +355,32 @@ input[type=date]::-webkit-calendar-picker-indicator {
           flex-direction: column;
 }
 
-#reg_btn{
+#reg_btn {
   width: 50%;
 }
 
 .checkbox {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  align-self: start;
+  -ms-flex-item-align: start;
+      align-self: start;
   gap: 11px;
   margin-top: 50px;
+}
+
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn.disabled {
+  color: white;
+  background-color: var(--text-light);
+  cursor: not-allowed;
+}
+.btn.disabled:hover, .btn.disabled:active, .btn.disabled:focus {
+  background-color: var(--text-light);
 }
 
 .btn {
@@ -462,7 +511,7 @@ input[type=date]::-webkit-calendar-picker-indicator {
   .dashboard_body .tiles {
     margin-top: 91px;
   }
-  body #burger {
+  .dashboard_body #burger {
     display: block;
   }
 }
@@ -516,18 +565,20 @@ input[type=date]::-webkit-calendar-picker-indicator {
   width: 290px;
   max-width: 290px;
   background-color: var(--bg-light);
-  /* -webkit-box-flex: 0;
+  -webkit-box-flex: 0;
       -ms-flex: 0 1 auto;
           flex: 0 1 auto;
   display: -webkit-box;
-  display: -ms-flexbox; */
+  display: -ms-flexbox;
   display: flex;
-  flex: 1 0 auto;
-  flex-direction: column;
-  /* -webkit-box-orient: vertical;
+  -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
-          flex-direction: column; */
+          flex-direction: column;
+  -webkit-box-flex: 1;
+      -ms-flex: 1 0 auto;
+          flex: 1 0 auto;
+  flex-direction: column;
 }
 
 .main {
@@ -1258,20 +1309,17 @@ input[type=date]::-webkit-calendar-picker-indicator {
   .registration {
     grid-template-columns: 100%;
   }
-  /* .registration .right_part {
+  .registration .right_part {
     border-radius: 0;
     margin: 0;
   }
   .registration .right_part .right_content {
     margin-top: 300px;
     margin-bottom: 40px;
-  } */
+  }
 }
 @media (max-width: 510px) {
-  .form-submit{
-    grid-column-end: 1;
-  }
-  .form-lg {
+  .form {
     grid-template-columns: 1fr;
   }
   .register_button {

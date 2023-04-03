@@ -103,13 +103,25 @@
                 <h1 class="page_name">{% block page_title %}Dashboard{% endblock %}</h1>
             </div>
             <div class="bio_part">
-                {% if request.user.metamask_confirmed %}
-                    <button id="invite_link" class="btn btn-slim invite_link" data-referral-link="{{ user_referral_link }}">
-                        <span>{% translate "Ссылка для приглашения" %}</span>
-                        <span>{% translate "Скопировано" %}</span>
-                    </button>
-                {% endif %}
-                <a href="" class="metamask_button">
+                <button
+                    {% if request.user.metamask_confirmed %}
+                        id="invite_link"
+                        class="btn btn-slim invite_link"
+                        data-referral-link="{{ user_referral_link }}"
+                    {% else %}
+                        class="btn btn-slim invite_link disabled"
+                        data-tippy-content="{% translate "Необходимо привязать metamask" %}"
+                    {% endif %}>
+                    <span>{% translate "Ссылка для приглашения" %}</span>
+                    <span>{% translate "Скопировано" %}</span>
+                </button>
+                <a href=""
+                    {% if request.user.metamask_confirmed %}
+                        class="metamask_button"
+                    {% else %}
+                        class="metamask_button disabled"
+                        data-tippy-content="{% translate "Metamask не подключен" %}"
+                    {% endif %}>
                     <img src="{% static 'img/icons/metamask.svg'%}" alt="metamask">
                 </a>
                 <a href="">

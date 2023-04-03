@@ -7,11 +7,11 @@ PRM4ALL description
 
 1. Core
     - Sitemap
+    - Настройки staging
+    - Security headers
 
 2. Dashboard
     - Пагинация транзакций рефераллов
-    - Восстановить пароль - англ текст
-    - Оптимизация изображений
 
 3. Tokens
 

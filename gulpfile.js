@@ -31,8 +31,7 @@ function pathsConfig(appName) {
     vendorsJs: [
       `${vendorsRoot}/htmx.org/dist/htmx.js`,
       `${vendorsRoot}/htmx.org/dist/ext/debug.js`,
-      // `${vendorsRoot}/htmx.org/dist/ext/event-header.js`,
-      // `${vendorsRoot}/htmx.org/dist/ext/ajax-header.js`,
+      `${this.app}/static/js/libs/tippy.min.js`,
     ],
     app: this.app,
     templates: `${this.app}/templates`,
