@@ -83,7 +83,7 @@ class MetamaskService:
         """
         if user.metamask_confirmed:
             return
-        user.metamask_wallet = account_address
+        user.metamask_wallet = account_address.lower()
         user.metamask_confirmed = True
         user.full_clean()
         user.save()

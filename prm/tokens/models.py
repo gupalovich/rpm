@@ -229,7 +229,7 @@ def create_token_transaction_raw(sender, instance: TokenTransactionRaw, **kwargs
 
     if "buyToken" in func_name:
         token = get_token()
-        buyer_address = hex_to_metamask(instance.data[64:128])
+        buyer_address = hex_to_metamask(instance.data[64:128]).lower()
         buyer = User.objects.filter(metamask_wallet=buyer_address).first()
         token_transaction = TokenTransaction(
             **{
