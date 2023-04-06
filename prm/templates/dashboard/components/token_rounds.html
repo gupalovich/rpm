@@ -5,9 +5,11 @@
 {% load dashboard_extras %}
 
 <div id="round" class="tile big_tile"
+    {% if HTMX_ALLOW_POLLING %}
     hx-get="{% url 'dashboard:poll_token_rounds' %}"
     hx-trigger="every 10s"
-    hx-swap="outerHTML">
+    hx-swap="outerHTML"
+    {% endif %}>
     <h3 class="big_name">{% translate "Раунды продаж" %}</h3>
     <div class="round_content">
         <div class="table">

@@ -13,20 +13,19 @@ User = get_user_model()
 
 
 class BuyTokenForm(forms.Form):
-    
     token_price_usd = forms.CharField(
         label=" ",
-        widget=forms.TextInput(
-            attrs={"placeholder": _("Введите сумму USDT"), "readonly": "readonly"}
-        ),
+        widget=forms.TextInput(attrs={"placeholder": _("Введите сумму USDT")}),
         required=False,
-    )
-    token_amount = forms.IntegerField(
-        label=" ",
-        widget=forms.TextInput(attrs={"placeholder": _("Введите кол-во токенов")}),
         validators=[
             validate_available_tokens,
         ],
+    )
+    token_amount = forms.CharField(
+        label=" ",
+        widget=forms.TextInput(
+            attrs={"placeholder": _("Вы получите:"), "readonly": "readonly"}
+        ),
     )
 
     def clean_token_amount(self):
