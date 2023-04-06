@@ -12,6 +12,8 @@ PRM4ALL description
 
 2. Dashboard
     - Пагинация транзакций рефераллов
+    - Разделить билиотеки popper/tippy
+    - Форма BuyTokenForm и её тестирование
 
 3. Tokens
 

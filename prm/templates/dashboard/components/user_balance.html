@@ -5,9 +5,11 @@
 {% load dashboard_extras %}
 
 <div class="tiles"
+    {% if HTMX_ALLOW_POLLING %}
     hx-get="{% url 'dashboard:poll_user_balance' %}"
     hx-trigger="every 10s"
-    hx-swap="outerHTML">
+    hx-swap="outerHTML"
+    {% endif %}>
     <div id="my_tokens" class="tile little_tile">
         <img class="tile_icon" src="{% static 'img/icons/my_tokens_icon.svg'%}" alt="">
         <div class="tile_text">

@@ -77,11 +77,15 @@ class SignalsTests(TestCase):
     @override_settings(CACHES=CACHES)
     def test_cache_invalidate_user_transactions(self):
         user = self.users[0]
+        CacheService.get_user_balance(user, self.token)
         CacheService.get_user_transactions(user)
         self.assertTrue(cache.get(f"user_{user.username}_transactions") is not None)
+        self.assertTrue(cache.get(f"user_{user.username}_balance") is not None)
         # Create transaction from other user
         TokenTransactionFactory(buyer=self.users[1])
+        self.assertTrue(cache.get(f"user_{user.username}_balance") is not None)
         self.assertTrue(cache.get(f"user_{user.username}_transactions") is not None)
         # Invalidate transactions for user
         TokenTransactionFactory(buyer=user)
+        self.assertTrue(cache.get(f"user_{user.username}_balance") is None)
         self.assertTrue(cache.get(f"user_{user.username}_transactions") is None)

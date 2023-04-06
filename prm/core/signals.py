@@ -33,4 +33,9 @@ def cache_invalidate_user_transactions(*args, **kwargs):
     user = kwargs["instance"].buyer
     if user:
         username = user.username
-        cache.delete(f"user_{username}_transactions")
+        cache.delete_many(
+            [
+                f"user_{username}_balance",
+                f"user_{username}_transactions",
+            ]
+        )

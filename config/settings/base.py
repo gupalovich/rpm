@@ -184,6 +184,7 @@ TEMPLATES = [
                 "django.template.context_processors.tz",
                 "django.contrib.messages.context_processors.messages",
                 "prm.users.context_processors.allauth_settings",
+                "prm.users.context_processors.htmx_settings",
             ],
         },
     }
@@ -310,6 +311,8 @@ ACCOUNT_FORMS = {"signup": "prm.users.forms.UserSignupForm"}
 # https://django-allauth.readthedocs.io/en/latest/forms.html
 # SOCIALACCOUNT_FORMS = {"signup": "prm.users.forms.UserSocialSignupForm"}
 
+# HTMX
+HTMX_ALLOW_POLLING = env.bool("HTMX_ALLOW_POLLING", default=True)
 
 # BSCScan Settings
 BSCSCAN_API_KEY = env.str("BSCSCAN_API_KEY")
