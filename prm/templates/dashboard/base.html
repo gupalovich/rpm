@@ -77,6 +77,22 @@
                 <p class="menu_name">Profile</p>
                 <div class="active_line"></div>
             </a>
+            <a href="http://main.prm4all.com/" class="menu_item{% if current_url == 'demo' %} active{% endif %}">
+                <svg class="menu_icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g clip-path="url(#clip0_0_1555)">
+                        <path d="M11.3023 2.69767C11.3023 2.31236 11.6147 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 9.20275 3.14943 6.67271 4.99997 4.8586C5.27512 4.58886 5.71684 4.59325 5.98658 4.8684C6.25632 5.14356 6.25193 5.58528 5.97677 5.85502C4.38291 7.41751 3.39535 9.59279 3.39535 12C3.39535 16.7522 7.24778 20.6047 12 20.6047C16.7522 20.6047 20.6047 16.7522 20.6047 12C20.6047 7.24778 16.7522 3.39535 12 3.39535C11.6147 3.39535 11.3023 3.08299 11.3023 2.69767Z" fill="#A3AED0"/>
+                        <path d="M11.3023 5.48837C11.3023 5.10306 11.6147 4.7907 12 4.7907C15.9816 4.7907 19.2093 8.01841 19.2093 12C19.2093 15.9816 15.9816 19.2093 12 19.2093C8.01841 19.2093 4.7907 15.9816 4.7907 12C4.7907 11.6147 5.10306 11.3023 5.48837 11.3023C5.87369 11.3023 6.18605 11.6147 6.18605 12C6.18605 15.211 8.78904 17.814 12 17.814C15.211 17.814 17.814 15.211 17.814 12C17.814 8.78904 15.211 6.18605 12 6.18605C11.6147 6.18605 11.3023 5.87369 11.3023 5.48837Z" fill="#A3AED0"/>
+                        <path d="M12 7.5814C11.6147 7.5814 11.3023 7.89375 11.3023 8.27907C11.3023 8.66438 11.6147 8.97674 12 8.97674C13.6697 8.97674 15.0233 10.3303 15.0233 12C15.0233 13.6697 13.6697 15.0233 12 15.0233C11.6147 15.0233 11.3023 15.3356 11.3023 15.7209C11.3023 16.1062 11.6147 16.4186 12 16.4186C14.4403 16.4186 16.4186 14.4403 16.4186 12C16.4186 9.55967 14.4403 7.5814 12 7.5814Z" fill="#A3AED0"/>
+                    </g>
+                    <defs>
+                        <clipPath id="clip0_0_1555">
+                            <rect width="24" height="24" fill="white"/>
+                        </clipPath>
+                    </defs>
+                </svg>
+                <p class="menu_name">Demo PRM</p>
+                <div class="active_line"></div>
+            </a>
             <a href="{% url 'account_logout' %}" class="menu_item">
                 <svg class="menu_icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clip-path="url(#clip0_0_1551)">
@@ -137,9 +153,11 @@
 
         <div class="footer">
             <p class="footer_text">© 2023 PRM4ALL. All Rights Reserved.</p>
-            <a href="#" class="footer_link">Web 3.0</a>
-            <a href="#" class="footer_link">WhitePaper</a>
-            <a href="#" class="footer_link">SmartContract</a>
+            <div class="footer_links">
+                <a href="#" class="footer_link">Web 3.0</a>
+                <a href="#" class="footer_link">WhitePaper</a>
+                <a href="#" class="footer_link">SmartContract</a>
+            </div>
         </div>
 
     </div>

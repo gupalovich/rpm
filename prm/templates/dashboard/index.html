@@ -15,7 +15,7 @@
         <div class="defi_info">
             <h1 class="defi_name">DeFi Token PRM4ALL</h1>
             <p class="description">{% translate "Получай процент с товарооборота компании!" %}</p>
-            <button class="btn btn-slim defi_btn">{% translate "Купить" %}</button>
+            <a href="{% url 'dashboard:token' username=user.username %}"><button class="btn btn-slim defi_btn">{% translate "Купить" %}</button></a>
         </div>
     </div>
 

@@ -32,9 +32,9 @@
     <div id="rate" class="tile little_tile">
         <img class="tile_icon" src="{% static 'img/icons/rate_icon.svg'%}" alt="">
         <div class="tile_text">
-            <p class="tile_name">{% translate "Курс токена" %}</p>
+            <p class="tile_name">{% translate "Курс 1 PRM токена " %}</p>
             <p class="tile_counter">
-                <span>1 PRM =</span>
+                {% comment %} <span>1 PRM =</span> {% endcomment %}
                 <span>
                     {{ token_active_round.currency }}
                     {{ token_active_round.unit_price|strip_zeros|unlocalize }}

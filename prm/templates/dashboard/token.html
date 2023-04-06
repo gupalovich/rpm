@@ -26,8 +26,10 @@
             {% csrf_token %}
             {{ buy_token_form|crispy }}
             <input type="hidden" value="{{ token_active_round.unit_price|unlocalize }}" name="current_token_price" id="current_token_price">
+            <p class="grey_text" id="buy_token_description">Сеть BNB Smart Chain (BEP20).  Минимальная сумма покупки 1000 USDT.<br>Среднее время зачисления 5 мин. Добавьте токены PRM в MetaMask.</p>
             <button id="buyButton" class="btn btn-slim" type="button">{% translate "Купить" %}</button>
         </form>
+        
 
     </div>
 
