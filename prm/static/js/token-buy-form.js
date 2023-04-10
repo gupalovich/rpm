@@ -5,6 +5,7 @@ const unitPrice = parseFloat(document.getElementById("current_token_price").valu
 priceInput.addEventListener("input", (event) => {
     const priceValue = parseFloat(event.target.value);
     const totalAmount = priceValue / unitPrice;
+    window.TOTAL_AMOUNT = totalAmount;
 
     if (totalAmount >= 1000) {
         tokenInput.value = "Вы получите: " + totalAmount;

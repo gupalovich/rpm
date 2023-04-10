@@ -16,12 +16,17 @@
         {% for transaction in user_transactions %}
             <div class="row">
                 <div class="cell">{{ transaction.buyer.username }}</div>
-                {% if transaction.reward and transaction.buyer.username != user.username %}
-                    <div class="cell">{% translate "бонус 5%" %}</div>
+                {% if transaction.reward_type == "admin" %}
+                    <div class="cell">{% translate "начисление от сервиса" %}</div>
                     <div class="cell">{{ transaction.reward|intcomma }}</div>
                 {% else %}
-                    <div class="cell">{% translate "покупка" %}</div>
-                    <div class="cell">{{ transaction.amount|intcomma }}</div>
+                    {% if transaction.reward and transaction.buyer.username != user.username %}
+                        <div class="cell">{% translate "бонус 5%" %}</div>
+                        <div class="cell">{{ transaction.reward|intcomma }}</div>
+                    {% else %}
+                        <div class="cell">{% translate "покупка" %}</div>
+                        <div class="cell">{{ transaction.amount|intcomma }}</div>
+                    {% endif %}
                 {% endif %}
                 <div class="cell">{{ transaction.created_at|date:"d.b.Y" }}</div>
             </div>
