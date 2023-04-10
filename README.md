@@ -11,9 +11,10 @@ PRM4ALL description
     - Security headers
 
 2. Dashboard
+    - profanity filter
     - Пагинация транзакций рефераллов
     - Разделить билиотеки popper/tippy
-    - Форма BuyTokenForm и её тестирование
+    - CI
 
 3. Tokens
 
