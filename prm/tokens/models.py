@@ -157,6 +157,10 @@ class TokenTransaction(models.Model):
         FAILED = "failed", _("Failed")
         SUCCESS = "success", _("Success")
 
+    class RewardType(models.TextChoices):
+        BUYER = "buyer", _("Buyer")
+        ADMIN = "admin", _("Admin")
+
     # Relations
     buyer = models.ForeignKey(
         User,
@@ -188,6 +192,13 @@ class TokenTransaction(models.Model):
         max_length=20,
         choices=Status.choices,
         default=Status.PENDING,
+    )
+    reward_type = models.CharField(
+        "Тип награды",
+        db_index=True,
+        max_length=20,
+        choices=RewardType.choices,
+        default=RewardType.BUYER,
     )
     reward = models.PositiveIntegerField("Награда", blank=True, null=True)
     reward_sent = models.BooleanField("Награда начислена", default=False)
