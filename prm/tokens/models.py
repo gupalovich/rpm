@@ -261,13 +261,35 @@ def create_token_transaction_raw(sender, instance: TokenTransactionRaw, **kwargs
         token_transaction.reward_sent = True
         token_transaction.reward = round(hex_to_dec(instance.data[128:192]) * (5 / 100))
         token_transaction.save()
+    elif "bonusToken" in func_name:
+        token = get_token()
+        buyer_address = hex_to_metamask(instance.data[64:128]).lower()
+        buyer = User.objects.filter(metamask_wallet=buyer_address).first()
+        token_transaction = TokenTransaction(
+            **{
+                "tx_hash": instance.transaction_hash,
+                "tx_log_index": instance.log_index,
+                "buyer": buyer,
+                "buyer_address": buyer_address,
+                "token_round": token.active_round,
+                "amount": 0,
+                "reward_sent": True,
+                "reward": int(instance.data[128:192], base=16),
+                "reward_type": TokenTransaction.RewardType.ADMIN,
+                "status": TokenTransaction.Status.SUCCESS,
+                "created_at": instance.time_stamp,
+            }
+        ).save()
 
 
 @receiver(post_save, sender=TokenTransaction)
 def create_token_transaction(sender, instance: TokenTransaction, **kwargs):
     if instance.buyer:
         if instance.reward_sent:
-            instance.buyer.parent.update_token_balance(instance.reward)
-            return
-
+            if instance.reward_type == TokenTransaction.RewardType.BUYER:
+                instance.buyer.parent.update_token_balance(instance.reward)
+                return
+            else:
+                instance.buyer.update_token_balance(instance.reward)
+                return
         instance.buyer.update_token_balance(instance.amount)
