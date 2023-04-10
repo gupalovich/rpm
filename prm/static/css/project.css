@@ -20,6 +20,8 @@
           box-sizing: border-box;
 }
 
+
+
 * {
   margin: 0;
   padding: 0;
@@ -51,6 +53,7 @@ button {
   font-size: 14px;
   font-family: "DM Sans", sans-serif;
   font-weight: 400;
+  border-width: 0;
 }
 
 button {
@@ -427,7 +430,7 @@ input[type=date]::-webkit-calendar-picker-indicator {
   font-weight: 700;
   background-color: var(--accent);
   margin-top: 1.7vw;
-  border-radius: 0.8vw;
+  border-radius: 16px;
 }
 .btn-primary:hover, .btn-primary:active, .btn-primary:focus {
   background-color: var(--accent-2);
@@ -1231,6 +1234,10 @@ input[type=date]::-webkit-calendar-picker-indicator {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
   }
+  .settings_btn_bar{
+    grid-column-start: 1;
+    grid-column-end: 3;
+  }
 }
 @media (max-width: 746px) {
   .dashboard_body .profile_tiles {
@@ -1245,6 +1252,10 @@ input[type=date]::-webkit-calendar-picker-indicator {
     grid-column-end: 3;
     /* grid-template-columns: 1fr; */
     /* grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; */
+  }
+  .settings_btn_bar{
+    grid-column-start: 1;
+    grid-column-end: 1;
   }
 }
 @media (max-width: 335px) {
@@ -1465,4 +1476,59 @@ input[type=date]::-webkit-calendar-picker-indicator {
   .left_content {
     margin-top: 14px;
   }
+}
+
+#cancel_btn{
+  background: var(--bg-light);
+  color: var(--text-dark);
+}
+
+.settings_btn_bar{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  align-content: space-between;
+  gap: 9px;
+}
+
+#settings_metamask_btn{
+  padding: 10px 22px;
+}
+
+.page_amount_selector{
+  color: var(--text-light);
+  border: none;
+  width: fit-content;
+}
+
+li{
+  list-style-type: none;
+}
+
+.pagination{
+  display: flex;
+}
+
+.pages{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  align-content: space-between;
+  gap: 9px;
+  margin-top: 14px;
+}
+
+.page_btn{
+  border-radius: 0%;
+  background: none;
+  color: var(--text-light);
+  padding: 0%;
+  min-width: 20px;
+
+}
+
+.active_page{
+  color: var(--text-dark);
 }

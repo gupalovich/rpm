@@ -35,6 +35,22 @@
             </div>
         {% endfor %}
     </div>
+    <div class="pages">
+        <select class="page_amount_selector">
+            <option>Показывать по 10 записей</option>
+            <option>Показывать по 25 записей</option>
+            <option>Показывать по 50 записей</option>
+        </select>
+        <ul class="pagination">
+            <li><button class="page_btn"><</button></li>
+            <li><button class="page_btn active_page">1</button></li>
+            <li><button class="page_btn">2</button></li>
+            <li><button class="page_btn">3</button></li>
+            <li><button class="page_btn">...</button></li>
+            <li><button class="page_btn">10</button></li>
+            <li><button class="page_btn">></button></li>
+        </ul>
+    </div>
 </section>
 
 {% include "dashboard/components/transaction_history.html" %}

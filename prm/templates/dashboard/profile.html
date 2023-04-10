@@ -57,9 +57,14 @@
     <form id="profile-form" class="form settings_table" method="POST">
         {% csrf_token %}
         {{ form|crispy }}
-        <button class="btn btn-slim-wide" type="submit" id="profile-submit-btn">
-            {% translate "Сохранить" %}
-        </button>
+        <div class="settings_btn_bar">
+            <button id="settings_metamask_btn" class="btn btn-slim-wide" type="submit" id="profile-submit-btn">
+                {% translate "Подтвердить metamask" %}
+            </button>
+            <button id="settings_save_btn" class="btn btn-slim-wide" type="submit" id="profile-submit-btn">
+                {% translate "Сохранить" %}
+            </button>
+        </div>
     </form>
 </div>
 {% endblock inner_bot %}
