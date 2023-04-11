@@ -40,10 +40,11 @@ def metamask_confirm(request):
             if user.parent:
                 set_parent_in_smart(user)
             recalculate_user_balance(user)
-            return JsonResponse({"message": "Success"})
+            a = 1/0
         except Exception as e:
-            return JsonResponse({"message": "Error", "exception": e})
-
+            return JsonResponse({"message": "Error", "exception": str(e)}, status=500)
+        
+        return JsonResponse({"message": "Success"})
     return HttpResponseNotAllowed(["POST"])
 
 
