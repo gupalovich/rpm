@@ -2,12 +2,15 @@ from datetime import datetime
 
 import requests
 from django.conf import settings
+from django.contrib.auth import get_user_model
 
 from config import celery_app
 from prm.core.utils import clean_hex, hex_to_dec
-from prm.tokens.models import TokenTransactionRaw
+from prm.tokens.models import TokenTransactionRaw, TokenTransaction, TokenRound
 
 from .services import set_next_active_token_round, update_active_round_total_amount_sold
+
+User = get_user_model()
 
 
 @celery_app.task()
@@ -19,6 +22,12 @@ def update_active_round_total_amount_sold_task():
 def set_next_active_token_round_task():
     set_next_active_token_round()
 
+@celery_app.task()
+def clean_up_transactions():
+    TokenTransactionRaw.objects.all().delete()   
+    TokenTransaction.objects.all().delete()  
+    TokenRound.objects.update(total_amount_sold=0)
+    User.objects.update(token_balance=0) 
 
 @celery_app.task()
 def transactions_pooling():
