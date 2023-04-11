@@ -20,27 +20,30 @@ User = get_user_model()
 
 def metamask_confirm(request):
     if request.method == "POST":
-        data = json.loads(request.body)
-        user = get_object_or_404(User, username=data.get("user"))
-        account_address = data.get("accountAddress")
-        signature = data.get("signature")
-        csrf_token = data.get("csrf_token")
-        # verify signature
-        is_valid_signature = MetamaskService.verify_signature(
-            account_address=account_address,
-            signature=signature,
-            original_message=csrf_token,
-        )
-        if not is_valid_signature:
-            return JsonResponse({"error": "Invalid signature"}, status=400)
-        # update user metamask data
-        MetamaskService.confirm_user_wallet(user=user, account_address=account_address)
+        try:
+            data = json.loads(request.body)
+            user = get_object_or_404(User, username=data.get("user"))
+            account_address = data.get("accountAddress")
+            signature = data.get("signature")
+            csrf_token = data.get("csrf_token")
+            # verify signature
+            is_valid_signature = MetamaskService.verify_signature(
+                account_address=account_address,
+                signature=signature,
+                original_message=csrf_token,
+            )
+            if not is_valid_signature:
+                return JsonResponse({"error": "Invalid signature"}, status=400)
+            # update user metamask data
+            MetamaskService.confirm_user_wallet(user=user, account_address=account_address)
 
-        if user.parent:
-            set_parent_in_smart(user)
-        recalculate_user_balance(user)
+            if user.parent:
+                set_parent_in_smart(user)
+            recalculate_user_balance(user)
+            return JsonResponse({"message": "Success"})
+        except Exception as e:
+            return JsonResponse({"message": "Error", "exception": e})
 
-        return JsonResponse({"message": "Success"})
     return HttpResponseNotAllowed(["POST"])
 
 
