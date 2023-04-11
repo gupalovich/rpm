@@ -19,6 +19,8 @@ def get_user_transactions(*, user):
     user_transactions = (
         TokenTransaction.objects.filter(status=TokenTransaction.Status.SUCCESS)
         .select_related("buyer")
-        .filter(Q(buyer=user) | Q(buyer__parent=user, reward_sent=True))
+        .filter(
+            Q(buyer=user) | Q(buyer__parent=user, reward_sent=True, reward_type="buyer")
+        )
     )
     return user_transactions
