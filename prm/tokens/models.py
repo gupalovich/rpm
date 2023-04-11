@@ -6,7 +6,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
-from prm.core.selectors import get_token
+from prm.core.selectors import get_token, get_token_sold_amount
 from prm.core.utils import (
     calculate_rounded_total_price,
     hex_to_dec,
@@ -42,6 +42,11 @@ class Token(models.Model):
         return round(self.total_amount * 0.4)
 
     available_amount.fget.short_description = "Токенов в продаже"
+
+    @property
+    def available_to_sale(self) -> int:
+        return self.available_amount - get_token_sold_amount()
+
 
 
 class TokenRound(models.Model):

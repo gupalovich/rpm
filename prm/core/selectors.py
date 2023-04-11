@@ -1,4 +1,4 @@
-from django.db.models import Q
+from django.db.models import Q, Sum
 
 
 def get_token():
@@ -12,6 +12,12 @@ def get_token_rounds():
 
     return TokenRound.objects.all()
 
+def get_token_sold_amount():
+    from prm.tokens.models import TokenRound
+
+    return TokenRound.objects.all().aggregate(
+        total=Sum("total_amount_sold")
+    )["total"]
 
 def get_user_transactions(*, user):
     from prm.tokens.models import TokenTransaction
