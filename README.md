@@ -7,13 +7,12 @@ PRM4ALL description
 
 1. Core
     - Sitemap
-    - Настройки staging
     - Security headers
 
 2. Dashboard
     - profanity filter
-    - Пагинация транзакций рефераллов
     - Разделить билиотеки popper/tippy
+    - Календарь в профиле
     - CI
 
 3. Tokens
