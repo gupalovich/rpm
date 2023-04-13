@@ -36,40 +36,9 @@
         {% endfor %}
     </div>
     <div class="pages">
-        {% comment %}
-        <ul class="pagination">
-            <li><button class="page_btn"><</button></li>
-            <li><button class="page_btn active_page">1</button></li>
-            <li><button class="page_btn">2</button></li>
-            <li><button class="page_btn">3</button></li>
-            <li><button class="page_btn">...</button></li>
-            <li><button class="page_btn">10</button></li>
-            <li><button class="page_btn">></button></li>
-        </ul>
-
-        <ul class="pagination">
-            {% if user_children.has_previous %}
-                <li><a class="page_btn" href="?page={{ user_children.previous_page_number }}{% if user_children.paginator.per_page != default_limit %}&children_size={{ user_children.paginator.per_page }}{% endif %}"><</a></li>
-            {% else %}
-            <li><span class="page_btn"><</span></li>
-            {% endif %}
-            {% for page in user_children.paginator.page_range %}
-                {% if user_children.number == page %}
-                    <li><span class="page_btn active_page">{{ page }}</span></li>
-                {% elif page > user_children.number|add:'-3' and page < user_children.number|add:'3' %}
-                    <li><a class="page_btn" href="?page={{ page }}{% if user_children.paginator.per_page != default_limit %}&children_size={{ user_children.paginator.per_page }}{% endif %}">{{ page }}</a></li>
-                {% endif %}
-            {% endfor %}
-            {% if user_children.has_next %}
-                <li><a class="page_btn" href="?page={{ user_children.next_page_number }}{% if user_children.paginator.per_page != default_limit %}&children_size={{ user_children.paginator.per_page }}{% endif %}">></a></li>
-            {% else %}
-                <li><span class="page_btn">></span></li>
-            {% endif %}
-        </ul> {% endcomment %}
-
-        <select class="page_amount_selector">
+        <select id="children_size" class="page_amount_selector">
             {% for amount in page_sizes %}
-                <option value="?children_size={{ amount }}" {% if amount == user_children.paginator.per_page %}selected{% endif %}>
+                <option value="{{ amount }}" {% if amount == user_children.paginator.per_page %}selected{% endif %}>
                     Показывать по {{ amount }} записей
                 </option>
             {% endfor %}
@@ -84,16 +53,13 @@
                 {% else %}
                 <li><span class="page_btn" disabled>&lt;</span></li>
             {% endif %}
-
-            {% for page_num in page_range %}
-                {% if page_num == "..." %}
-                    <li><a class="page_btn" href="?page={{ page }}">{{ page_num }}</a></li>
+            {% for page_num in user_children_page_range %}
+                {% if page_num == user_children.number %}
+                    <li><span class="page_btn active_page">{{ page_num }}</li>
+                {% elif page_num == user_children.paginator.ELLIPSIS %}
+                    <li><span class="page_btn">{{ page_num }}</li>
                 {% else %}
-                    {% if user_children.number == page_num %}
-                        <li><span class="page_btn active_page">{{ page_num }}</span></li>
-                    {% else %}
-                        <li><a class="page_btn" href="?page={{ page_num }}">{{page_num}}</a></li>
-                    {% endif %}
+                    <li><a class="page_btn" href="?page={{ page_num }}">{{ page_num }}</a></li>
                 {% endif %}
             {% endfor %}
 

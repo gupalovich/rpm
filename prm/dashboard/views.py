@@ -4,8 +4,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.cache import cache
-from django.core.paginator import Paginator
-from django.http import HttpResponseNotAllowed, JsonResponse
+from django.core.paginator import EmptyPage, InvalidPage, Paginator
+from django.http import Http404, HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
@@ -106,6 +106,7 @@ class DashboardRedirectView(RedirectView):
 class DashboardBaseView(LoginRequiredMixin, View):
     template_name = ""
     default_limit = 10
+    default_page = 1
     max_limit = 50
 
     def get_context_data(self):
@@ -119,30 +120,42 @@ class DashboardBaseView(LoginRequiredMixin, View):
         user_balance = CacheService.get_user_balance(user, token)
         user_children = CacheService.get_user_children(user)
         user_transactions = CacheService.get_user_transactions(user)
+
         # Children pagination
-        page_size = self.request.GET.get("children_size", self.default_limit)
-        page_num = self.request.GET.get("page", 1)
+        page_sizes = [10, 25, 50]
+        page_size = self.request.COOKIES.get("children_size", self.default_limit)
+        page_num = self.request.GET.get("page", self.default_page)
         user_children = Paginator(user_children, page_size).page(page_num)
-        page_range = user_children.paginator.get_elided_page_range(
-            number=page_num, on_each_side=1, on_ends=2
+        user_children_page_range = user_children.paginator.get_elided_page_range(
+            page_num, on_each_side=3, on_ends=1
         )
         # Transactions pagination
+        user_transactions = Paginator(user_transactions, page_size).page(page_num)
+        user_transactions_page_range = (
+            user_transactions.paginator.get_elided_page_range(
+                page_num, on_each_side=3, on_ends=1
+            )
+        )
 
         return {
             "user": user,
             "user_referral_link": user_referral,
             "user_balance": user_balance,
             "user_children": user_children,
+            "user_children_page_range": user_children_page_range,
             "user_transactions": user_transactions,
+            "user_transactions_page_range": user_transactions_page_range,
             "token": token,
             "token_rounds": token_rounds,
             "token_active_round": token_active_round,
-            "page_range": page_range,
-            "page_sizes": [10, 25, 50],
+            "page_sizes": page_sizes,
         }
 
     def get(self, request, *args, **kwargs):
-        context = self.get_context_data()
+        try:
+            context = self.get_context_data()
+        except (EmptyPage, InvalidPage):
+            raise Http404()
         return render(request, self.template_name, context)
 
 
