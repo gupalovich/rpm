@@ -43,6 +43,9 @@
 
 
 {% block inline_javascript %}
+<script type="text/javascript"> 
+    window.METAMASK_ADDRESS = "{{user.metamask_wallet}}";
+ </script> 
 <script src="{% static "js/smart-logic.js" %}"></script>
 <script src="{% static "js/token-buy-form.js" %}"></script>
 {% endblock inline_javascript %}
