@@ -24,6 +24,28 @@ if (burger) {
     }
 }
 
+// function to set cookie
+function setCookie(name, value, days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+// get select element and add event listener to save selected value into cookie
+document.getElementById("children_size").addEventListener("change", function () {
+    var selectedValue = this.options[this.selectedIndex].value;
+    setCookie("children_size", selectedValue, 365); // save value into cookie for 1 year
+});
+// get select element and add event listener to save selected value into cookie
+document.getElementById("transactions_size").addEventListener("change", function () {
+    var selectedValue = this.options[this.selectedIndex].value;
+    setCookie("transactions_size", selectedValue, 365); // save value into cookie for 1 year
+});
+
 
 // Format phone inputs
 function formatPhone(input) {

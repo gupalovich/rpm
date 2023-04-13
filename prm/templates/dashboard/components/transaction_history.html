@@ -2,9 +2,11 @@
 {% load i18n %}
 
 <section class="tile tile-lg"
+    {% if HTMX_ALLOW_POLLING %}
     hx-get="{% url 'dashboard:poll_user_transactions' %}"
     hx-trigger="every 30s"
-    hx-swap="outerHTML">
+    hx-swap="outerHTML"
+    {% endif %}>
     <h2 class="big_name">{% translate "История начислений" %}</h2>
     <div class="flexible-table">
         <div class="row row-header">
@@ -33,19 +35,42 @@
         {% endfor %}
     </div>
     <div class="pages">
-        <select class="page_amount_selector">
-            <option>Показывать по 10 записей</option>
-            <option>Показывать по 25 записей</option>
-            <option>Показывать по 50 записей</option>
+        <select id="transactions_size" class="page_amount_selector">
+            {% for amount in page_sizes %}
+                <option value="{{ amount }}" {% if amount == user_transactions.paginator.per_page %}selected{% endif %}>
+                    Показывать по {{ amount }} записей
+                </option>
+            {% endfor %}
         </select>
         <ul class="pagination">
-            <li><button class="page_btn"><</button></li>
-            <li><button class="page_btn active_page">1</button></li>
-            <li><button class="page_btn">2</button></li>
-            <li><button class="page_btn">3</button></li>
-            <li><button class="page_btn">...</button></li>
-            <li><button class="page_btn">10</button></li>
-            <li><button class="page_btn">></button></li>
+            {% if user_transactions.has_previous %}
+                <li>
+                    <a class="page_btn" href="?page={{ user_transactions.previous_page_number }}">
+                        &lt;
+                    </a>
+                </li>
+                {% else %}
+                <li><span class="page_btn" disabled>&lt;</span></li>
+            {% endif %}
+            {% for page_num in user_transactions_page_range %}
+                {% if page_num == user_transactions.number %}
+                    <li><span class="page_btn active_page">{{ page_num }}</li>
+                {% elif page_num == user_transactions.paginator.ELLIPSIS %}
+                    <li><span class="page_btn">{{ page_num }}</li>
+                {% else %}
+                    <li><a class="page_btn" href="?t_page={{ page_num }}">{{ page_num }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if user_transactions.has_next %}
+                <li>
+                    <a class="page_btn" href="?t_page={{ user_transactions.next_page_number }}">
+                        &gt;
+                    </a>
+                </li>
+                {% else %}
+                <li><span class="page_btn">&gt;</span></li>
+            {% endif %}
         </ul>
     </div>
 </section>

@@ -4,7 +4,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.cache import cache
-from django.http import HttpResponseNotAllowed, JsonResponse
+from django.core.paginator import EmptyPage, InvalidPage, Paginator
+from django.http import Http404, HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
@@ -35,15 +36,15 @@ def metamask_confirm(request):
             if not is_valid_signature:
                 return JsonResponse({"error": "Invalid signature"}, status=400)
             # update user metamask data
-            MetamaskService.confirm_user_wallet(user=user, account_address=account_address)
+            MetamaskService.confirm_user_wallet(
+                user=user, account_address=account_address
+            )
 
             if user.parent:
                 set_parent_in_smart(user)
             recalculate_user_balance(user)
-            a = 1/0
         except Exception as e:
             return JsonResponse({"message": "Error", "exception": str(e)}, status=500)
-        
         return JsonResponse({"message": "Success"})
     return HttpResponseNotAllowed(["POST"])
 
@@ -104,6 +105,9 @@ class DashboardRedirectView(RedirectView):
 
 class DashboardBaseView(LoginRequiredMixin, View):
     template_name = ""
+    default_limit = 10
+    default_page = 1
+    max_limit = 50
 
     def get_context_data(self):
         token = CacheService.get_token()
@@ -114,21 +118,48 @@ class DashboardBaseView(LoginRequiredMixin, View):
             reverse_lazy("account_signup") + "?referral=" + user.username
         )
         user_balance = CacheService.get_user_balance(user, token)
-        user_transactions = CacheService.get_user_transactions(user)
         user_children = CacheService.get_user_children(user)
+        user_transactions = CacheService.get_user_transactions(user)
+
+        # Children pagination
+        user_children = Paginator(
+            user_children, self.request.COOKIES.get("children_size", self.default_limit)
+        ).page(self.request.GET.get("c_page", self.default_page))
+        user_children_page_range = user_children.paginator.get_elided_page_range(
+            self.request.GET.get("c_page", self.default_page), on_each_side=3, on_ends=1
+        )
+        # Transactions pagination
+        user_transactions = Paginator(
+            user_transactions,
+            self.request.COOKIES.get("transactions_size", self.default_limit),
+        ).page(self.request.GET.get("t_page", self.default_page))
+        user_transactions_page_range = (
+            user_transactions.paginator.get_elided_page_range(
+                self.request.GET.get("t_page", self.default_page),
+                on_each_side=3,
+                on_ends=1,
+            )
+        )
+
         return {
             "user": user,
             "user_referral_link": user_referral,
             "user_balance": user_balance,
-            "user_transactions": user_transactions,
             "user_children": user_children,
+            "user_children_page_range": user_children_page_range,
+            "user_transactions": user_transactions,
+            "user_transactions_page_range": user_transactions_page_range,
             "token": token,
             "token_rounds": token_rounds,
             "token_active_round": token_active_round,
+            "page_sizes": [10, 25, 50],
         }
 
     def get(self, request, *args, **kwargs):
-        context = self.get_context_data()
+        try:
+            context = self.get_context_data()
+        except (EmptyPage, InvalidPage):
+            raise Http404()
         return render(request, self.template_name, context)
 
 

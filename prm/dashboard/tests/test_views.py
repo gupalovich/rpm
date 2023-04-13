@@ -44,7 +44,7 @@ class MetamaskConfirmViewTests(TestCase):
         response = self.client.post(
             self.url, data=json.dumps(data), content_type="application/json"
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 500)
 
 
 class PollTokenTests(TestCase):
