@@ -58,13 +58,13 @@
                 {% elif page_num == user_transactions.paginator.ELLIPSIS %}
                     <li><span class="page_btn">{{ page_num }}</li>
                 {% else %}
-                    <li><a class="page_btn" href="?page={{ page_num }}">{{ page_num }}</a></li>
+                    <li><a class="page_btn" href="?t_page={{ page_num }}">{{ page_num }}</a></li>
                 {% endif %}
             {% endfor %}
 
             {% if user_transactions.has_next %}
                 <li>
-                    <a class="page_btn" href="?page={{ user_transactions.next_page_number }}">
+                    <a class="page_btn" href="?t_page={{ user_transactions.next_page_number }}">
                         &gt;
                     </a>
                 </li>

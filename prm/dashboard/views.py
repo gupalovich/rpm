@@ -122,18 +122,22 @@ class DashboardBaseView(LoginRequiredMixin, View):
         user_transactions = CacheService.get_user_transactions(user)
 
         # Children pagination
-        page_sizes = [10, 25, 50]
-        page_size = self.request.COOKIES.get("children_size", self.default_limit)
-        page_num = self.request.GET.get("page", self.default_page)
-        user_children = Paginator(user_children, page_size).page(page_num)
+        user_children = Paginator(
+            user_children, self.request.COOKIES.get("children_size", self.default_limit)
+        ).page(self.request.GET.get("c_page", self.default_page))
         user_children_page_range = user_children.paginator.get_elided_page_range(
-            page_num, on_each_side=3, on_ends=1
+            self.request.GET.get("c_page", self.default_page), on_each_side=3, on_ends=1
         )
         # Transactions pagination
-        user_transactions = Paginator(user_transactions, page_size).page(page_num)
+        user_transactions = Paginator(
+            user_transactions,
+            self.request.COOKIES.get("transaction_size", self.default_limit),
+        ).page(self.request.GET.get("t_page", self.default_page))
         user_transactions_page_range = (
             user_transactions.paginator.get_elided_page_range(
-                page_num, on_each_side=3, on_ends=1
+                self.request.GET.get("t_page", self.default_page),
+                on_each_side=3,
+                on_ends=1,
             )
         )
 
@@ -148,7 +152,7 @@ class DashboardBaseView(LoginRequiredMixin, View):
             "token": token,
             "token_rounds": token_rounds,
             "token_active_round": token_active_round,
-            "page_sizes": page_sizes,
+            "page_sizes": [10, 25, 50],
         }
 
     def get(self, request, *args, **kwargs):
