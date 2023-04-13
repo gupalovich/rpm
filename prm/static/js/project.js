@@ -36,15 +36,21 @@ function setCookie(name, value, days) {
 }
 
 // get select element and add event listener to save selected value into cookie
-document.getElementById("children_size").addEventListener("change", function () {
-    var selectedValue = this.options[this.selectedIndex].value;
-    setCookie("children_size", selectedValue, 365); // save value into cookie for 1 year
-});
+const children_select_size = document.getElementById("children_size");
+if (children_select_size) {
+    children_select_size.addEventListener("change", function () {
+        var selectedValue = this.options[this.selectedIndex].value;
+        setCookie("children_size", selectedValue, 365); // save value into cookie for 1 year
+    });
+}
 // get select element and add event listener to save selected value into cookie
-document.getElementById("transactions_size").addEventListener("change", function () {
-    var selectedValue = this.options[this.selectedIndex].value;
-    setCookie("transactions_size", selectedValue, 365); // save value into cookie for 1 year
-});
+const transactions_select_size = document.getElementById("transactions_size");
+if (transactions_select_size) {
+    transactions_select_size.addEventListener("change", function () {
+        var selectedValue = this.options[this.selectedIndex].value;
+        setCookie("transactions_size", selectedValue, 365); // save value into cookie for 1 year
+    });
+}
 
 
 // Format phone inputs
