@@ -32,12 +32,16 @@ const approveTokens = async (contract_usdt, contract_address, amount, gasPrice, 
 
 
 document.addEventListener("DOMContentLoaded", async () => {
-    document.getElementById("buyButton").addEventListener("click", async () => {
+    document.getElementById("buyButton").addEventListener("click", async (target) => {
         const contract_address = window.CONTRACT_ADDRESS
         const web3 = await getWeb3()
+        const walletAddress = await web3.eth.requestAccounts()
+        if (walletAddress[0].toLowerCase() !== window.METAMASK_ADDRESS) {
+            alert("Кошелёк Metamask не совпадает с указанным в профиле. Выберите нужный в Metamask")
+            return
+        }
         const contract = await getContract(web3, window.ABI_CONTRACT, contract_address)
         const contract_usdt = await getContract(web3, window.ABI_USDT, window.CONTRACT_USDT_ADDRESS)
-        const walletAddress = await web3.eth.requestAccounts()
         const gasPrice = await web3.eth.getGasPrice()
         const amount = parseFloat(document.getElementById("id_token_price_usd").value)
         const unitPrice = document.getElementById('current_token_price').value
