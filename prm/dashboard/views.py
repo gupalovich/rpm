@@ -131,7 +131,7 @@ class DashboardBaseView(LoginRequiredMixin, View):
         # Transactions pagination
         user_transactions = Paginator(
             user_transactions,
-            self.request.COOKIES.get("transaction_size", self.default_limit),
+            self.request.COOKIES.get("transactions_size", self.default_limit),
         ).page(self.request.GET.get("t_page", self.default_page))
         user_transactions_page_range = (
             user_transactions.paginator.get_elided_page_range(
