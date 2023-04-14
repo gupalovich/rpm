@@ -31,7 +31,7 @@ def set_parent_in_smart(user):
     contract = w3.eth.contract(
         address=Web3.toChecksumAddress(settings.BSCSCAN_CONTRACT_ADDRESS), abi=abi
     )
-    nonce = w3.eth.getTransactionCount(Web3.toChecksumAddress(user.metamask_wallet))
+    nonce = w3.eth.getTransactionCount(Web3.toChecksumAddress(settings.BSCSCAN_PRIVATE_WALLET_ADDRESS))
 
     tx = contract.functions.setParent(
         Web3.toChecksumAddress(user.metamask_wallet),
