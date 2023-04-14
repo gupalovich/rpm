@@ -45,7 +45,7 @@ def metamask_confirm(request):
             recalculate_user_balance(user)
         except Exception as e:
             return JsonResponse({"message": "Error", "exception": str(e)}, status=500)
-        return JsonResponse({"message": "Success"})
+        return JsonResponse({"message": "Success"}, status=201)
     return HttpResponseNotAllowed(["POST"])
 
 
