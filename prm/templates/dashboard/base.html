@@ -140,7 +140,7 @@
                     {% endif %}>
                     <img src="{% static 'img/icons/metamask.svg'%}" alt="metamask">
                 </a>
-                <a href="">
+                <a href="{% url 'dashboard:profile' username=user.username %}">
                     <img class="avatar-img avatar_icon" src="{{ request.user.avatar.url }}" alt="Avatar">
                 </a>
             </div>
