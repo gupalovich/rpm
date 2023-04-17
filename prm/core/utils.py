@@ -1,6 +1,16 @@
 from decimal import ROUND_HALF_UP, Decimal
 
 
+def load_profanity_words(lang="en") -> set[str]:
+    fp = f"prm/static/data/{lang}_profanity_words.txt"
+    try:
+        with open(fp, encoding="utf-8") as f:
+            profanity_words = [line.strip() for line in f if line]
+        return set(profanity_words)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"File with profanity words not found in `{fp}`")
+
+
 def calculate_rounded_total_price(
     *, unit_price: Decimal, amount: int, rounding=ROUND_HALF_UP
 ) -> Decimal:

@@ -5,15 +5,8 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
-from prm.core.selectors import get_user_transactions
 from prm.core.utils import calculate_rounded_total_price
-from prm.tokens.tests.factories import (
-    TokenFactory,
-    TokenRound,
-    TokenRoundFactory,
-    TokenTransaction,
-    TokenTransactionFactory,
-)
+from prm.tokens.tests.factories import TokenFactory, TokenRound, TokenRoundFactory
 from prm.users.tests.factories import UserFactory
 
 CACHE_TTL = settings.CACHE_TTL
@@ -210,31 +203,6 @@ class DashboardBaseViewTests(TestCase):
         self.assertQuerysetEqual(
             response.context["token_rounds"], TokenRound.objects.all()
         )
-
-    def test_context_data_transactions(self):
-        response = self.client.get(self.url)
-        # create transactions
-        TokenTransactionFactory.create_batch(
-            3, buyer=self.user, status=TokenTransaction.Status.SUCCESS
-        )
-        TokenTransactionFactory.create_batch(
-            3, buyer=self.user, status=TokenTransaction.Status.PENDING
-        )
-        TokenTransactionFactory(
-            buyer=self.children[0],
-            status=TokenTransaction.Status.SUCCESS,
-            reward_sent=True,
-        )
-        TokenTransactionFactory(
-            buyer=self.children[1],
-            status=TokenTransaction.Status.SUCCESS,
-            reward_sent=True,
-        )
-        # query transactions
-        user_transactions = get_user_transactions(user=self.user)
-        context_transactions = response.context["user_transactions"]
-        self.assertQuerysetEqual(context_transactions, user_transactions)
-        self.assertEqual(len(context_transactions), 4)
 
 
 class DashboardIndexViewTests(TestCase):

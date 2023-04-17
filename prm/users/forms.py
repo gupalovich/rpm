@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.forms.widgets import TextInput
 from django.utils.translation import gettext_lazy as _
 
-from .validators import validate_phone_number
+from .validators import validate_phone_number, validate_profanity
 
 User = get_user_model()
 
@@ -33,6 +33,12 @@ class UserAdminCreationForm(admin_forms.UserCreationForm):
 class UserSignupForm(SignupForm):
     """Форма регистрации пользователя"""
 
+    username = forms.CharField(
+        max_length=150,
+        label=_("Login"),
+        widget=TextInput(attrs={"placeholder": _("Login")}),
+        validators=[validate_profanity],
+    )
     first_name = forms.CharField(
         max_length=30,
         label=_("Имя"),
