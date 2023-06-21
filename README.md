@@ -1,29 +1,4 @@
-# PRM4ALL
-
-PRM4ALL description
-
-## TODO
----
-
-1. Core
-    - Sitemap
-    - Security headers
-
-2. Dashboard
-    - profanity filter
-    - Разделить билиотеки popper/tippy
-    - Календарь в профиле
-    - CI
-
-3. Tokens
-
-4. Users
-
-5. Документация
-
-6. Интернационализация
-    - Английский
-    - Испанский
+# RPM
 
 
 ## Начало работы
